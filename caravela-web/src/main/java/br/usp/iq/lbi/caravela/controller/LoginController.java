@@ -3,24 +3,40 @@ package br.usp.iq.lbi.caravela.controller;
 import javax.inject.Inject;
 
 import br.com.caelum.vraptor.Controller;
+import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
+import br.usp.iq.lbi.caravela.controller.auth.WebUser;
+import br.usp.iq.lbi.caravela.model.User;
 
 @Controller
 public class LoginController {
 	
 	private Result result;
+	private WebUser webUser;
 	
 	protected LoginController(){
-		this(null);
+		this(null, null);
 	}
 	
-	@Inject
-	public LoginController(Result result){
+	@Inject	
+	public LoginController(Result result, WebUser webUser){
 		this.result = result;
+		this.webUser = webUser;
 	}
 	
 	public void form(){
 		
+	}
+	
+	@Post
+	public void login(User user){
+		webUser.login(user);
+		result.redirectTo(HomeController.class).home();
+	}
+	
+	public void logout(){
+		webUser.logout();
+		result.redirectTo(LoginController.class).form();
 	}
 
 }

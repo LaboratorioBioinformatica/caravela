@@ -36,6 +36,12 @@
 
 		<dependency>
 			<groupId>br.com.caelum.vraptor</groupId>
+			<artifactId>vraptor-brutauth</artifactId>
+			<version>4.0.4</version> 
+		</dependency>
+
+		<dependency>
+			<groupId>br.com.caelum.vraptor</groupId>
 			<artifactId>vraptor-jpa</artifactId>
 			<version>4.0.0.Final</version>
 		</dependency>
@@ -45,7 +51,7 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>4.3.0.Final</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>org.jboss.weld.servlet</groupId>
@@ -121,6 +127,13 @@
 			<groupId>javax.el</groupId>
 			<artifactId>javax.el-api</artifactId>
 			<version>2.2.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
