@@ -2,13 +2,15 @@ package br.usp.iq.lbi.caravela.controller;
 
 import javax.inject.Inject;
 
+import br.com.caelum.brutauth.auth.annotations.Public;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.model.User;
 
-@Controller
+@Controller 
+@Public
 public class LoginController {
 	
 	private Result result;
@@ -25,6 +27,7 @@ public class LoginController {
 	}
 	
 	public void form(){
+		result.include("pageTitle", "Caravela - Login");
 		
 	}
 	

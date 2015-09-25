@@ -3,12 +3,13 @@ package br.usp.iq.lbi.caravela.controller.auth;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import br.com.caelum.brutauth.auth.annotations.GlobalRule;
 import br.com.caelum.brutauth.auth.annotations.HandledBy;
-import br.com.caelum.brutauth.auth.rules.SimpleBrutauthRule;
+import br.com.caelum.brutauth.auth.rules.CustomBrutauthRule;
 
-@RequestScoped
+@RequestScoped @GlobalRule
 @HandledBy(LoggedHandler.class)
-public class CanAccess implements SimpleBrutauthRule {
+public class CanAccess implements CustomBrutauthRule {
 	
 	private WebUser loggedUser;
 	
@@ -22,7 +23,7 @@ public class CanAccess implements SimpleBrutauthRule {
 	}
 
 
-	public boolean isAllowed(long accessLevel) {
+	public boolean isAllowed() {
 		return loggedUser.isLogged();
 	}
 
