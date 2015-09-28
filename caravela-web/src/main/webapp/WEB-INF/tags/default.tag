@@ -1,88 +1,89 @@
 <%@ tag description="Overall Page template" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <%@attribute name="headImport" fragment="true" %>
 
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Caravela: a new approach to metagenomic browsing">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="a new approach to metagenomic browsing">
+    <meta name="author" content="Gianluca Major">
+    <link rel="icon" href="images/favicon.ico">
     <c:if test="${empty pageTitle}">
     	<c:set var="pageTitle" value="Caravela: a new approach to metagenomic browsing"/>
     </c:if>
     
     <title>${pageTitle}</title>
 
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    
+        <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap theme -->
+    <link href="css/bootstrap/bootstrap-theme.min.css" rel="stylesheet">
 
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Caravela: a new approach to metagenomic browsing">
-    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+    <!-- Custom styles for this template -->
+    <!--link href="css/theme.css" rel="stylesheet"-->
 
-    <!-- Tile icon for Win8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
-    <meta name="msapplication-TileColor" content="#3372DF">
-
-    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
-    <!--
-    <link rel="canonical" href="http://www.example.com/">
-    -->
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.cyan-light_blue.min.css">
-    <link href="<c:url value="/css/styles.css"/>" rel="stylesheet">
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="js/bootstrap/ie-emulation-modes-warning.js"></script>
+    
+    <!-- others CSS import -->
     <jsp:invoke fragment="headImport"/>
-    <style>
-    #view-source {
-      position: fixed;
-      display: block;
-      right: 0;
-      bottom: 0;
-      margin-right: 40px;
-      margin-bottom: 40px;
-      z-index: 900;
-    }
-    </style>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->    
   </head>
   <body>
-    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
-      <header class="demo-header mdl-layout__header mdl-color--white mdl-color--grey-100 mdl-color-text--grey-600">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">CARAVELA</span>
-          <div class="mdl-layout-spacer"></div>
-        </div>
-      </header>
-      <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
-        <header class="demo-drawer-header">
-          <img src="<c:url value="/images/user.jpg"/>" class="demo-avatar">
-          <div class="demo-avatar-dropdown">
-            <span>${userName}</span>
-            <div class="mdl-layout-spacer"></div>
-          </div>
-        </header>
-        <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
-          <a class="mdl-navigation__link" href="<c:url value='/'/>"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
-          <a class="mdl-navigation__link" href="<c:url value='/upload/view'/>"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">file_upload</i>Upload</a>
-          <a class="mdl-navigation__link" href="<c:url value='/login/logout'/>"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">exit_to_app</i>Exit</a>
-          <div class="mdl-layout-spacer"></div>
-          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
-        </nav>
-      </div>
-      <main class="mdl-layout__content mdl-color--grey-100">
-		<jsp:doBody/>
-      </main>
-    </div>
-          <script src="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.min.js"></script>
-          
+	  <nav class="navbar navbar-inverse">
+	        <div class="container">
+	          <div class="navbar-header">
+	            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+	              <span class="sr-only">Toggle navigation</span>
+	              <span class="icon-bar"></span>
+	              <span class="icon-bar"></span>
+	              <span class="icon-bar"></span>
+	            </button>
+	            <a class="navbar-brand" href="#">CARAVELA</a>
+	          </div>
+	          <div class="navbar-collapse collapse">
+	            <ul class="nav navbar-nav">
+	              <li class="active"><a href="#">Home</a></li>
+	              <li><a href="${linkTo[LoginController].logout}">Logout</a></li>
+	              <!--li><a href="#contact">Contact</a></li -->
+	            </ul>
+	          </div><!--/.nav-collapse -->
+	        </div>
+	      </nav>
+	      
+    <h1>Hello, world!</h1>
+    <span>${userName}</span>
+    <jsp:doBody/>
+    
+    <hr>
+	<footer>
+		<p>&copy; CARAVELA</p>
+	</footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <!-- script src="js/bootstrap/docs.min.js"></script-->
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+    
   </body>
 </html>

@@ -22,28 +22,32 @@ margin: 0 100;
 </style>
 </jsp:attribute>
     <jsp:body>
-    	<div class="login-card-wide mdl-card mdl-shadow--2dp">
-	    	<div class="mdl-card__title">
-	    		<h2 class="mdl-card__title-text">Login</h2>
-	  		</div>
-		  		<form action="<c:url value='/login/login'/>" method="post">
-		  		<div class="mdl-card__actions mdl-card--border">
-		  			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-					  <input class="mdl-textfield__input" name="user.name" type="text" id="user" />
-					  <label class="mdl-textfield__label" for="user">User name</label>
-					</div>
-					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">  
-					  <input class="mdl-textfield__input" name="user.password" type="password" id="pws" />
-					  <label class="mdl-textfield__label" for="pws">Password</label>
-					</div>
-					<div class="mdl-textfield">
-						<input class="mdl-button" type="submit" name="login">
-					</div>
-		  		</div>
-		  		</form>
-    		</div>
+    <div class="container">
+	  <div class="jumbotron">
+			<form  class="form-horizontal" action="<c:url value='/login/login'/>" method="post">
+			  <div class="form-group">
+			    <label for="userEmail" class="col-sm-2 control-label">E-mail</label>
+			    <div class="col-sm-10">
+			      <input type="email" name="user.name" class="form-control" id="userEmail" placeholder="Email">
+			    </div>
+			  </div>
+			  
+			  <div class="form-group">
+			    <label for="userPassword" class="col-sm-2 control-label">Password</label>
+			    <div class="col-sm-10">
+			      <input type="password" name="user.password" class="form-control" id="userPassword" placeholder="Password">
+			    </div>
+			  </div>
 		
-	</jsp:body>
+			  <div class="form-group">
+			    <div class="col-sm-offset-2 col-sm-10">
+			      <button type="submit" class="btn btn-default">Sign in</button>
+			    </div>
+			  </div>
+			</form>
+	  </div>
+	</div>
+    	</jsp:body>
 </t:login>
 
 
