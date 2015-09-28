@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lbi.usp.br.caravela.dto.Contig;
+import lbi.usp.br.caravela.dto.ContigTO;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonStreamParser;
@@ -62,7 +62,7 @@ public class HomeController {
 		JsonStreamParser parser = new JsonStreamParser(new FileReader(filePath));
 		
 		while (parser.hasNext()) {
-			Contig contig = gson.fromJson(parser.next(), Contig.class);
+			ContigTO contig = gson.fromJson(parser.next(), ContigTO.class);
 			 System.out.println(contig);
 			
 		}

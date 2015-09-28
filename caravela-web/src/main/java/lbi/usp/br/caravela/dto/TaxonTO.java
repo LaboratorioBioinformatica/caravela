@@ -1,7 +1,9 @@
 package lbi.usp.br.caravela.dto;
 
-public class Taxon {
-	
+
+
+public class TaxonTO {
+		
 	private final Integer taxonomyId;
 	private final String scientificName;
 	private final String hank;
@@ -35,17 +37,32 @@ public class Taxon {
 			return this;
 		}
 		
-		public Taxon build(){
-			return new Taxon(this);
+		public TaxonTO build(){
+			return new TaxonTO(this);
 		}
 	}
 	
-	public Taxon(Builder builder) {
+	public TaxonTO(Builder builder) {
 		this.taxonomyId = builder.taxonomyId;
 		this.scientificName = builder.scientificName;
 		this.hank = builder.hank;
 		this.score = builder.score;
 	}
 	
+	public Integer getTaxonomyId() {
+		return taxonomyId;
+	}
+
+	public String getScientificName() {
+		return scientificName;
+	}
+
+	public String getHank() {
+		return hank;
+	}
+
+	public Double getScore() {
+		return score;
+	}
 
 }

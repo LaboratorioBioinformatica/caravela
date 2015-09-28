@@ -1,6 +1,6 @@
 package lbi.usp.br.caravela.dto;
 
-public class PhiloDist {
+public class PhiloDistTO {
 	//homolog Gene OID
 	private Long geneOID;
 	
@@ -12,7 +12,7 @@ public class PhiloDist {
 	
 	private String lineage;
 	
-	public PhiloDist(Long geneOID, Long taxonOID, Double identity, String lineage) {
+	public PhiloDistTO(Long geneOID, Long taxonOID, Double identity, String lineage) {
 		this.geneOID = geneOID;
 		this.taxonOID = taxonOID;
 		this.identity = identity;

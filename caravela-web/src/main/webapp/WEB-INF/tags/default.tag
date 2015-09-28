@@ -20,20 +20,19 @@
     <title>${pageTitle}</title>
 
     <!-- Bootstrap -->
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="<c:url value="/css/bootstrap/bootstrap.min.css"/>" rel="stylesheet">
     
         <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="<c:url value="/css/bootstrap/bootstrap.min.css"/>" rel="stylesheet">
     
     <!-- Bootstrap theme -->
-    <link href="css/bootstrap/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="<c:url value="/css/bootstrap/bootstrap-theme.min.css"/>" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <!--link href="css/theme.css" rel="stylesheet"-->
+    <link href=<c:url value="/css/theme.css"/> rel="stylesheet">
 
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="js/bootstrap/ie-emulation-modes-warning.js"></script>
+    <script src=<c:url value="/js/bootstrap/ie-emulation-modes-warning.js"/>></script>
     
     <!-- others CSS import -->
     <jsp:invoke fragment="headImport"/>
@@ -78,12 +77,12 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    
-    <script src="js/bootstrap/bootstrap.min.js"></script>
-    <!-- script src="js/bootstrap/docs.min.js"></script-->
-    
+
+
+   
+    <script src=<c:url value="/js/bootstrap/bootstrap.min.js"/>></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+    <script src=<c:url value="/js/bootstrap/ie10-viewport-bug-workaround.js"/>></script>
     
   </body>
 </html>
