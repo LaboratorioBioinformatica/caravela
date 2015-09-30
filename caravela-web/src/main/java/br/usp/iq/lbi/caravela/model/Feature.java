@@ -19,7 +19,9 @@ public class Feature implements Serializable {
 	
 	@Column(name="feature_type")
 	private final String type;
+	@Column(name="start_alignment")
 	private final Integer start;
+	@Column(name="end_alignment")
 	private final Integer end;
 	private final Integer strand;
 	@Column(name="product_name")
