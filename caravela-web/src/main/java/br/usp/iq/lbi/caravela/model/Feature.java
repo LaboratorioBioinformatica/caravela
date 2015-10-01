@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -13,6 +15,9 @@ public class Feature implements Serializable {
 
 	private static final long serialVersionUID = 9071792536581499568L;
 	
+	@Id
+	@GeneratedValue
+	private  Long id;
 	@ManyToOne
 	private final Contig contig;
 	private final String source;
@@ -66,6 +71,10 @@ public class Feature implements Serializable {
 
 	public String getProductSource() {
 		return productSource;
+	}
+	
+	public Long getId(){
+		return id;
 	}
 	
 

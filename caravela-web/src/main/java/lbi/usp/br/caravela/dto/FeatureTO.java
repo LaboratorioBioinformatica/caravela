@@ -42,6 +42,11 @@ public class FeatureTO {
 	public PhiloDistTO getPhiloDist() {
 		return philoDist;
 	}
+	
+	public boolean hasGeneProduct(){
+		return (geneProduct != null) ? true : false;
+	
+	}
 
 	public GeneProductTO getGeneProduct() {
 		return geneProduct;

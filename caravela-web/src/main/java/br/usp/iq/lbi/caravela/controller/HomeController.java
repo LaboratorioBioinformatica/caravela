@@ -6,22 +6,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lbi.usp.br.caravela.dto.ContigTO;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonStreamParser;
 
-import br.com.caelum.brutauth.auth.annotations.SimpleBrutauthRules;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Result;
-import br.usp.iq.lbi.caravela.controller.auth.CanAccess;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Treatment;
+import lbi.usp.br.caravela.dto.ContigTO;
 
 @Controller
 public class HomeController {
@@ -48,7 +45,6 @@ public class HomeController {
 		
 		List<Treatment> treatments = treatmentDAO.findAll();
 		result.include("treatments", treatments);
-		result.include("userName", webUser.getName());
 	}
 	
 	

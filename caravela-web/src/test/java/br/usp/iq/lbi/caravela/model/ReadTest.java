@@ -43,10 +43,10 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, Features, reads);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, taxonX, mapping);
-		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_02, firstPair, taxonY, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
+		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_02, firstPair, mapping);
 
 		Assert.assertTrue(read.equals(readEq));
 		
@@ -74,10 +74,10 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, Features, reads);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, taxonX, mapping);
-		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_01, secPair, taxonX, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
+		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_01, secPair, mapping);
 
 		Assert.assertFalse(read.equals(readEq));
 		
@@ -106,10 +106,10 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, Features, reads);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, taxonX, mapping);
-		Read readEq = new Read(reference, sampleZC3bDay30, contig, sequence_01, firstPair, taxonX, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
+		Read readEq = new Read(reference, sampleZC3bDay30, contig, sequence_01, firstPair, mapping);
 
 		Assert.assertFalse(read.equals(readEq));
 		
@@ -135,10 +135,10 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, Features, reads);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, taxonX, mapping);
-		Read readEq = new Read(otherReference, sampleZC3bDay01, contig, sequence_01, firstPair, taxonX, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
+		Read readEq = new Read(otherReference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 
 		Assert.assertFalse(read.equals(readEq));
 		

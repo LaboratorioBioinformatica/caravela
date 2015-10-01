@@ -27,7 +27,7 @@ public class TaxonTest {
 
 	@Test
 	public void testEquals() throws Exception {
-		new Read(reference, sample , contig , sequence, pair, taxon, mapping);
+		new Read(reference, sample , contig , sequence, pair, mapping);
 		
 		Taxon taxon = new Taxon(read, 1, "scientificName", "Rank", new Double(0.5));
 		Taxon otherTaxon = new Taxon(read, 1, "scientificName", "hnk", new Double(0.6));

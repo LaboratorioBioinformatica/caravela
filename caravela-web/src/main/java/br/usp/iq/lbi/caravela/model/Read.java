@@ -28,18 +28,17 @@ public class Read implements Serializable {
 	private final String sequence;
 	private final Integer pair;
 	@OneToOne
-	private final Taxon taxon;
+	private Taxon taxon;
 	
 	@Embedded
 	private final Mapping mapping;
 	
-	public Read(String reference, Sample sample, Contig contig, String sequence, Integer pair, Taxon taxon, Mapping mapping) {
+	public Read(String reference, Sample sample, Contig contig, String sequence, Integer pair, Mapping mapping) {
 		this.reference = reference;
 		this.sample = sample;
 		this.contig = contig;
 		this.sequence = sequence;
 		this.pair = pair;
-		this.taxon = taxon;
 		this.mapping = mapping;
 	}
 

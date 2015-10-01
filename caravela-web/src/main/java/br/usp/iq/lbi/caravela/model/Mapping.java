@@ -15,7 +15,11 @@ public class Mapping implements Serializable {
 	private final Integer end;
 	@Column(name="flag_alignment")
 	private final Integer flag;
+
 	
+	public Mapping() {
+		this(null,null,null);
+	}
 	
 	public Mapping(Integer start, Integer end, Integer flag) {
 		this.start = start;

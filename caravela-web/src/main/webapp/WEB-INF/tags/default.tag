@@ -66,7 +66,7 @@
 	      </nav>
 	      
     <h1>Hello, world!</h1>
-    <span>${userName}</span>
+    <span>${userLoggedIn.name}</span>
     <jsp:doBody/>
     
     <hr>

@@ -3,10 +3,12 @@ package br.usp.iq.lbi.caravela.controller.auth;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import br.usp.iq.lbi.caravela.model.User;
 
 @SessionScoped
+@Named("userLoggedIn")
 public class WebUser implements Serializable {
 	
 	private static final long serialVersionUID = 4566449233287384303L;

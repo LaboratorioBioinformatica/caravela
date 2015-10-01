@@ -85,7 +85,7 @@ create table feature (
 	start_alignment INT NOT NULL,
 	end_alignment INT NOT NULL,
 	strand INT NOT NULL,
-	product_name VARCHAR(100) NULL,
+	product_name VARCHAR(200) NULL,
 	product_source VARCHAR(30) NULL,
 	PRIMARY KEY(id),
 	INDEX (contig_id), INDEX (product_name), INDEX (product_source) 
