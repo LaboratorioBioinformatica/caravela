@@ -2,8 +2,6 @@ package lbi.usp.br.caravela.dto;
 
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
-
 import com.google.gson.annotations.SerializedName;
 
 public class ContigTO {
@@ -67,22 +65,35 @@ public class ContigTO {
 		return readsOnCotig;
 	}
 	
+	public  Double getTaxonomicIdentificationIndex(){
+		
+		Double totalNumberOfReads = new Double(this.readsOnCotig.size());
+		Double totalReadsClassified = new Double(0);
+		
+		for (ReadOnContigTO readOnContig : readsOnCotig) {
+			if(readOnContig.hasTaxon()){
+				totalReadsClassified++;
+			}
+		} 
+		
+		Double taxonomicIdentificationIndex = new Double(totalReadsClassified / totalNumberOfReads);
+		
+		if(taxonomicIdentificationIndex.isNaN()){
+			taxonomicIdentificationIndex = new Double(0);
+		}
+
+		
+		return taxonomicIdentificationIndex;
+	}
+	
 	public Integer getNumberOfReadsClassified(){
 		Integer totalNumberOfReadsClassified = 0;
 		for (ReadOnContigTO readOnContig : this.readsOnCotig) {
-			List<TaxonTO> taxons = readOnContig.getTaxons();
-			
-			if(taxons != null && ! taxons.isEmpty()){
-				totalNumberOfReadsClassified = taxons.size();
-				
-				for (TaxonTO taxonTO : taxons) {
-					System.out.println(taxonTO.getTaxonomyId());
-					System.out.println(taxonTO.getScientificName());
-				}
+			TaxonTO taxon = readOnContig.getTaxon();
+			if(taxon != null){
+				totalNumberOfReadsClassified ++;
 			} 
 		}
 		return totalNumberOfReadsClassified;
 	}
-	
-
 }

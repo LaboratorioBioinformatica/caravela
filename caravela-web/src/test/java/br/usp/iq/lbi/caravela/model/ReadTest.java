@@ -3,6 +3,8 @@ package br.usp.iq.lbi.caravela.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,10 +42,14 @@ public class ReadTest {
 		String contigReference = "asdfa5as56d4f65as4df65asdsdfsd";
 		String contigSequence = "ATTTCCTGGTAGAGATAGATAGCACACAGCAGAGACATCTACTACAGAC";
 		
+		Integer numberOfReads = 10;
+		Integer numberOfReadsClassified = 8;
+		Integer numberOfFeatures = 2;
+		
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
-		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
+		Double tii = new Double(0.5);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_02, firstPair, mapping);
@@ -71,10 +77,14 @@ public class ReadTest {
 		String contigReference = "asdfa5as56d4f65as4df65asdsdfsd";
 		String contigSequence = "ATTTCCTGGTAGAGATAGATAGCACACAGCAGAGACATCTACTACAGAC";
 		
+		Integer numberOfReads = 10;
+		Integer numberOfReadsClassified = 8;
+		Integer numberOfFeatures = 2;
+		
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
-		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
+		Double tii = new Double(0.5);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_01, secPair, mapping);
@@ -103,10 +113,14 @@ public class ReadTest {
 		String contigReference = "asdfa5as56d4f65as4df65asdsdfsd";
 		String contigSequence = "ATTTCCTGGTAGAGATAGATAGCACACAGCAGAGACATCTACTACAGAC";
 		
+		Integer numberOfReads = 10;
+		Integer numberOfReadsClassified = 8;
+		Integer numberOfFeatures = 2;
+		
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
-		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
+		Double tii = new Double(0.5);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(reference, sampleZC3bDay30, contig, sequence_01, firstPair, mapping);
@@ -132,10 +146,14 @@ public class ReadTest {
 		String contigReference = "asdfa5as56d4f65as4df65asdsdfsd";
 		String contigSequence = "ATTTCCTGGTAGAGATAGATAGCACACAGCAGAGACATCTACTACAGAC";
 		
+		Integer numberOfReads = 10;
+		Integer numberOfReadsClassified = 8;
+		Integer numberOfFeatures = 2;
+		
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
-		
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence);
+		Double tii = new Double(0.5);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(otherReference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);

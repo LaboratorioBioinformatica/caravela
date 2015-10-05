@@ -3,6 +3,7 @@ package br.usp.iq.lbi.caravela.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,8 +25,20 @@ public class Contig implements Serializable {
 	@ManyToOne
 	private Sample sample;
 	
-	private final String reference;
-	private final String sequence;
+	private String reference;
+	private String sequence;
+	
+	@Column(name="number_of_reads")
+	private Integer numberOfReads;
+	
+	@Column(name="number_of_reads_classified")
+	private Integer numberOfReadsClassified;
+	
+	@Column(name="number_of_features")
+	private Integer numberOfFeatures;
+	
+	@Column(name="tii")
+	private Double taxonomicIdentificationIndex; 
 	
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig")
 	private List<Feature> features;
@@ -33,10 +46,16 @@ public class Contig implements Serializable {
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig")
 	private List<Read> reads;
 	
-	public Contig(Sample sample, String reference, String sequence) {
+	public Contig() {}
+	
+	public Contig(Sample sample, String reference, String sequence, Integer nOfR, Integer nOfRC, Integer nOfF, Double taxonomicIdentificationIndex) {
 		this.sample = sample;
 		this.reference = reference;
 		this.sequence = sequence;
+		this.numberOfReads = nOfR;
+		this.numberOfReadsClassified = nOfRC;
+		this.numberOfFeatures = nOfF;
+		this.taxonomicIdentificationIndex = taxonomicIdentificationIndex;
 	}
 
 	public Sample getSample() {
@@ -53,6 +72,10 @@ public class Contig implements Serializable {
 	
 	public Integer getSize(){
 		return sequence.length();
+	}
+	
+	public Double getTaxonomicIdentificationIndex(){
+		return taxonomicIdentificationIndex;
 	}
 	
 	public Long getId(){

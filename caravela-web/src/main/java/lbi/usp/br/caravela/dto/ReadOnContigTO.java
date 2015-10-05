@@ -1,7 +1,5 @@
 package lbi.usp.br.caravela.dto;
 
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
 
 
@@ -15,17 +13,25 @@ public class ReadOnContigTO {
 	private final Integer endAlignment;
 	private final Integer flag;
 	private final Integer pair;
-	private final List<TaxonTO> taxons;
+	private final TaxonTO taxon;
 	
-	public ReadOnContigTO(String reference, String sequence, Integer startAlignment, Integer endAlignment, Integer flag, Integer pair, List<TaxonTO> taxons) {
+	public ReadOnContigTO(String reference, String sequence, Integer startAlignment, Integer endAlignment, Integer flag, Integer pair, TaxonTO taxon) {
 		this.reference = reference;
 		this.sequence = sequence;
 		this.startAlignment = startAlignment;
 		this.endAlignment = endAlignment;
 		this.flag = flag;
 		this.pair = pair;
-		this.taxons = taxons;	
+		this.taxon = taxon;	
 		
+	}
+	
+	public boolean hasTaxon(){
+		if(this.taxon != null){
+			return  true;
+		} else {
+			return false;
+		}
 	}
 
 	public String getReference() {
@@ -51,9 +57,14 @@ public class ReadOnContigTO {
 	public Integer getPair() {
 		return pair;
 	}
-
-	public List<TaxonTO> getTaxons() {
-		return taxons;
+	
+	public Integer getSize(){
+		return sequence.length();
 	}
+
+	public TaxonTO getTaxon() {
+		return taxon;
+	}
+	
 
 }

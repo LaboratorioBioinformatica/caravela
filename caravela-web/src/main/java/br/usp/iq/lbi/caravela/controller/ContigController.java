@@ -2,7 +2,6 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,11 +13,10 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
-import br.usp.iq.lbi.caravela.dao.FeatureDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
+import br.usp.iq.lbi.caravela.domain.ContigManager;
 import br.usp.iq.lbi.caravela.domain.ContigTOProcessor;
 import br.usp.iq.lbi.caravela.model.Contig;
-import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import lbi.usp.br.caravela.dto.ContigTO;
@@ -30,35 +28,36 @@ public class ContigController {
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
 	private final ContigDAO contigDAO;
-	private final FeatureDAO featureDAO;
-	private final ContigTOProcessor contigTOProcessor;
+	private final ContigManager contigManager;
+	
 	
 	public ContigController() {
-		this(null,null,null, null, null, null);
+		this(null,null,null, null, null);
 	}
 	
 	@Inject
-	public ContigController(Result result, WebUser webUser,  SampleDAO sampleDAO, ContigTOProcessor contigCreator, ContigDAO contigDAO, FeatureDAO featureDAO) {
+	public ContigController(Result result, WebUser webUser,  SampleDAO sampleDAO, ContigDAO contigDAO, ContigManager contigManager) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
-		this.contigTOProcessor = contigCreator;
 		this.contigDAO = contigDAO;
-		this.featureDAO = featureDAO;
+		this.contigManager = contigManager;
 		
 	}
 	
 	@Path("/contig/view/{contigId}")
 	public void view(Long contigId) {
 		Contig contig = contigDAO.load(contigId);
+		ContigTO contigTO = contigManager.searchContigById(contigId);
 		Sample sample = contig.getSample();
-		List<Feature> features = featureDAO.loadAllFeaturesByContig(contig);
-		
 		
 		result.include("sample", sample);
-		result.include("contig", contig);
-		result.include("features", features);
+		result.include("contig", contigTO);
 	}
+	
+	
+	
+	
 	
 	public void viewJson() throws FileNotFoundException{
 		Sample sample = sampleDAO.load(1l);
@@ -74,21 +73,5 @@ public class ContigController {
 	}
 
 	
-	public void save() throws FileNotFoundException{
-		Sample sample = sampleDAO.load(1l);
-		SampleFile fileWithAllInformation = sample.getFileWithAllInformation();
-		String filePath = fileWithAllInformation.getFilePath();
-		Gson gson = new Gson();
-		
-		JsonStreamParser parser = new JsonStreamParser(new FileReader(filePath));
-		
-		while (parser.hasNext()) {
-			ContigTO contigTO = gson.fromJson(parser.next(), ContigTO.class);
-			contigTOProcessor.convert(sample, contigTO);
-		}
-		
-		result.include("sample", sample);
-		
-	}
 	
 }

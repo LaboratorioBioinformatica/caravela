@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -21,17 +22,18 @@ public class Read implements Serializable {
 	private Long id;
 	
 	@ManyToOne
-	private final Sample sample;
+	private Sample sample;
 	@ManyToOne
-	private final Contig contig;
-	private final String reference;
-	private final String sequence;
-	private final Integer pair;
-	@OneToOne
+	private Contig contig;
+	private String reference;
+	private String sequence;
+	private Integer pair;
+	@OneToOne(fetch=FetchType.EAGER, mappedBy="read")
 	private Taxon taxon;
-	
 	@Embedded
-	private final Mapping mapping;
+	private  Mapping mapping;
+	
+	public Read() {}
 	
 	public Read(String reference, Sample sample, Contig contig, String sequence, Integer pair, Mapping mapping) {
 		this.reference = reference;
@@ -65,6 +67,18 @@ public class Read implements Serializable {
 
 	public Sample getSample() {
 		return sample;
+	}
+	
+	public Integer getStartAlignment(){
+		return mapping.getStart();
+	}
+	
+	public Integer getEndAlignment(){
+		return mapping.getEnd();
+	}
+	
+	public Integer getFlagAlignment(){
+		return mapping.getFlag();
 	}
 	
 	

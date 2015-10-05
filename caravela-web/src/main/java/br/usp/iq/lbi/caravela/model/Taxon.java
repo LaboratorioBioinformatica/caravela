@@ -19,13 +19,15 @@ public class Taxon implements Serializable {
 	@GeneratedValue
 	private Long id;
 	@OneToOne
-	private final Read read;
+	private Read read;
 	@Column(name="taxonomy_id")
-	private final Integer taxonomyId;
+	private Integer taxonomyId;
 	@Column(name="scientific_name")
-	private final String scientificName;
-	private final String rank;
-	private final Double score;
+	private String scientificName;
+	private String rank;
+	private Double score;
+	
+	public Taxon() {}
 		
 	public Taxon(Read read, Integer taxonomyId, String scientificName, String rank, Double score) {
 		this.read = read;

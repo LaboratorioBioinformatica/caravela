@@ -19,20 +19,22 @@ public class Feature implements Serializable {
 	@GeneratedValue
 	private  Long id;
 	@ManyToOne
-	private final Contig contig;
-	private final String source;
+	private Contig contig;
+	private String source;
 	
 	@Column(name="feature_type")
-	private final String type;
+	private String type;
 	@Column(name="start_alignment")
-	private final Integer start;
+	private Integer start;
 	@Column(name="end_alignment")
-	private final Integer end;
-	private final Integer strand;
+	private Integer end;
+	private Integer strand;
 	@Column(name="product_name")
-	private final String productName;
+	private String productName;
 	@Column(name="product_source")
-	private final String productSource;
+	private String productSource;
+	
+	public Feature() {}
 	
 	public Feature(Contig contig, String source, String type, Integer start, Integer end, Integer strand, String productName, String productSource) {
 		this.contig = contig;

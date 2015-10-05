@@ -32,7 +32,10 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 	
 
 	public Contig convert(Sample sample, ContigTO contigTO) {
-		Contig contig = new Contig(sample, contigTO.getReference(), contigTO.getSequence());
+		
+		Contig contig = new Contig(sample, contigTO.getReference(), contigTO.getSequence(), 
+				contigTO.getNumberOfreads(), contigTO.getNumberOfReadsClassified(), contigTO.getNumberOfFeatures(), 
+				contigTO.getTaxonomicIdentificationIndex());
 		
 		contigDAO.save(contig);
 		
@@ -40,6 +43,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 		
 		if( ! features.isEmpty()){
 			Integer batchSize = features.size();
+			System.out.println("number of features:" + batchSize);
 			for (Feature feature : features) {
 				featureDAO.addBatch(feature, batchSize );
 			}
@@ -51,7 +55,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 		return contig;
 
 	}
-	
+
 	public void  createAndSaveReadsAndTaxons(Sample sample, Contig contig, List<ReadOnContigTO> readsOnCotig ){
 
 		List<Read> reads = new ArrayList<Read>();
@@ -64,10 +68,8 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 				Read read = new Read(readOnContigTO.getReference(), sample, contig, readOnContigTO.getSequence(), readOnContigTO.getPair(), mapping);
 				reads.add(read);
 				
-				List<TaxonTO> taxonTOList = readOnContigTO.getTaxons();
-				if(taxonTOList != null && ! taxonTOList.isEmpty()){
-					//shoud be only one taxon.... 
-					TaxonTO taxonTO = taxonTOList.get(0);
+				TaxonTO taxonTO = readOnContigTO.getTaxon();
+				if(taxonTO != null){
 					Taxon taxon = new Taxon(read, taxonTO.getTaxonomyId(), taxonTO.getScientificName(), taxonTO.getHank(), taxonTO.getScore());
 					taxons.add(taxon);
 				}

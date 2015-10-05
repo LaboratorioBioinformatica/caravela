@@ -47,7 +47,7 @@ create table taxon (
 	scientific_name VARCHAR(200) NOT NULL,
 	score DOUBLE NULL,
 	PRIMARY KEY(id), 
-	INDEX (taxonomy_id), INDEX (scientific_name)
+	INDEX (taxonomy_id), INDEX (scientific_name), INDEX (read_id)
 );
 
 
@@ -73,6 +73,10 @@ create table contig (
 	sample_id INT NOT NULL,
 	reference VARCHAR(250) NOT NULL,
 	sequence TEXT NOT null,
+	number_of_reads_classified INT NOT null,
+	number_of_reads INT NOT null,
+	number_of_features INT NOT null,
+	tii DOUBLE NOT NULL,
 	PRIMARY KEY(id) 
 );
 

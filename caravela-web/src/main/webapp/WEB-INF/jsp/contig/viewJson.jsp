@@ -17,6 +17,7 @@
 				    	<th>Total number of reads</th>
 				    	<th>Total number of reads classified</th>
 				    	<th>Total number of features</th>
+				    	<th>Taxonomic index</th>
 				    </tr>
 				</thead>
 				<tbody>
@@ -25,6 +26,7 @@
 						<td>${contig.numberOfreads}</td>
 						<td>${contig.numberOfReadsClassified}</td>
 						<td>${contig.numberOfFeatures}</td>
+						<td>${contig.taxonomicIdentificationIndex}</td>
 					</tr> 
 				</tbody> 	
 		 	</table>
