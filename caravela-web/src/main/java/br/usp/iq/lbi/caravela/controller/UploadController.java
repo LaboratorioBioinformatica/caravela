@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonStreamParser;
 
 import br.com.caelum.vraptor.Controller;
+import br.com.caelum.vraptor.Get;
+import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
@@ -42,8 +44,10 @@ public class UploadController {
 		result.include("pageTitle", "Caravela - Upload");
 	}
 	
-	public void save() throws FileNotFoundException{
-		Sample sample = sampleDAO.load(1l);
+	@Get
+	@Path("/upload/save/sample/{sampleId}")
+	public void save(Long sampleId) throws FileNotFoundException{
+		Sample sample = sampleDAO.load(sampleId);
 		SampleFile fileWithAllInformation = sample.getFileWithAllInformation();
 		String filePath = fileWithAllInformation.getFilePath();
 		Gson gson = new Gson();

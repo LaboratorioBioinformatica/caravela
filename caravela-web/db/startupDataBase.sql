@@ -110,3 +110,6 @@ insert into sample values(id, @treatmentId, "ZC3b-day-99", "CREATED", "Compostag
 
 select id from sample where name = "ZC3b-day-01" into @sampleId;
 insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc3b-day-01.json");
+
+select id from sample where name = "ZC3b-day-30" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc3b-day-30.json");

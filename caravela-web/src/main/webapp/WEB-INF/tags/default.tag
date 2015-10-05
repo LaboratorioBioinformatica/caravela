@@ -53,20 +53,19 @@
 	              <span class="icon-bar"></span>
 	              <span class="icon-bar"></span>
 	            </button>
-	            <a class="navbar-brand" href="#">CARAVELA</a>
+	            <a class="navbar-brand" href="${linkTo[HomeController].home}">CARAVELA</a>
 	          </div>
 	          <div class="navbar-collapse collapse">
 	            <ul class="nav navbar-nav">
-	              <li class="active"><a href="#">Home</a></li>
+	              <li class="active"><a href="${linkTo[HomeController].home}">Home</a></li>
 	              <li><a href="${linkTo[LoginController].logout}">Logout</a></li>
 	              <!--li><a href="#contact">Contact</a></li -->
 	            </ul>
 	          </div><!--/.nav-collapse -->
+	          <div>${userLoggedIn.name}</div>
 	        </div>
 	      </nav>
 	      
-    <h1>Hello, world!</h1>
-    <span>${userLoggedIn.name}</span>
     <jsp:doBody/>
     
     <hr>

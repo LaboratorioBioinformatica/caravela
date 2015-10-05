@@ -2,7 +2,6 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,7 +16,6 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
-import br.usp.iq.lbi.caravela.model.Treatment;
 import lbi.usp.br.caravela.dto.ContigTO;
 
 @Controller
@@ -43,8 +41,10 @@ public class HomeController {
 	@Get("/")
 	public void home() {
 		
-		List<Treatment> treatments = treatmentDAO.findAll();
-		result.include("treatments", treatments);
+		//List<Treatment> treatments = treatmentDAO.findAll();
+		//result.include("treatments", treatments);
+		result.forwardTo(SampleController.class).view();
+		
 	}
 	
 	

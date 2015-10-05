@@ -81,6 +81,9 @@ public class Read implements Serializable {
 		return mapping.getFlag();
 	}
 	
+	public Contig getContig(){
+		return this.contig;
+	}
 	
 	@Override
 	public boolean equals(Object obj) {

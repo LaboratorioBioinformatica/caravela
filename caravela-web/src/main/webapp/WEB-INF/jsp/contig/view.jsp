@@ -85,7 +85,17 @@
 							<td>${readsOnCotig.startAlignment}</td>
 							<td>${readsOnCotig.endAlignment}</td>
 							<td>
-								${readsOnCotig.taxon.hank} | ${readsOnCotig.taxon.scientificName}
+								<c:choose> 
+  									<c:when test="${not empty readsOnCotig.taxon.hank}">
+    									[${readsOnCotig.taxon.hank}]  
+										<span  class="glyphicon-class">${readsOnCotig.taxon.scientificName}</span>
+										<a href="<c:url value="/taxonomy/search/${sample.id}/${readsOnCotig.taxon.scientificName}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a> 
+  									</c:when>
+								  <c:otherwise>
+								    No taxon
+								  </c:otherwise>
+								</c:choose>
+								 
 							</td>
 								
 						</tr>
