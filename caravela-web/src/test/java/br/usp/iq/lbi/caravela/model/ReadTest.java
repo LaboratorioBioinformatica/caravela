@@ -26,7 +26,7 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = new Mapping(1, 100, 111);
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		
 		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
@@ -63,7 +63,7 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = new Mapping(1, 100, 111);
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
 		
@@ -98,9 +98,9 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = new Mapping(1, 100, 111);
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
-		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-30", "description zc3b-day-30");
+		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-30", "description zc3b-day-30");
 		
 		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
 		
@@ -134,7 +134,7 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = new Mapping(1, 100, 111);
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		
 		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));

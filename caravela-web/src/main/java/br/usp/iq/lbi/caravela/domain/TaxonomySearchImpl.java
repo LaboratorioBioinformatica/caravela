@@ -19,6 +19,7 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 	
 	public List<Contig> searchListOfContigBySampleAndScientificName(Sample sample, String scientificName){
 		List<Read> readsFromSampleAndScientificName = readDAO.findReadsBySampleAndScientificName(sample, scientificName);
+		
 		List<Contig> contigList = new ArrayList<Contig>();
 		for (Read read : readsFromSampleAndScientificName) {
 			contigList.add(read.getContig());

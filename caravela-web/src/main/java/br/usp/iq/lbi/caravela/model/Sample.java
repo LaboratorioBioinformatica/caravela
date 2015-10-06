@@ -72,7 +72,7 @@ public class Sample {
 	}
 	
 	public boolean isProcessed(){
-		return SampleStatus.PROCESSED.equals(this.sampleStatus);
+		return SampleStatus.PROCCESSED.equals(this.sampleStatus);
 	}
 	
 	public List<SampleFile> getSampleFiles(){
@@ -89,7 +89,7 @@ public class Sample {
 	
 	public void toProccessed(){
 		if(isUploaded()){
-			this.sampleStatus = SampleStatus.PROCESSED;
+			this.sampleStatus = SampleStatus.PROCCESSED;
 		} 
 	}
 

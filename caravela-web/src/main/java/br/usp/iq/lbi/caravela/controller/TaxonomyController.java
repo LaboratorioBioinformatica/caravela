@@ -1,11 +1,18 @@
 package br.usp.iq.lbi.caravela.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.apache.taglibs.standard.tag.common.core.ForEachSupport;
-
+import lbi.usp.br.caravela.dto.GeneProductCounterTO;
+import lbi.usp.br.caravela.dto.GeneProductTO;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Result;
@@ -45,16 +52,46 @@ public class TaxonomyController {
 	public void search(Long sampleId, String scientificName) {
 		Sample sample = sampleDAO.load(sampleId);
 		List<Contig> contigList = taxonomySearch.searchListOfContigBySampleAndScientificName(sample, scientificName);
+		Integer numberOfContigFound = contigList.size();
 		
-//		for (Contig contig : contigList) {
-//			System.out.println(contig.getReference());
-//			List<Feature> features = contig.getFeatures();
-//			
-//			for (Feature feature : features) {
-//				System.out.println(feature.getProductName());
-//			}
-//			
-//		}
+		Hashtable<String, GeneProductCounterTO> geneProductCounterTOHashMap = new Hashtable<String, GeneProductCounterTO>();
+		
+		for (Contig contig : contigList) {
+			List<Feature> features = contig.getFeatures();
+			for (Feature feature : features) {
+				String productName = feature.getProductName();
+				if(productName != null){
+					
+					GeneProductTO geneProduct = new GeneProductTO(productName, feature.getProductSource());
+					GeneProductCounterTO geneProductCounterTO = geneProductCounterTOHashMap.get(productName);
+					
+					if(geneProductCounterTO == null){
+						geneProductCounterTOHashMap.put(productName, new GeneProductCounterTO(geneProduct));
+					} else {
+						geneProductCounterTO.addOne();
+					}
+				}
+			}
+			
+		}
+		
+		System.out.println(geneProductCounterTOHashMap.size());
+		
+		
+		List<GeneProductCounterTO> geneProductCounterTOList = new ArrayList<GeneProductCounterTO>(geneProductCounterTOHashMap.values());
+		
+		Collections.sort(geneProductCounterTOList);
+		Integer t = 0;
+		for (GeneProductCounterTO geneProductCounterTO : geneProductCounterTOList) {
+			t++;
+			System.out.println(geneProductCounterTO.getProductName() + "  =   " + geneProductCounterTO.getTotal());
+			if(t > 10){
+				break;
+			}
+			
+		}
+		
+		
 		
 		result.include("scientificName", scientificName);
 		result.include("sample", sample);
