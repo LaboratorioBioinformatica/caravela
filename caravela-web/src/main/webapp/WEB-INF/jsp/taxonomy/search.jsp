@@ -8,9 +8,35 @@
 		<div class="page-header">
 			<h1>Analyze -  ${sample.name} </h1>
 		</div>
-		<div class="panel-heading"><h3>Search by: ${scientificName}</h3></div>
-	
+		<div class="panel-heading well">
+			<h3>Search by taxon: ${scientificName}</h3>
+			<p>Number of taxon found: ${numberOfTaxonFound}</p>   
+			<p>Number of contigs found with this taxon: ${numberOfContigFound}</p> 
+		</div>
 	<hr>
+	<div class="panel panel-default">
+		<div class="panel-heading">Functions found in contings features</div>
+		<table class="table">
+				    <thead>
+				    	<tr>
+					    	<th>Total</th>
+					    	<th>Product name</th>
+					    	<th >Product source</th>
+					    </tr>
+					</thead>
+					<tbody>
+						<c:forEach var="geneProductCounterTo" end="10" items="${geneProductCounterToList}">
+							<tr>
+								<td>${geneProductCounterTo.total}</td>
+								<td>${geneProductCounterTo.productName}</td>
+								<td>${geneProductCounterTo.productSource}</td>
+							</tr> 
+						</c:forEach>			
+					</tbody> 	
+			 	</table>
+	</div>		 	
+	<hr>
+
 
 	<c:if test="${not empty contigList}">
 		<div class="panel panel-default">

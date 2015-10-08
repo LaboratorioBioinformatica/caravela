@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import br.usp.iq.lbi.caravela.model.Contig;
-import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 
@@ -30,5 +29,6 @@ public class ReadDAOImpl extends DAOImpl<Read> implements ReadDAO {
 		query.setParameter("scientificName", scientificName);
 		return query.getResultList();
 	}
+	
 
 }

@@ -6,7 +6,7 @@
 	<jsp:body>
     <div class="container">
 	    <div class="page-header">
-			<h1>Sample</h1>
+			<h1>Samples</h1>
 		</div>
 		<c:if test="${not empty treatmentList}">
 		
