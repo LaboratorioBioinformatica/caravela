@@ -10,10 +10,10 @@ public class TaxonomomySearchTO {
 	
 	private final LinkedHashSet<Contig> contigs;
 	private final List<GeneProductCounterTO> geneProductCounterTo;
-	private final Integer numberOfTaxonFound;
+	private final Long numberOfTaxonFound;
 	private final Integer numberOfContigFound;
 	
-	public TaxonomomySearchTO(LinkedHashSet<Contig> contigs, List<GeneProductCounterTO> geneProductCounterTo, Integer numberOfTaxonFound) {
+	public TaxonomomySearchTO(LinkedHashSet<Contig> contigs, List<GeneProductCounterTO> geneProductCounterTo, Long numberOfTaxonFound) {
 		this.contigs = contigs;
 		this.geneProductCounterTo = geneProductCounterTo;
 		this.numberOfTaxonFound = numberOfTaxonFound;
@@ -28,7 +28,7 @@ public class TaxonomomySearchTO {
 		return geneProductCounterTo;
 	}
 
-	public Integer getNumberOfTaxonFound() {
+	public Long getNumberOfTaxonFound() {
 		return numberOfTaxonFound;
 	}
 

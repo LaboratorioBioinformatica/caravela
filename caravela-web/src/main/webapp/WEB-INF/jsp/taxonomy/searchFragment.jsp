@@ -26,7 +26,10 @@
 						<c:forEach var="taxonCounter" items="${taxonCounterTOList}">
 							<tr>
 								<td>${taxonCounter.taxon.rank}</td>
-								<td>${taxonCounter.taxon.scientificName}</td>
+								<td>
+									<span  class="glyphicon-class">${taxonCounter.taxon.scientificName}</span>
+									<a href="<c:url value="/taxonomy/search/${sample.id}/${taxonCounter.taxon.scientificName}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+								</td>
 								<td>${taxonCounter.total}</td>
 							</tr> 
 						</c:forEach>			

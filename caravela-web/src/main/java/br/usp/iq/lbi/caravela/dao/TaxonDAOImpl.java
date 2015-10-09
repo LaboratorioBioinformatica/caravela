@@ -25,4 +25,11 @@ public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 		query.setParameter("scientificName", "%"+scientificName+"%");
 		return query.getResultList();
 	}
+	
+	public Long count(Sample sample, String scientificName) {
+		Query query = entityManager.createQuery("SELECT COUNT(t.id) FROM Taxon t WHERE t.read.sample=:sample AND t.scientificName=:scientificName", Long.class);
+		query.setParameter("sample", sample)
+		.setParameter("scientificName", scientificName);
+		return (Long) query.getSingleResult();
+	}
 }

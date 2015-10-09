@@ -57,7 +57,7 @@
 	          </div>
 	          <div class="navbar-collapse collapse">
 	            <ul class="nav navbar-nav">
-	              <li class="active"><a href="${linkTo[HomeController].home}">Home</a></li>
+	              <li><a href="${linkTo[HomeController].home}">Home</a></li>
 	              <li><a href="${linkTo[SampleController].view}">Samples</a></li>
 	              <li><a href="${linkTo[LoginController].logout}">Logout</a></li>
 	              <!--li><a href="#contact">Contact</a></li -->

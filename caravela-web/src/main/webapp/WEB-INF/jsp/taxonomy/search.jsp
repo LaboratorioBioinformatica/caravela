@@ -10,18 +10,18 @@
 		</div>
 		<div class="panel-heading well">
 			<h3>Search by taxon: ${scientificName}</h3>
-			<p>Number of taxon found: ${numberOfTaxonFound}</p>   
-			<p>Number of contigs found with this taxon: ${numberOfContigFound}</p> 
+			<p>Number of taxon found: <b>${numberOfTaxonFound}</b></p>   
+			<p>Number of contigs found with this taxon: <b>${numberOfContigFound}</b></p> 
 		</div>
 	<hr>
 	<div class="panel panel-default">
-		<div class="panel-heading">Functions found in contings features</div>
+		<div class="panel-heading">Top 10 - functions found in contings features</div>
 		<table class="table">
 				    <thead>
 				    	<tr>
 					    	<th>Total</th>
 					    	<th>Product name</th>
-					    	<th >Product source</th>
+					    	<th>Product source</th>
 					    </tr>
 					</thead>
 					<tbody>

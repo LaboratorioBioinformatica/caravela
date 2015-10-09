@@ -9,6 +9,7 @@ import lbi.usp.br.caravela.dto.search.TaxonCounterTO;
 import lbi.usp.br.caravela.dto.search.TaxonomomySearchTO;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
@@ -55,7 +56,8 @@ public class TaxonomyController {
 		
 	}
 	
-	@Path("/taxonomy/search/{sampleId}/fragment/{scientificName}")
+	@Post
+	@Path("/taxonomy/search/fragment")
 	public void searchFragment(Long sampleId, String scientificName) {
 		Sample sample = sampleDAO.load(sampleId);
 		List<TaxonCounterTO> taxonCounterTOList = taxonomySearch.searchTaxonCounterTOBySampleAndScientificName(sample, scientificName);

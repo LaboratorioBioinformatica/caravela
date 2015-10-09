@@ -29,6 +29,7 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 	
 	public TaxonomomySearchTO searchTaxonomicSearchTOBySampleAndScientificName(Sample sample, String scientificName){
 		List<Read> readsFromSampleAndScientificName = readDAO.findReadsBySampleAndScientificName(sample, scientificName);
+		Long totalNumberOfTaxonFound = taxonDAO.count(sample, scientificName);
 		LinkedHashSet<Contig> ContigLinkedHashSet = new LinkedHashSet<Contig>();
 		
 		Hashtable<String, GeneProductCounterTO> geneProductCounterTOHashTable = new Hashtable<String, GeneProductCounterTO>();
@@ -44,7 +45,7 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 		List<GeneProductCounterTO> geneProductCounterTOList = new ArrayList<GeneProductCounterTO>(geneProductCounterTOHashTable.values());
 		Collections.sort(geneProductCounterTOList);
 		
-		return new TaxonomomySearchTO(ContigLinkedHashSet, geneProductCounterTOList, readsFromSampleAndScientificName.size());
+		return new TaxonomomySearchTO(ContigLinkedHashSet, geneProductCounterTOList, totalNumberOfTaxonFound);
 		
 	}
 	
