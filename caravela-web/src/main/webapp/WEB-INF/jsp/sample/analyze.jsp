@@ -27,7 +27,7 @@
 		      <div class="col-xs-4 col-sm-7">
 		        <h4>Search by function</h4>
 		        <div class="form-group">	
-						<form action="<c:url value="/function/search"/>" class="form-inline" role="form" method="post">
+						<form action="<c:url value="/gene/search/by/producSource"/>" class="form-inline" role="form" method="post">
 							<input type="hidden" name="sampleId" value="${sample.id}">
 							<label>Name</label>
 							<input class="form-control" size="30" placeholder="Topoisomerase IA" type="text" name="productName">

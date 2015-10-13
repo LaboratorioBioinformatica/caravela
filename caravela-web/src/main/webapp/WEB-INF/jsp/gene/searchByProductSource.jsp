@@ -9,13 +9,12 @@
 			<h1>Analyze -  ${sample.name} </h1>
 		</div>
 		<div class="panel-heading well">
-			<h3>Search by function: ${producSource}</h3>
-			<p>Number of taxon found: <b>${numberOfTaxonFound}</b></p>   
+			<h3>Search by function: ${productSource}</h3>
 			<p>Number of contigs found with this function: <b>${numberOfContigFound}</b></p> 
 		</div>
 	<hr>
 	<div class="panel panel-default">
-		<div class="panel-heading">Top 10 - taxons found in contings features</div>
+		<div class="panel-heading">Top 10 - taxons found in conting features</div>
 		<table class="table">
 				    <thead>
 				    	<tr>
@@ -29,7 +28,12 @@
 							<tr>
 								<td>${taxonCounterTO.total}</td>
 								<td>${taxonCounterTO.taxon.rank}</td>
-								<td>${taxonCounterTO.taxon.scientificName}</td>
+								<td>
+									<span  class="glyphicon-class">${taxonCounterTO.taxon.scientificName}</span>
+										<a href="<c:url value="/taxonomy/search/${sample.id}/${taxonCounterTO.taxon.scientificName}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+									
+									
+								</td>
 							</tr> 
 						</c:forEach>			
 					</tbody> 	

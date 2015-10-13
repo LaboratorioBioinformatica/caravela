@@ -29,7 +29,13 @@
 							<tr>
 								<td>${geneProductCounterTo.total}</td>
 								<td>${geneProductCounterTo.productName}</td>
-								<td>${geneProductCounterTo.productSource}</td>
+								<td>
+									
+									<c:if test="${not empty geneProductCounterTo.productSource}">
+										<span  class="glyphicon-class">${geneProductCounterTo.productSource}</span>
+										<a href="<c:url value="/gene/search/by/producSource/${sample.id}/${geneProductCounterTo.productSource}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+									</c:if>
+								</td>
 							</tr> 
 						</c:forEach>			
 					</tbody> 	

@@ -33,7 +33,7 @@ public class LoginController {
 	
 	@Post
 	public void login(User user){
-		if("gianlucamajor@gmail.com".equals(user.getName())  && "1234".equals(user.getPassword())){
+		if("caravela@teste.br".equals(user.getName())  && "caravela".equals(user.getPassword())){
 			webUser.login(user);
 			result.redirectTo(HomeController.class).home();
 		} else {

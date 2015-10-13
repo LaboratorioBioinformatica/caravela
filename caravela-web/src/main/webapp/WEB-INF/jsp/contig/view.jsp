@@ -53,7 +53,12 @@
 							<td>${feature.end}</td>
 							<td>${feature.source}</td>
 							<td>${feature.geneProduct.product}</td>
-							<td>${feature.geneProduct.source}</td>
+							<td>
+								<c:if test="${not empty feature.geneProduct.source}">
+								<span  class="glyphicon-class">${feature.geneProduct.source}</span>
+								<a href="<c:url value="/gene/search/by/producSource/${sample.id}/${feature.geneProduct.source}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+								</c:if>
+							</td>
 						</tr>
 		 			</c:forEach>
 				</tbody> 	

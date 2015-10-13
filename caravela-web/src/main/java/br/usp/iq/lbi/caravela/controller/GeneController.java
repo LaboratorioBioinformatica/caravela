@@ -7,7 +7,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import lbi.usp.br.caravela.dto.TaxonCounterTO;
 import br.com.caelum.vraptor.Controller;
+import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
@@ -17,8 +19,6 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.GeneSearch;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
-import br.usp.iq.lbi.caravela.model.Taxon;
-import lbi.usp.br.caravela.dto.TaxonCounterTO;
 
 @Controller
 public class GeneController {
@@ -43,11 +43,11 @@ public class GeneController {
 		this.geneSearch = geneSearch;
 	}
 	
-	
-	@Path("/gene/search/by/producSource/{sampleId}/{producSource}")
-	public void searchByProductSource(Long sampleId, String producSource) {
+	@Post
+	@Path("/gene/search/by/producSource")
+	public void searchByProductSource(Long sampleId, String productSource) {
 		Sample sample = sampleDAO.load(sampleId);
-		List<Contig> contigList = geneSearch.SearchContigListBySampleAndGeneProductSource(sample, producSource);
+		List<Contig> contigList = geneSearch.SearchContigListBySampleAndGeneProductSource(sample, productSource);
 		
 		HashMap<Integer,TaxonCounterTO> taxonCounterTOHashMap = new HashMap<Integer, TaxonCounterTO>();
 		for (Contig contig : contigList) {
@@ -61,11 +61,17 @@ public class GeneController {
 		result.include("numberOfTaxonFound", 0);
 		result.include("taxonCounterTOList", taxonCounterTOList);
 		
-		result.include("producSource", producSource);
+		result.include("productSource", productSource);
 		result.include("sample", sample);
 		result.include("contigList", contigList);
-		
 	}
+	
+	@Get
+	@Path("/gene/search/by/producSource/{sampleId}/{productSource}")
+	public void searchByProductSourceGet(Long sampleId, String productSource) {
+		result.forwardTo(this).searchByProductSource(sampleId, productSource);
+	}
+	
 	
 	@Post
 	@Path("/gene/search")
