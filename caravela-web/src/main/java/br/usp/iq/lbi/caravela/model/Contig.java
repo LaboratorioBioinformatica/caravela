@@ -1,6 +1,8 @@
 package br.usp.iq.lbi.caravela.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import lbi.usp.br.caravela.dto.TaxonCounterTO;
 
 @Entity
 @Table(name="contig")
@@ -97,6 +101,60 @@ public class Contig implements Serializable {
 	public Integer getNumberOfFeatures() {
 		return numberOfFeatures;
 	}
+	
+	
+	public List<Taxon> getTaxons(){
+		ArrayList<Taxon> taxons = new ArrayList<Taxon>();
+		
+		for (Read read : this.reads) {
+			Taxon taxon = read.getTaxon();
+			if(taxon != null) {
+				taxons.add(taxon);
+			}
+		}
+		return taxons;
+	}
+	
+	public List<TaxonCounterTO> getTaxonCounterTOList(){
+		
+		HashMap<Integer, TaxonCounterTO> taxonCounterTOhashMap = new HashMap<Integer, TaxonCounterTO>();
+		
+		for (Read read : this.reads) {
+			Taxon taxon = read.getTaxon();
+			if(taxon != null) {
+				Integer taxonomyId = taxon.getTaxonomyId();
+				TaxonCounterTO taxonCounterTO = taxonCounterTOhashMap.get(taxonomyId);
+				if(taxonCounterTO == null){
+					taxonCounterTOhashMap.put(taxonomyId, new TaxonCounterTO(taxon));
+				} else {
+					taxonCounterTO.addOne();
+				}
+			}
+		}
+		List<TaxonCounterTO> taxonCounterList = new ArrayList<TaxonCounterTO>(taxonCounterTOhashMap.values());
+		return taxonCounterList;
+	}
+	
+	
+	public HashMap<Integer, TaxonCounterTO> getTaxonCounterTOHashMap(){
+		
+		HashMap<Integer, TaxonCounterTO> taxonCounterTOhashMap = new HashMap<Integer, TaxonCounterTO>();
+		
+		for (Read read : this.reads) {
+			Taxon taxon = read.getTaxon();
+			if(taxon != null) {
+				Integer taxonomyId = taxon.getTaxonomyId();
+				TaxonCounterTO taxonCounterTO = taxonCounterTOhashMap.get(taxonomyId);
+				if(taxonCounterTO == null){
+					taxonCounterTOhashMap.put(taxonomyId, new TaxonCounterTO(taxon));
+				} else {
+					taxonCounterTO.addOne();
+				}
+			}
+		}
+		return taxonCounterTOhashMap;
+	}
+	
 	
 	
 	

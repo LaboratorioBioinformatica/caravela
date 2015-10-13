@@ -33,8 +33,13 @@ public class LoginController {
 	
 	@Post
 	public void login(User user){
-		webUser.login(user);
-		result.redirectTo(HomeController.class).home();
+		if("gianlucamajor@gmail.com".equals(user.getName())  && "1234".equals(user.getPassword())){
+			webUser.login(user);
+			result.redirectTo(HomeController.class).home();
+		} else {
+			result.redirectTo(LoginController.class).form();
+		}
+		
 	}
 	
 	public void logout(){
