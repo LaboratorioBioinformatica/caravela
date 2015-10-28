@@ -79,5 +79,19 @@ public class Feature implements Serializable {
 		return id;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(! (obj instanceof Feature)) {
+			return false;
+		}
+		if(obj == this){
+			return true;
+		}
+		
+		//TODO maybe this not good equals because contig and alignments should be consider 
+		Feature feature = (Feature) obj;
+		return this.productName.equals(feature.getProductName()) && this.productSource.equals(feature.productSource); 
+	}	
+	
 
 }

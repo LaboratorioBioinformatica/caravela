@@ -65,14 +65,14 @@ public class SampleController {
 	
 	@Post
 	@Path("/sample/analyze")
-	public void analyze(Long sampleId, String operator, Double tiiValue ){
+	public void analyze(Long sampleId, String operator, String tiiValue ){
 		Sample sample = sampleDAO.load(sampleId);
-		List<Contig> contigList = contigDAO.FindByContigBySampleAndTiiGreatherThan(sample, tiiValue, 100);
+		Double tiiDoubleValue = new Double(tiiValue);
+		List<Contig> contigList = contigDAO.FindByContigBySampleAndTiiGreatherThan(sample, tiiDoubleValue, 100);
 		result.include("tiiValue", tiiValue);
 		result.include("contigList", contigList);
 		result.include("sample", sample);
 		
 	}
-
 
 }

@@ -18,6 +18,7 @@ import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.GeneSearch;
 import br.usp.iq.lbi.caravela.model.Contig;
+import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Sample;
 
 @Controller
@@ -74,14 +75,14 @@ public class GeneController {
 	
 	
 	@Post
-	@Path("/gene/search")
-	public void searchFragment(Long sampleId, String scientificName) {
+	@Path("/gene/search/by/productName")
+	public void searchByProductName(Long sampleId, String productName) {
 		Sample sample = sampleDAO.load(sampleId);
-//		List<TaxonCounterTO> taxonCounterTOList = taxonomySearch.searchTaxonCounterTOBySampleAndScientificName(sample, scientificName);
+		List<Feature> featureList = geneSearch.SearchFeatureListBySampleAndGeneProductName(sample, productName);
 
-		result.include("scientificName", scientificName);
+		result.include("productName", productName);
 		result.include("sample", sample);
-//		result.include("taxonCounterTOList", taxonCounterTOList);
+		result.include("featureList", featureList);
 		
 	}
 

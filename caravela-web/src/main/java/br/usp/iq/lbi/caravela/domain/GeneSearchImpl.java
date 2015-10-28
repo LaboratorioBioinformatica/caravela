@@ -10,6 +10,7 @@ import br.usp.iq.lbi.caravela.dao.FeatureDAO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
 import br.usp.iq.lbi.caravela.dao.TaxonDAO;
 import br.usp.iq.lbi.caravela.model.Contig;
+import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Sample;
 
 @RequestScoped
@@ -23,5 +24,11 @@ public class GeneSearchImpl implements GeneSearch {
 	public List<Contig> SearchContigListBySampleAndGeneProductSource(Sample sample, String geneProductSource) {
 		return featureDAO.FindBySampleAndGeneProductSource(sample, geneProductSource);
 	}
+
+	public List<Feature> SearchFeatureListBySampleAndGeneProductName(Sample sample, String geneProductName) {
+		return featureDAO.FindBySampleAndGeneProductName(sample, geneProductName);
+	}
+	
+	
 
 }
