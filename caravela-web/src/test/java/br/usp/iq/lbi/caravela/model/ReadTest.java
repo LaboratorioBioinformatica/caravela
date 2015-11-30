@@ -3,8 +3,6 @@ package br.usp.iq.lbi.caravela.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +26,10 @@ public class ReadTest {
 		Mapping mapping = new Mapping(1, 100, 111);
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
-		
-		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
-		Taxon taxonY = new Taxon(read, 1289127, "Scientifica Name y", "genus", new Double(0.6));
+		Long taxonomyId = 1289127l;
+		Long taxonomyParentId = 1289122l;
+		Taxon taxonX = new Taxon(taxonomyId, taxonomyParentId, "Scientifica Name x", "genus");
+		Taxon taxonY = new Taxon(taxonomyId, taxonomyParentId, "Scientifica Name y", "genus");
 		
 		Integer firstPair = 1;
 		
@@ -65,7 +64,9 @@ public class ReadTest {
 		Mapping mapping = new Mapping(1, 100, 111);
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
-		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
+		Long taxonomyId = 1289127l;
+		Long taxonomyParentId = 1289122l;
+		Taxon taxonX = new Taxon(taxonomyId, taxonomyParentId, "Scientifica Name x", "genus");
 		
 		Integer firstPair = 1;
 		Integer secPair = 2;
@@ -102,7 +103,9 @@ public class ReadTest {
 		
 		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-30", "description zc3b-day-30");
 		
-		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
+		Long taxonomyId = 1289127l;
+		Long taxonomyParentId = 1289122l;
+		Taxon taxonX = new Taxon(taxonomyId, taxonomyParentId, "Scientifica Name x", "genus");
 		
 		Integer firstPair = 1;
 		
@@ -137,7 +140,9 @@ public class ReadTest {
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		
-		Taxon taxonX = new Taxon(read, 1289127, "Scientifica Name x", "genus", new Double(0.6));
+		Long taxonomyId = 1289127l;
+		Long taxonomyParentId = 1289122l;
+		Taxon taxonX = new Taxon(taxonomyId, taxonomyParentId, "Scientifica Name x", "genus");
 		Integer firstPair = 1;
 		String sequence_01 = "ACTGGGTTAAGCATGAGA";
 		String reference = "asd8f79as7df:as8d7f8as";

@@ -10,6 +10,17 @@ flush privileges;
 USE caravela;
 
 
+-- create table taxon 
+create table taxon (
+	id INT NOT NULL AUTO_INCREMENT,
+	taxonomy_id INT NOT NULL,
+	taxonomy_parent_id INT NOT NULL,
+	rank VARCHAR(50) NOT NULL,
+	scientific_name VARCHAR(200) NOT NULL,
+	PRIMARY KEY(id), 
+	INDEX (taxonomy_id), INDEX (taxonomy_parent_id), INDEX (scientific_name)
+);
+
 -- create table treatment
 create table treatment (
 	id INT NOT NULL AUTO_INCREMENT,
@@ -38,18 +49,17 @@ create table sample_file (
 	PRIMARY KEY(id)
 );
 
--- create table taxon 
-create table taxon (
-	id INT NOT NULL AUTO_INCREMENT,
-	read_id INT NOT NULL,
-	taxonomy_id INT NOT NULL,
-	rank VARCHAR(50) NOT NULL,
-	scientific_name VARCHAR(200) NOT NULL,
-	score DOUBLE NULL,
-	PRIMARY KEY(id), 
-	INDEX (taxonomy_id), INDEX (scientific_name), INDEX (read_id)
-);
 
+-- create table taxonomic_assignment
+-- original taxon id = taxon id provide by taxonomy file
+-- taxon id = taxon id in databasse, NCBI taxonomy for example. 
+-- both ids, original and assigned, are provided by NCBI taxonomic by default.  
+create table taxonomic_assignment (
+	id INT NOT NULL AUTO_INCREMENT, 
+	
+	PRIMARY KEY(id),
+	INDEX (taxon_id), INDEX (read_id) 
+);
 
 -- create table sequence from sequence (shoud be named read but it name is reserved in mysql)
 create table sequence (
@@ -58,13 +68,14 @@ create table sequence (
 	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
 	taxon_id INT NULL,
+	taxon_score DOUBLE NULL,
 	pair INT NOT NULL,
 	sequence TEXT NOT null,
 	start_alignment INT NOT NULL,
 	end_alignment INT NOT NULL,
 	flag_alignment INT NOT NULL,
 	PRIMARY KEY(id),
-	INDEX (contig_id), INDEX (taxon_id) 
+	INDEX (contig_id), INDEX (taxon_id)
 );
 
 -- create table contig sequence

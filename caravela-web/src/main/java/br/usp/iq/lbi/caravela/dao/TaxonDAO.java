@@ -10,4 +10,8 @@ public interface TaxonDAO extends DAO<Taxon> {
 	
 	List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName);
 	Long count(Sample sample, String scientificName);
+	Long count();
+	void truncateTaxonTable();
+	List<Taxon> listAll();
+	Taxon findByTaxonomicId(Long taxonomicId);
 }

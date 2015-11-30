@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,31 +17,37 @@ public class Taxon implements Serializable {
 	@Id
 	@GeneratedValue
 	private Long id;
-	@OneToOne
-	private Read read;
 	@Column(name="taxonomy_id")
-	private Integer taxonomyId;
+	private Long taxonomyId;
+
+	@Column(name="taxonomy_parent_id")
+	private Long taxonomyParentId;
+	
 	@Column(name="scientific_name")
 	private String scientificName;
 	private String rank;
-	private Double score;
+	
 	
 	public Taxon() {}
 		
-	public Taxon(Read read, Integer taxonomyId, String scientificName, String rank, Double score) {
-		this.read = read;
+	public Taxon(Long taxonomyId, Long taxonomyParentId, String scientificName, String rank) {
 		this.taxonomyId = taxonomyId;
+		this.taxonomyParentId = taxonomyParentId;
 		this.scientificName = scientificName; 
 		this.rank = rank;
-		this.score = score;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public Integer getTaxonomyId() {
+	public Long getTaxonomyId() {
 		return taxonomyId;
+	}
+	
+	
+	public Long getTaxonomyParentId() {
+		return taxonomyParentId;
 	}
 
 	public String getScientificName() {
@@ -53,13 +58,9 @@ public class Taxon implements Serializable {
 		return rank;
 	}
 
-	public Double getScore() {
-		return score;
-	}
-	
 	@Override
 	public int hashCode() {
-		return this.taxonomyId;
+		return  Math.toIntExact(this.taxonomyId);
 	}
 	
 	@Override
@@ -73,7 +74,6 @@ public class Taxon implements Serializable {
 		
 		Taxon taxon = (Taxon) obj;
 		return this.taxonomyId == taxon.getTaxonomyId() && this.scientificName.equals(taxon.getScientificName()); 
-		
 	}
 
 }

@@ -6,16 +6,19 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.FeatureDAO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
-import br.usp.iq.lbi.caravela.dao.TaxonDAO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Mapping;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
+import br.usp.iq.lbi.caravela.model.TaxonomicAssignment;
 import lbi.usp.br.caravela.dto.ContigTO;
 import lbi.usp.br.caravela.dto.FeatureTO;
 import lbi.usp.br.caravela.dto.GeneProductTO;
@@ -25,10 +28,12 @@ import lbi.usp.br.caravela.dto.TaxonTO;
 @RequestScoped
 public class ContigTOProcessorImpl implements ContigTOProcessor {
 	
+	private static final Logger logger = LoggerFactory.getLogger(ContigTOProcessorImpl.class);
+	
 	@Inject private ContigDAO contigDAO;
 	@Inject private FeatureDAO featureDAO;
 	@Inject private ReadDAO readDAO;
-	@Inject private TaxonDAO taxonDAO;
+	@Inject private NCBITaxonManager ncbiTaxonManager;
 	
 
 	public Contig convert(Sample sample, ContigTO contigTO) {
@@ -59,10 +64,11 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 	public void  createAndSaveReadsAndTaxons(Sample sample, Contig contig, List<ReadOnContigTO> readsOnCotig ){
 
 		List<Read> reads = new ArrayList<Read>();
-		List<Taxon> taxons = new ArrayList<Taxon>();
-
 		
 		if(readsOnCotig != null && !readsOnCotig.isEmpty()){
+			
+//			Map<Long, Taxon> allTaxon = ncbiTaxonManager.SearchAllTaxon();
+			
 			for (ReadOnContigTO readOnContigTO : readsOnCotig) {
 				Mapping mapping = new Mapping(readOnContigTO.getStartAlignment(), readOnContigTO.getEndAlignment(), readOnContigTO.getFlag());
 				Read read = new Read(readOnContigTO.getReference(), sample, contig, readOnContigTO.getSequence(), readOnContigTO.getPair(), mapping);
@@ -70,8 +76,19 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 				
 				TaxonTO taxonTO = readOnContigTO.getTaxon();
 				if(taxonTO != null){
-					Taxon taxon = new Taxon(read, taxonTO.getTaxonomyId(), taxonTO.getScientificName(), taxonTO.getHank(), taxonTO.getScore());
-					taxons.add(taxon);
+					Long taxonomyId = taxonTO.getTaxonomyId(); 
+					
+					//TODO ISTO DEVERIA ESTAR EM MEMÓRIA!
+					Taxon taxon = ncbiTaxonManager.searchByTaxonomicId(taxonomyId);
+					
+					if(taxon != null){
+						TaxonomicAssignment taxonomicAssignment = new TaxonomicAssignment(taxon, new Double(taxonTO.getScore()));
+						read.toAssigTaxon(taxonomicAssignment);
+						
+					} else {
+						logger.warn("Taxonomy id: " + taxonomyId + " not found!");
+					}
+					
 				}
 				
 			}
@@ -82,13 +99,6 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 			Integer numberOfReadsToSave = reads.size();
 			for (Read read : reads) {
 				readDAO.addBatch(read, numberOfReadsToSave);
-			}
-		}
-		
-		if( ! taxons.isEmpty()) {
-			Integer numberOfTaxonsToSave = taxons.size();
-			for (Taxon taxon : taxons) {
-				taxonDAO.addBatch(taxon, numberOfTaxonsToSave);
 			}
 		}
 		

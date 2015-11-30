@@ -117,12 +117,12 @@ public class Contig implements Serializable {
 	
 	public List<TaxonCounterTO> getTaxonCounterTOList(){
 		
-		HashMap<Integer, TaxonCounterTO> taxonCounterTOhashMap = new HashMap<Integer, TaxonCounterTO>();
+		HashMap<Long, TaxonCounterTO> taxonCounterTOhashMap = new HashMap<Long, TaxonCounterTO>();
 		
 		for (Read read : this.reads) {
 			Taxon taxon = read.getTaxon();
 			if(taxon != null) {
-				Integer taxonomyId = taxon.getTaxonomyId();
+				Long taxonomyId = taxon.getTaxonomyId();
 				TaxonCounterTO taxonCounterTO = taxonCounterTOhashMap.get(taxonomyId);
 				if(taxonCounterTO == null){
 					taxonCounterTOhashMap.put(taxonomyId, new TaxonCounterTO(taxon));
@@ -136,14 +136,14 @@ public class Contig implements Serializable {
 	}
 	
 	
-	public HashMap<Integer, TaxonCounterTO> getTaxonCounterTOHashMap(){
+	public HashMap<Long, TaxonCounterTO> getTaxonCounterTOHashMap(){
 		
-		HashMap<Integer, TaxonCounterTO> taxonCounterTOhashMap = new HashMap<Integer, TaxonCounterTO>();
+		HashMap<Long, TaxonCounterTO> taxonCounterTOhashMap = new HashMap<Long, TaxonCounterTO>();
 		
 		for (Read read : this.reads) {
 			Taxon taxon = read.getTaxon();
 			if(taxon != null) {
-				Integer taxonomyId = taxon.getTaxonomyId();
+				Long taxonomyId = taxon.getTaxonomyId();
 				TaxonCounterTO taxonCounterTO = taxonCounterTOhashMap.get(taxonomyId);
 				if(taxonCounterTO == null){
 					taxonCounterTOhashMap.put(taxonomyId, new TaxonCounterTO(taxon));

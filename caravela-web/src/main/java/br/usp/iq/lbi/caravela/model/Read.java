@@ -1,14 +1,15 @@
 package br.usp.iq.lbi.caravela.model;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -28,8 +29,10 @@ public class Read implements Serializable {
 	private String reference;
 	private String sequence;
 	private Integer pair;
-	@OneToOne(fetch=FetchType.EAGER, mappedBy="read")
-	private Taxon taxon;
+	
+	@Embedded
+	private TaxonomicAssignment taxonomicAssignment;
+	
 	@Embedded
 	private  Mapping mapping;
 	
@@ -60,11 +63,7 @@ public class Read implements Serializable {
 	public Integer getPair() {
 		return pair;
 	}
-
-	public Taxon getTaxon() {
-		return taxon;
-	}
-
+	
 	public Sample getSample() {
 		return sample;
 	}
@@ -83,6 +82,56 @@ public class Read implements Serializable {
 	
 	public Contig getContig(){
 		return this.contig;
+	}
+	
+	public boolean hasTaxon(){
+		if(this.taxonomicAssignment != null ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public Taxon getTaxon(){
+		if(hasTaxon()){
+			return taxonomicAssignment.getTaxon();
+		} else {
+			return null;
+		}
+		
+	}
+	
+	public Taxon getTaxonLineagemByRank(String rank){
+		if(hasTaxon()){
+			return taxonomicAssignment.getTaxonLineagemByRank(rank);
+		} else {
+			return null;
+		}
+	}
+	
+	
+	public void setLineagem(HashMap<String, Taxon> lineagem){
+		this.taxonomicAssignment.setLineagem(lineagem);
+	}
+	
+	public List<Taxon> getLineagem(){
+		if(hasTaxon()){
+			return taxonomicAssignment.getLineagem();
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	public Double getTaxonScore(){
+		if(hasTaxon()){
+			return taxonomicAssignment.getTaxonScore();
+		} else {
+			return null;
+		}
+	}
+	
+	public void toAssigTaxon(TaxonomicAssignment taxonomicAssignment ){
+		this.taxonomicAssignment = taxonomicAssignment;
 	}
 	
 	@Override

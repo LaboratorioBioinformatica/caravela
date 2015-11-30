@@ -4,20 +4,20 @@ package lbi.usp.br.caravela.dto;
 
 public class TaxonTO {
 		
-	private final Integer taxonomyId;
+	private final Long taxonomyId;
 	private final String scientificName;
 	private final String hank;
 	private final Double score;
 	
 	public static class Builder {
-		private Integer taxonomyId;
+		private Long taxonomyId;
 		private String scientificName;
 		private String hank;
 		private Double score;
 		
 		public Builder() {}
 		
-		public Builder setTaxonomyId(Integer taxonomyId){
+		public Builder setTaxonomyId(Long taxonomyId){
 			this.taxonomyId = taxonomyId;
 			return this;
 		}
@@ -49,7 +49,7 @@ public class TaxonTO {
 		this.score = builder.score;
 	}
 	
-	public Integer getTaxonomyId() {
+	public Long getTaxonomyId() {
 		return taxonomyId;
 	}
 

@@ -14,9 +14,7 @@ public class TaxonTest {
 	private Contig contig;
 	private String sequence;
 	private Integer pair;
-	private Taxon taxon;
 	private Mapping mapping;
-	private Read read;
 
 	
 	@Before
@@ -29,8 +27,11 @@ public class TaxonTest {
 	public void testEquals() throws Exception {
 		new Read(reference, sample , contig , sequence, pair, mapping);
 		
-		Taxon taxon = new Taxon(read, 1, "scientificName", "Rank", new Double(0.5));
-		Taxon otherTaxon = new Taxon(read, 1, "scientificName", "hnk", new Double(0.6));
+		Long taxonomyId = 1289127l;
+		Long taxonomyParentId = 1289122l;
+		
+		Taxon taxon = new Taxon(taxonomyId, taxonomyParentId, "scientificName", "Rank");
+		Taxon otherTaxon = new Taxon(taxonomyId, taxonomyParentId, "scientificName", "hnk");
 		
 		Assert.assertTrue(taxon.equals(otherTaxon));
 	}
@@ -38,8 +39,12 @@ public class TaxonTest {
 
 	@Test
 	public void testNotEquals() throws Exception {
-		Taxon taxon = new Taxon(read, 1, "scientificName", "rank", new Double(0.5));
-		Taxon otherTaxon = new Taxon(read, 1, "scientific", "hnk", new Double(0.6));
+		
+		Long taxonomyId = 1289127l;
+		Long taxonomyParentId = 1289122l;
+		
+		Taxon taxon = new Taxon(taxonomyId, taxonomyParentId, "scientificName", "rank");
+		Taxon otherTaxon = new Taxon(taxonomyId, taxonomyParentId, "scientific", "hnk");
 		
 		Assert.assertFalse(taxon.equals(otherTaxon));
 	}

@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lbi.usp.br.caravela.dto.TaxonCounterTO;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -20,6 +19,7 @@ import br.usp.iq.lbi.caravela.domain.GeneSearch;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Sample;
+import lbi.usp.br.caravela.dto.TaxonCounterTO;
 
 @Controller
 public class GeneController {
@@ -50,7 +50,7 @@ public class GeneController {
 		Sample sample = sampleDAO.load(sampleId);
 		List<Contig> contigList = geneSearch.SearchContigListBySampleAndGeneProductSource(sample, productSource);
 		
-		HashMap<Integer,TaxonCounterTO> taxonCounterTOHashMap = new HashMap<Integer, TaxonCounterTO>();
+		HashMap<Long,TaxonCounterTO> taxonCounterTOHashMap = new HashMap<Long, TaxonCounterTO>();
 		for (Contig contig : contigList) {
 			taxonCounterTOHashMap.putAll(contig.getTaxonCounterTOHashMap());
 		}

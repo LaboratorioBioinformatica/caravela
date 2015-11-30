@@ -2,6 +2,8 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -15,11 +17,12 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
-import br.usp.iq.lbi.caravela.domain.ContigTOProcessor;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import lbi.usp.br.caravela.dto.ContigTO;
+import lbi.usp.br.caravela.dto.FeatureTO;
+import lbi.usp.br.caravela.dto.ReadOnContigTO;
 
 @Controller
 public class ContigController {
@@ -49,10 +52,67 @@ public class ContigController {
 	public void view(Long contigId) {
 		Contig contig = contigDAO.load(contigId);
 		ContigTO contigTO = contigManager.searchContigById(contigId);
+		
 		Sample sample = contig.getSample();
 		
+		
+		 List<String> features = new ArrayList<String>();
+		List<FeatureTO> featuresTO = contigTO.getFeatures();
+		for (FeatureTO featureTO : featuresTO) {
+			
+				
+			StringBuffer featureString = new StringBuffer().append("{x:").append(featureTO.getStart().toString()).append(",")
+					 .append("y:").append(featureTO.getEnd().toString()).append(",")
+					 .append("description: \"").append(featureTO.getType()).append(" - ").append(getFeatureName(featureTO)).append("\"}");
+			features.add(featureString.toString());
+		}
+		
+		 List<ReadOnContigTO> readsOnCotig = contigTO.getReadsOnCotig();
+		 
+		 List<String> reads = new ArrayList<String>();
+		 
+		 for (ReadOnContigTO readOnContigTO : readsOnCotig) {
+			 
+			 StringBuffer readString = new StringBuffer().append("{x:").append(readOnContigTO.getStartAlignment().toString()).append(",")
+			 .append("y:").append(readOnContigTO.getEndAlignment().toString()).append(",")
+			 .append("description: \"[").append(getTaxonRank(readOnContigTO)).append("] - ").append(getTaxonName(readOnContigTO)).append("\",")
+			 .append("id: \"").append(readOnContigTO.getReference()+"_"+readOnContigTO.getPair()).append("\"}");
+			 
+			 reads.add(readString.toString());
+			 
+		}
+		
+		
 		result.include("sample", sample);
+		result.include("reads", reads);
+		result.include("features", features);
 		result.include("contig", contigTO);
+	}
+
+	private String getTaxonRank(ReadOnContigTO readOnContigTO) {
+		if(readOnContigTO.getTaxon() != null) {
+			return readOnContigTO.getTaxon().getHank();
+		} else {
+			return "no rank";
+		}
+	}
+
+	private String getTaxonName(ReadOnContigTO readOnContigTO) {
+		if(readOnContigTO.getTaxon() != null) {
+			return readOnContigTO.getTaxon().getScientificName();
+		} else {
+			return "no taxon";
+		}
+			
+	}
+
+	private String getFeatureName(FeatureTO featureTO) {
+		if(featureTO.getGeneProduct() != null){
+			return featureTO.getGeneProduct().getProduct();
+		} else {
+			return "";
+		}
+		
 	}
 	
 	

@@ -31,13 +31,16 @@ public class ContigConverter {
 	}
 
 	private ReadOnContigTO createReadOnContig(Read read) {
-		
-		Taxon taxon = read.getTaxon();
 		TaxonTO taxonTO = null;
 		
-		if(taxon != null){
+		if(read.hasTaxon()){
+			Taxon taxon = read.getTaxonLineagemByRank("genus");
+			
+			if(taxon == null){
+				taxon = read.getTaxon();
+			}
 			taxonTO = new TaxonTO.Builder().setScientificName(taxon.getScientificName()).setHank(taxon.getRank())
-							.setTaxonomyId(taxon.getTaxonomyId()).setScore(taxon.getScore()).build();
+							.setTaxonomyId(taxon.getTaxonomyId()).setScore(read.getTaxonScore()).build();
 		}
 		
 		return new ReadOnContigTO(read.getReference(), read.getSequence(), 

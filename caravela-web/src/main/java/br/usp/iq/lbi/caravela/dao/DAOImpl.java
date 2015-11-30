@@ -84,4 +84,8 @@ public class DAOImpl<T> implements DAO<T> {
 		}
 	}
 
+	public Long count() {
+		return (Long) entityManager.createQuery("SELECT COUNT(e) FROM "+ entityClass.getName() + " e", Long.class).getSingleResult();
+	}
+
 }
