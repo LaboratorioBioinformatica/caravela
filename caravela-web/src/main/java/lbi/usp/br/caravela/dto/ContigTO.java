@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ContigTO {
 	
+	private final Long id;
 	private final String reference;
 	private final String sequence;
 	@SerializedName("nOfR")
@@ -16,7 +17,8 @@ public class ContigTO {
 	private final List<FeatureTO> features;
 	private final List<ReadOnContigTO> readsOnCotig;
 	
-	public ContigTO(String reference, String sequence, List<FeatureTO> features, List<ReadOnContigTO> readsOnCotig) {
+	public ContigTO(Long id, String reference, String sequence, List<FeatureTO> features, List<ReadOnContigTO> readsOnCotig) {
+		this.id = id;
 		this.reference = reference;
 		this.sequence = sequence;
 		this.features = features;
@@ -63,6 +65,10 @@ public class ContigTO {
 
 	public List<ReadOnContigTO> getReadsOnCotig() {
 		return readsOnCotig;
+	}
+	
+	public Long getId(){
+		return id;
 	}
 	
 	public  Double getTaxonomicIdentificationIndex(){

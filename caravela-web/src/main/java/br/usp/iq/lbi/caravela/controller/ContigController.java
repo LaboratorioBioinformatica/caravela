@@ -3,7 +3,9 @@ package br.usp.iq.lbi.caravela.controller;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -11,22 +13,27 @@ import com.google.gson.Gson;
 import com.google.gson.JsonStreamParser;
 
 import br.com.caelum.vraptor.Controller;
+import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
 import br.usp.iq.lbi.caravela.model.Contig;
+import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import lbi.usp.br.caravela.dto.ContigTO;
 import lbi.usp.br.caravela.dto.FeatureTO;
 import lbi.usp.br.caravela.dto.ReadOnContigTO;
+import lbi.usp.br.caravela.dto.featureViewer.FeatureViewerDataTO;
 
 @Controller
 public class ContigController {
 	
+	private static final String NO_TAXON = "no taxon";
 	private final Result result;
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
@@ -47,6 +54,50 @@ public class ContigController {
 		this.contigManager = contigManager;
 		
 	}
+	
+	@Get
+	@Path("/contig/readsOnContig/{contigId}")
+	public void readsOnContig(Long contigId) {
+		
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		
+		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		
+		for (Read read : readsOnContig) {
+			if(read.hasTaxon()){
+				
+				
+//				String scientificName = read.getTaxon().getTaxonomyId().toString();
+				String scientificName = read.getScientificName();
+				
+				List<FeatureViewerDataTO> taxonList = featureViewerDataMap.get(scientificName);
+				if(taxonList != null){
+					taxonList.add(createFeatureViewerDataTO(read, scientificName));
+				} else {
+					taxonList = new ArrayList<FeatureViewerDataTO>();
+					taxonList.add(createFeatureViewerDataTO(read, scientificName));
+					featureViewerDataMap.put(scientificName, taxonList);
+				}
+				
+			} else {
+				List<FeatureViewerDataTO> noTaxonList = featureViewerDataMap.get(NO_TAXON);
+				if(noTaxonList != null){
+					noTaxonList.add(createFeatureViewerDataTO(read, NO_TAXON));
+				} else {
+					noTaxonList = new ArrayList<FeatureViewerDataTO>();
+					noTaxonList.add(createFeatureViewerDataTO(read, NO_TAXON));
+					featureViewerDataMap.put(NO_TAXON, noTaxonList);
+				}
+			}
+		}
+		
+		 result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
+	}
+
+	private FeatureViewerDataTO createFeatureViewerDataTO(Read read, String description) {
+		return new FeatureViewerDataTO(read.getStartAlignment(), read.getEndAlignment(), description, read.getId().toString());
+	}
+	
 	
 	@Path("/contig/view/{contigId}")
 	public void view(Long contigId) {
@@ -101,7 +152,7 @@ public class ContigController {
 		if(readOnContigTO.getTaxon() != null) {
 			return readOnContigTO.getTaxon().getScientificName();
 		} else {
-			return "no taxon";
+			return NO_TAXON;
 		}
 			
 	}

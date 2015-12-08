@@ -101,6 +101,14 @@ public class Read implements Serializable {
 		
 	}
 	
+	public String getScientificName(){
+		String scientificName = null;
+		if(hasTaxon()){
+			scientificName = getTaxon().getScientificName();
+		}
+		return scientificName;
+	}
+	
 	public Taxon getTaxonLineagemByRank(String rank){
 		if(hasTaxon()){
 			return taxonomicAssignment.getTaxonLineagemByRank(rank);

@@ -26,7 +26,7 @@ public class ContigConverter {
 			readsOnContig.add(readOnContigTO);
 		}
 		
-		ContigTO contigTO = new ContigTO(contig.getReference(), contig.getSequence(), featuresTO, readsOnContig);
+		ContigTO contigTO = new ContigTO(contig.getId(), contig.getReference(), contig.getSequence(), featuresTO, readsOnContig);
 		return contigTO;
 	}
 

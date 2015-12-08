@@ -25,6 +25,19 @@ public class ContigManagerImpl implements ContigManager {
 	@Inject private ReadManager readManager;
 	
 	
+	public List<Read> searchReadOnContigByContigId(Long contigId){
+		Contig contig = contigDAO.load(contigId);
+		
+		List<Read> reads = readDAO.loadAllReadsByContig(contig);
+		for (Read read : reads) {
+			if(read.hasTaxon()){
+				HashMap<String, Taxon> lineagem = readManager.loadLineagem(read);
+				read.setLineagem(lineagem);
+			}
+		}
+		return reads;
+	}
+	
 	
 	public ContigTO searchContigById(Long contigId){
 		Contig contig = contigDAO.load(contigId);

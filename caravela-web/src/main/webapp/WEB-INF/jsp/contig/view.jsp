@@ -40,8 +40,8 @@
 	 </div>		
 	 		
 	<script type="text/javascript">
-	
 	var reads = ${reads};
+	var contigSize = ${contig.size};
 	var features = ${features};
 	var FeatureViewer = require("feature-viewer");
 	var ft = new FeatureViewer('${contig.sequence}',
@@ -56,23 +56,48 @@
 	
 	//Add some features
     ft.addFeature({
-        data: features,
-        name: "Features",
-        className: "features",
-        color: "#0F8292",
+        data: [{x:1,y:contigSize}],
+        name: "contig",
+        className: "contigClass",
+        color: "#b0133b",
         type: "rect"
     });
 	
 	//Add some features
     ft.addFeature({
-        data: reads,
-        name: "reads",
-        className: "reads",
-        color: "#54FEB7",
+        data: features,
+        name: "Features",
+        className: "features",
+        color: "#7a17e3",
         type: "multipleRect"
     });
+
+$(document).ready(function(){
 	
-	</script>
+	var urlReadsOnCOntig = '<c:url value="/contig/readsOnContig/${contig.id}"/>';
+	
+    
+	$.ajax({url:urlReadsOnCOntig, success: function(result){
+		$.each(result, function(k, v) {
+			ft.addFeature({
+		        data: v,
+		        name: k,
+		        className: "reads_"+k.substring(0,3),
+		        color: randColor(),
+		        type: "multipleRect"
+		    }); 
+	   	});	
+}});
+    
+    
+});
+
+function randColor(){
+	return '#'+Math.floor(Math.random()*16777215).toString(16);
+}
+</script>	
+	
+	
     </jsp:body>
 </t:default>
 
