@@ -79,6 +79,8 @@ $(document).ready(function(){
     
 	$.ajax({url:urlReadsOnCOntig, success: function(result){
 		$.each(result, function(k, v) {
+			console.log(k + ":" + v.length);
+			
 			ft.addFeature({
 		        data: v,
 		        name: k,
