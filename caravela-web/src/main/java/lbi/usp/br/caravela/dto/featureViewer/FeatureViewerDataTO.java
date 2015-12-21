@@ -2,7 +2,7 @@ package lbi.usp.br.caravela.dto.featureViewer;
 
 import java.io.Serializable;
 
-public class FeatureViewerDataTO implements Serializable {
+public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Serializable {
 	
 	private static final long serialVersionUID = 6552981806740144131L;
 	
@@ -16,10 +16,6 @@ public class FeatureViewerDataTO implements Serializable {
 		this.y = y;
 		this.description = description;
 		this.id = id;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public Integer getX() {
@@ -37,5 +33,50 @@ public class FeatureViewerDataTO implements Serializable {
 	public String getId() {
 		return id;
 	}
+	
+	public boolean contains(int time) {
+		return time < y && time > x;
+	}
+
+	
+	public boolean intersects(FeatureViewerDataTO other) {
+		// modify to close interval
+		return other.getY() >= x && other.getX() <= y;
+	}
+	
+	public int compareTo(FeatureViewerDataTO other) {
+		if (x < other.getX())
+			return -1;
+		else if (x > other.getX())
+			return 1;
+		else if (y < other.getY())
+			return -1;
+		else if (y > other.getY())
+			return 1;
+		else
+			return 0;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash + 13 * x;
+		hash = hash + 23 * y;
+		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(! (obj instanceof FeatureViewerDataTO)) {
+			return false;
+		}
+		if(obj == this){
+			return true;
+		}
+		
+		FeatureViewerDataTO fvdto = (FeatureViewerDataTO) obj;
+		return this.x.equals(fvdto.getX()) && this.y.equals(fvdto.getY()); 
+	}
+	
 	
 }
