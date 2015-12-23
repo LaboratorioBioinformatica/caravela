@@ -5,8 +5,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -22,14 +20,14 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
+import br.usp.iq.lbi.caravela.dto.ContigTO;
+import br.usp.iq.lbi.caravela.dto.FeatureTO;
+import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
+import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
-import lbi.usp.br.caravela.dto.ContigTO;
-import lbi.usp.br.caravela.dto.FeatureTO;
-import lbi.usp.br.caravela.dto.ReadOnContigTO;
-import lbi.usp.br.caravela.dto.featureViewer.FeatureViewerDataTO;
 
 @Controller
 public class ContigController {
@@ -64,13 +62,12 @@ public class ContigController {
 	public void readsOnContig(Long contigId) {
 
 		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
-//		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = readsOnContigHelper.createFeatureViwerConsensusDataScientificNameKeyMapTO(readsOnContig);
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = readsOnContigHelper.createFeatureViwerConsensusDataScientificNameKeyMapTO(readsOnContig);
 
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = readsOnContigHelper.createFeatureViwerDataScientificNameKeyMapTO(readsOnContig);
 		
-		
 
-		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
+		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
 
 	@Path("/contig/view/{contigId}")

@@ -4,9 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lbi.usp.br.caravela.dto.search.GeneProductCounterTO;
-import lbi.usp.br.caravela.dto.search.TaxonCounterTO;
-import lbi.usp.br.caravela.dto.search.TaxonomomySearchTO;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
@@ -15,6 +12,9 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.TaxonomySearch;
+import br.usp.iq.lbi.caravela.dto.search.GeneProductCounterTO;
+import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
+import br.usp.iq.lbi.caravela.dto.search.TaxonomomySearchTO;
 import br.usp.iq.lbi.caravela.model.Sample;
 
 @Controller

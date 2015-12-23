@@ -14,9 +14,9 @@ import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
+import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
-import lbi.usp.br.caravela.dto.ContigTO;
 
 @Controller
 public class HomeController {

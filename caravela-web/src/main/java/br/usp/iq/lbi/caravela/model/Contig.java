@@ -14,7 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lbi.usp.br.caravela.dto.TaxonCounterTO;
+import br.usp.iq.lbi.caravela.dto.TaxonCounterTO;
+
 
 @Entity
 @Table(name="contig")

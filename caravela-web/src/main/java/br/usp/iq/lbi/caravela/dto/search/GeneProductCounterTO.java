@@ -1,6 +1,6 @@
-package lbi.usp.br.caravela.dto.search;
+package br.usp.iq.lbi.caravela.dto.search;
 
-import lbi.usp.br.caravela.dto.GeneProductTO;
+import br.usp.iq.lbi.caravela.dto.GeneProductTO;
 
 public class GeneProductCounterTO implements Comparable<GeneProductCounterTO>{
 	

@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Mapping implements Serializable {
 
+	private static final int NO_MAPPING_VALUE = 0;
 	private static final long serialVersionUID = -366412626925732691L;
 	@Column(name="start_alignment")
 	private final Integer start;
@@ -25,6 +26,14 @@ public class Mapping implements Serializable {
 		this.start = start;
 		this.end = end;
 		this.flag = flag; 
+	}
+	
+	public boolean isMapping(){
+		boolean mapping = true;
+		if(end.equals(NO_MAPPING_VALUE)){
+			mapping = false;
+		} 
+		return mapping;
 	}
 	
 	public Integer getStart() {

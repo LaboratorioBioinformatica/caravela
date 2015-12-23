@@ -1,4 +1,4 @@
-package lbi.usp.br.caravela.dto;
+package br.usp.iq.lbi.caravela.dto;
 
 public class PhiloDistTO {
 	//homolog Gene OID

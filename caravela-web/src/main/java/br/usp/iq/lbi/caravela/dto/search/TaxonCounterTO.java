@@ -1,4 +1,4 @@
-package lbi.usp.br.caravela.dto.search;
+package br.usp.iq.lbi.caravela.dto.search;
 
 import br.usp.iq.lbi.caravela.model.Taxon;
 

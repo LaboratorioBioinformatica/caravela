@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
-import lbi.usp.br.caravela.dto.search.TaxonCounterTO;
+import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
 
 public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 

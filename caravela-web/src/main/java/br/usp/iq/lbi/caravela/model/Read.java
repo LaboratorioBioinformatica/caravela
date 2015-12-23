@@ -84,6 +84,10 @@ public class Read implements Serializable {
 		return this.contig;
 	}
 	
+	public boolean isMapping(){
+		return mapping.isMapping();
+	}
+	
 	public boolean hasTaxon(){
 		if(this.taxonomicAssignment != null ){
 			return true;

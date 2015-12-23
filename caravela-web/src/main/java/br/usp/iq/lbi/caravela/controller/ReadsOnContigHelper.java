@@ -11,8 +11,8 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 
+import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.model.Read;
-import lbi.usp.br.caravela.dto.featureViewer.FeatureViewerDataTO;
 
 @RequestScoped
 public class ReadsOnContigHelper {
@@ -23,30 +23,35 @@ public class ReadsOnContigHelper {
 	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerDataScientificNameKeyMapTO(List<Read> readsOnContig){
 		
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		
 		for (Read read : readsOnContig) {
-			if(read.hasTaxon()){
-				
-				String scientificName = read.getScientificName();
-				
-				List<FeatureViewerDataTO> taxonList = featureViewerDataMap.get(scientificName);
-				if(taxonList != null){
-					taxonList.add(createFeatureViewerDataTO(read, scientificName));
+			if(read.isMapping()){
+				if(read.hasTaxon()){
+					
+					
+					String scientificName = read.getScientificName();
+					
+					List<FeatureViewerDataTO> taxonList = featureViewerDataMap.get(scientificName);
+					if(taxonList != null){
+						taxonList.add(createFeatureViewerDataTO(read, scientificName));
+					} else {
+						taxonList = new ArrayList<FeatureViewerDataTO>();
+						taxonList.add(createFeatureViewerDataTO(read, scientificName));
+						featureViewerDataMap.put(scientificName, taxonList);
+					}
+					
 				} else {
-					taxonList = new ArrayList<FeatureViewerDataTO>();
-					taxonList.add(createFeatureViewerDataTO(read, scientificName));
-					featureViewerDataMap.put(scientificName, taxonList);
-				}
-				
-			} else {
-				List<FeatureViewerDataTO> noTaxonList = featureViewerDataMap.get(NO_TAXON);
-				if(noTaxonList != null){
-					noTaxonList.add(createFeatureViewerDataTO(read, NO_TAXON));
-				} else {
-					noTaxonList = new ArrayList<FeatureViewerDataTO>();
-					noTaxonList.add(createFeatureViewerDataTO(read, NO_TAXON));
-					featureViewerDataMap.put(NO_TAXON, noTaxonList);
+					List<FeatureViewerDataTO> noTaxonList = featureViewerDataMap.get(NO_TAXON);
+					if(noTaxonList != null){
+						noTaxonList.add(createFeatureViewerDataTO(read, NO_TAXON));
+					} else {
+						noTaxonList = new ArrayList<FeatureViewerDataTO>();
+						noTaxonList.add(createFeatureViewerDataTO(read, NO_TAXON));
+						featureViewerDataMap.put(NO_TAXON, noTaxonList);
+					}
 				}
 			}
+			
 		}
 		return featureViewerDataMap;
 		

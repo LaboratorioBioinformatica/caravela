@@ -2,7 +2,6 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.inject.Inject;

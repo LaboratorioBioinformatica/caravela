@@ -9,10 +9,10 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import lbi.usp.br.caravela.dto.GeneProductTO;
-import lbi.usp.br.caravela.dto.search.GeneProductCounterTO;
-import lbi.usp.br.caravela.dto.search.TaxonCounterTO;
-import lbi.usp.br.caravela.dto.search.TaxonomomySearchTO;
+import br.usp.iq.lbi.caravela.dto.GeneProductTO;
+import br.usp.iq.lbi.caravela.dto.search.GeneProductCounterTO;
+import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
+import br.usp.iq.lbi.caravela.dto.search.TaxonomomySearchTO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
 import br.usp.iq.lbi.caravela.dao.TaxonDAO;
 import br.usp.iq.lbi.caravela.model.Contig;

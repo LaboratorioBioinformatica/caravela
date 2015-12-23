@@ -1,4 +1,4 @@
-package lbi.usp.br.caravela.dto;
+package br.usp.iq.lbi.caravela.dto;
 
 import com.google.gson.annotations.SerializedName;
 

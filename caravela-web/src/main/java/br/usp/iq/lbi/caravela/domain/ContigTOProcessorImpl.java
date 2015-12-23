@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.FeatureDAO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
+import br.usp.iq.lbi.caravela.dto.ContigTO;
+import br.usp.iq.lbi.caravela.dto.FeatureTO;
+import br.usp.iq.lbi.caravela.dto.GeneProductTO;
+import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
+import br.usp.iq.lbi.caravela.dto.TaxonTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Mapping;
@@ -19,11 +24,6 @@ import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
 import br.usp.iq.lbi.caravela.model.TaxonomicAssignment;
-import lbi.usp.br.caravela.dto.ContigTO;
-import lbi.usp.br.caravela.dto.FeatureTO;
-import lbi.usp.br.caravela.dto.GeneProductTO;
-import lbi.usp.br.caravela.dto.ReadOnContigTO;
-import lbi.usp.br.caravela.dto.TaxonTO;
 
 @RequestScoped
 public class ContigTOProcessorImpl implements ContigTOProcessor {

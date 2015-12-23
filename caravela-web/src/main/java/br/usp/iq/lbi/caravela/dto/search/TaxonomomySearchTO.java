@@ -1,5 +1,5 @@
 
-package lbi.usp.br.caravela.dto.search;
+package br.usp.iq.lbi.caravela.dto.search;
 
 import java.util.LinkedHashSet;
 import java.util.List;

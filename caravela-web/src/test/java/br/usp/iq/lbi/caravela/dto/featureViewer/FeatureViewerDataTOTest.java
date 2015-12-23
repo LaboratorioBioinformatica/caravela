@@ -1,4 +1,4 @@
-package lbi.usp.br.caravela.dto.featureViewer;
+package br.usp.iq.lbi.caravela.dto.featureViewer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 
 
 public class FeatureViewerDataTOTest {

@@ -1,4 +1,4 @@
-package lbi.usp.br.caravela.dto;
+package br.usp.iq.lbi.caravela.dto;
 
 import java.util.ArrayList;
 import java.util.List;

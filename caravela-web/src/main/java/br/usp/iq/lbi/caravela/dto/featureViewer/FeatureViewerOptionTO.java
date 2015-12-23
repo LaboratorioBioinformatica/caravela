@@ -1,4 +1,4 @@
-package lbi.usp.br.caravela.dto.featureViewer;
+package br.usp.iq.lbi.caravela.dto.featureViewer;
 
 import java.io.Serializable;
 

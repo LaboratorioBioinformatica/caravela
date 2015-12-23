@@ -9,12 +9,12 @@ import javax.inject.Inject;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.FeatureDAO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
+import br.usp.iq.lbi.caravela.dto.ContigConverter;
+import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Taxon;
-import lbi.usp.br.caravela.dto.ContigConverter;
-import lbi.usp.br.caravela.dto.ContigTO;
 
 @RequestScoped
 public class ContigManagerImpl implements ContigManager {

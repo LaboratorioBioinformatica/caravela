@@ -16,10 +16,10 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.GeneSearch;
+import br.usp.iq.lbi.caravela.dto.TaxonCounterTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Sample;
-import lbi.usp.br.caravela.dto.TaxonCounterTO;
 
 @Controller
 public class GeneController {
