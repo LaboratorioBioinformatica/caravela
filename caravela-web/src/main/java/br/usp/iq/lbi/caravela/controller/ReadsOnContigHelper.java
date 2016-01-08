@@ -20,7 +20,7 @@ public class ReadsOnContigHelper {
 	private static final String NO_TAXON = "no taxon";
 	private static final Long NO_TAXON_ID = 0L;
 
-	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerDataScientificNameKeyMapTO(List<Read> readsOnContig){
+	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerDataScientificNameKeyMapTO(List<Read> readsOnContig, String rank){
 		
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
 		
@@ -28,8 +28,10 @@ public class ReadsOnContigHelper {
 			if(read.isMapping()){
 				if(read.hasTaxon()){
 					
-					
-					String scientificName = read.getScientificName();
+					String scientificName = read.getScientificNameByRank(rank);
+					if(scientificName == null){
+						scientificName = read.getScientificName();
+					}
 					
 					List<FeatureViewerDataTO> taxonList = featureViewerDataMap.get(scientificName);
 					if(taxonList != null){
@@ -57,11 +59,11 @@ public class ReadsOnContigHelper {
 		
 	}
 	
-	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerConsensusDataScientificNameKeyMapTO(List<Read> readsOnContig){
+	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerConsensusDataScientificNameKeyMapTO(List<Read> readsOnContig, String rank){
 		
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
 		
-		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createFeatureViwerDataScientificNameKeyMapTO(readsOnContig).entrySet();
+		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createFeatureViwerDataScientificNameKeyMapTO(readsOnContig, rank).entrySet();
 		
 		for (Entry<String, List<FeatureViewerDataTO>> featureViewerDataEntity : featureViewerDataSet) {
 			String key = featureViewerDataEntity.getKey();

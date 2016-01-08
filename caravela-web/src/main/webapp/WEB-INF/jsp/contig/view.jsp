@@ -74,7 +74,7 @@
 
 $(document).ready(function(){
 	
-	var urlReadsOnCOntig = '<c:url value="/contig/readsOnContig/${contig.id}"/>';
+	var urlReadsOnCOntig = '<c:url value="/contig/readsOnContig/${contig.id}/${rank}"/>';
 	
     
 	$.ajax({url:urlReadsOnCOntig, success: function(result){

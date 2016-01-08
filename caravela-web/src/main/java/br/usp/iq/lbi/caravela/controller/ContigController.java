@@ -58,20 +58,19 @@ public class ContigController {
 	}
 
 	@Get
-	@Path("/contig/readsOnContig/{contigId}")
-	public void readsOnContig(Long contigId) {
-
+	@Path("/contig/readsOnContig/{contigId}/{rank}")
+	public void readsOnContig(Long contigId, String rank) {
 		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
-		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = readsOnContigHelper.createFeatureViwerConsensusDataScientificNameKeyMapTO(readsOnContig);
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = readsOnContigHelper.createFeatureViwerConsensusDataScientificNameKeyMapTO(readsOnContig, rank);
 
-		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = readsOnContigHelper.createFeatureViwerDataScientificNameKeyMapTO(readsOnContig);
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = readsOnContigHelper.createFeatureViwerDataScientificNameKeyMapTO(readsOnContig, rank);
 		
 
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
 
-	@Path("/contig/view/{contigId}")
-	public void view(Long contigId) {
+	@Path("/contig/view/{contigId}/{rank}")
+	public void view(Long contigId, String rank) {
 		Contig contig = contigDAO.load(contigId);
 		ContigTO contigTO = contigManager.searchContigById(contigId);
 
@@ -104,7 +103,7 @@ public class ContigController {
 			reads.add(readString.toString());
 
 		}
-
+		result.include("rank", rank);
 		result.include("sample", sample);
 		result.include("reads", reads);
 		result.include("features", features);
