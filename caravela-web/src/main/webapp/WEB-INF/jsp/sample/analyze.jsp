@@ -8,14 +8,14 @@
 		<div class="page-header">
 			<h1>Analyze - ${sample.name} </h1>
 		</div>
-		
+
 	<div class="jumbotron">
 		<div class="row">
 		  <div class="col-sm-12">
 		    <div class="row">
 		      <div class="col-xs-8 col-sm-5">
 		        <h4>Search by taxon</h4>
-					<div class="form-group">	
+					<div class="form-group">
 						<form action="<c:url value="/taxonomy/search/fragment"/>" class="form-inline" role="form" method="post">
 							<input type="hidden" name="sampleId" value="${sample.id}">
 							<label>Scientific name</label>
@@ -47,21 +47,21 @@
 		</div>
 	</div>
 	<hr>
-	
+
 	<div class="jumbotron">
 		<h3>Filter By Taxonomic Identification Index (TII)</h3>
-		<div class="form-group">	
+		<div class="form-group">
 			<form action="<c:url value="/sample/analyze"/>" class="form-inline" role="form" method="post">
 				<input type="hidden" name="sampleId" value="${sample.id}">
 				<label> TII (between 0.0 and 0.99)</label>
 				<input class="form-control" placeholder="0.8" value="${tiiValue}" size="4" maxlength="4" type="text" name="tiiValue">
-					
+
 				<button type="submit" class="btn btn-default">Filter</button>
 			</form>
 		</div>
-	</div>	
+	</div>
 	<hr>
-	
+
 
 	<c:if test="${not empty contigList}">
 		<div class="panel panel-default">
@@ -88,16 +88,14 @@
 							<td>${contig.numberOfReadsClassified}</td>
 							<td>${contig.numberOfFeatures}</td>
 							<td>
-								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}/genus"/>" role="button"></a>
+								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}/genus/consensusReadsOnContig"/>" role="button"></a>
 							</td>
-						</tr> 
-					</c:forEach>			
-				</tbody> 	
+						</tr>
+					</c:forEach>
+				</tbody>
 		 	</table>
 		</div>
 	</c:if>
-	</div>	
+	</div>
     </jsp:body>
 </t:default>
-
-
