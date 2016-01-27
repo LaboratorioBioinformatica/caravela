@@ -2,8 +2,11 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,8 +58,30 @@ public class ReadsOnContigHelper {
 			}
 			
 		}
-		return featureViewerDataMap;
+	
+		return sortMap(featureViewerDataMap);
 		
+	}
+	private Map<String, List<FeatureViewerDataTO>> sortMap(Map<String, List<FeatureViewerDataTO>> unsortMap){
+		
+		List<Map.Entry<String, List<FeatureViewerDataTO>>> list = new LinkedList<Map.Entry<String,List<FeatureViewerDataTO>>>(unsortMap.entrySet());
+		
+		Collections.sort(list, new Comparator<Map.Entry<String, List<FeatureViewerDataTO>>>() {
+			public int compare(Entry<String, List<FeatureViewerDataTO>> o1, Entry<String, List<FeatureViewerDataTO>> o2) {
+				//ORDER DESC
+				return (o2.getValue().size() - o1.getValue().size());
+			}
+			
+		});
+		
+		Map<String, List<FeatureViewerDataTO>> sortedMap = new LinkedHashMap<String, List<FeatureViewerDataTO>>();
+		
+		for (Iterator<Map.Entry<String, List<FeatureViewerDataTO>>> it = list.iterator(); it.hasNext();) {
+			Map.Entry<String, List<FeatureViewerDataTO>> entry = it.next();
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		
+		return sortedMap;
 	}
 	
 	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerConsensusDataScientificNameKeyMapTO(List<Read> readsOnContig, String rank){
@@ -110,8 +135,7 @@ public class ReadsOnContigHelper {
 			featureViewerConsensusDataMap.put(key, listConsensus);
 		}
 		
-		
-		return featureViewerConsensusDataMap;
+		return sortMap(featureViewerConsensusDataMap);
 		
 	}
 	
