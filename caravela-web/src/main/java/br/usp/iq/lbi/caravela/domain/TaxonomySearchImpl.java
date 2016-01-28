@@ -29,7 +29,11 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 	
 	public TaxonomomySearchTO searchTaxonomicSearchTOBySampleAndScientificName(Sample sample, String scientificName){
 		List<Read> readsFromSampleAndScientificName = readDAO.findReadsBySampleAndScientificName(sample, scientificName);
-		Long totalNumberOfTaxonFound = taxonDAO.count(sample, scientificName);
+		
+		
+		Long totalNumberOfTaxonFound = new Long(readsFromSampleAndScientificName.size()); 
+		//taxonDAO.count(sample, scientificName);
+		
 		LinkedHashSet<Contig> ContigLinkedHashSet = new LinkedHashSet<Contig>();
 		
 		Hashtable<String, GeneProductCounterTO> geneProductCounterTOHashTable = new Hashtable<String, GeneProductCounterTO>();

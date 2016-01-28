@@ -10,8 +10,8 @@
 		</div>
 		<div class="panel-heading well">
 			<h3>Search by taxon: ${scientificName}</h3>
-			<p>Number of taxon found: <b>${numberOfTaxonFound}</b></p>   
-			<p>Number of contigs found with this taxon: <b>${numberOfContigFound}</b></p> 
+			<p>Number of taxon found: <b>${numberOfTaxonFound}</b></p>
+			<p>Number of contigs found with this taxon: <b>${numberOfContigFound}</b></p>
 		</div>
 	<hr>
 	<div class="panel panel-default">
@@ -30,17 +30,17 @@
 								<td>${geneProductCounterTo.total}</td>
 								<td>${geneProductCounterTo.productName}</td>
 								<td>
-									
+
 									<c:if test="${not empty geneProductCounterTo.productSource}">
 										<span  class="glyphicon-class">${geneProductCounterTo.productSource}</span>
 										<a href="<c:url value="/gene/search/by/producSource/${sample.id}/${geneProductCounterTo.productSource}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
 									</c:if>
 								</td>
-							</tr> 
-						</c:forEach>			
-					</tbody> 	
+							</tr>
+						</c:forEach>
+					</tbody>
 			 	</table>
-	</div>		 	
+	</div>
 	<hr>
 
 
@@ -69,16 +69,14 @@
 							<td>${contig.numberOfReadsClassified}</td>
 							<td>${contig.numberOfFeatures}</td>
 							<td>
-								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}"/>" role="button"></a>
+								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}/genus/consensusReadsOnContig"/>" role="button"></a>
 							</td>
-						</tr> 
-					</c:forEach>			
-				</tbody> 	
+						</tr>
+					</c:forEach>
+				</tbody>
 		 	</table>
 		</div>
 	</c:if>
-	</div>	
+	</div>
    </jsp:body>
 </t:default>
-
-

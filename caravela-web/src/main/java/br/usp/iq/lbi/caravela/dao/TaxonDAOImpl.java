@@ -24,7 +24,9 @@ public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 	
 	
 	public List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName) {
-		Query query = entityManager.createQuery(" SELECT NEW lbi.usp.br.caravela.dto.search.TaxonCounterTO(t, COUNT(t.id)) FROM Taxon t WHERE t.read.sample=:sample and t.scientificName LIKE:scientificName GROUP BY t.scientificName ORDER BY COUNT(t.id) DESC", TaxonCounterTO.class);
+		Query query = entityManager.createQuery(" SELECT NEW br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO(t, COUNT(t.id)) FROM Read r JOIN r.taxonomicAssignment.taxon t WHERE r.sample=:sample and t.scientificName LIKE:scientificName GROUP BY t.scientificName ORDER BY COUNT(t.id) DESC", TaxonCounterTO.class);
+//		select count(*) from sequence s, taxon t where s.sample_id = 1 and s.taxon_id = t.id and t.scientific_name like '%fusca%'\G
+		
 		query.setParameter("sample", sample);
 		query.setParameter("scientificName", "%"+scientificName+"%");
 		return query.getResultList();
