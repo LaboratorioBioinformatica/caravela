@@ -31,8 +31,8 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 		List<Read> readsFromSampleAndScientificName = readDAO.findReadsBySampleAndScientificName(sample, scientificName);
 		
 		
-		Long totalNumberOfTaxonFound = new Long(readsFromSampleAndScientificName.size()); 
-		//taxonDAO.count(sample, scientificName);
+		Long totalNumberOfTaxonFound = taxonDAO.count(sample, scientificName);//new Long(readsFromSampleAndScientificName.size()); 
+		
 		
 		LinkedHashSet<Contig> ContigLinkedHashSet = new LinkedHashSet<Contig>();
 		

@@ -69,7 +69,7 @@
 							<td>${contig.numberOfReadsClassified}</td>
 							<td>${contig.numberOfFeatures}</td>
 							<td>
-								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}/genus/consensusReadsOnContig"/>" role="button"></a>
+								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}/genus/readsOnContig"/>" role="button"></a>
 							</td>
 						</tr>
 					</c:forEach>
