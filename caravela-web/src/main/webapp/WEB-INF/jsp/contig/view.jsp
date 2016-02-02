@@ -5,7 +5,7 @@
 <t:default>
 	<jsp:attribute name="headImport">
 		<link type="text/css" rel="stylesheet" href="http://parce.li/bundle/feature-viewer@0.1.26">
-		<script src="https://wzrd.in/bundle/feature-viewer@0.1.26"></script>
+		<script src=<c:url value="/js/feature-viewer@0.1.27"/>></script>
 	</jsp:attribute>
     <jsp:body>
     <div class="container-fluid">

@@ -6,9 +6,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
-import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
 
 public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 
@@ -25,8 +25,6 @@ public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 	
 	public List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName) {
 		Query query = entityManager.createQuery(" SELECT NEW br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO(t, COUNT(t.id)) FROM Read r JOIN r.taxonomicAssignment.taxon t WHERE r.sample=:sample and t.scientificName LIKE:scientificName GROUP BY t.scientificName ORDER BY COUNT(t.id) DESC", TaxonCounterTO.class);
-//		select count(*) from sequence s, taxon t where s.sample_id = 1 and s.taxon_id = t.id and t.scientific_name like '%fusca%'\G
-		
 		query.setParameter("sample", sample);
 		query.setParameter("scientificName", "%"+scientificName+"%");
 		return query.getResultList();
@@ -34,7 +32,7 @@ public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 	
 	//TODO essa contagem deve ser feita nos reads junto com taxon. 
 	public Long count(Sample sample, String scientificName) {
-		Query query = entityManager.createQuery("SELECT COUNT(t.id) FROM Taxon t WHERE t.read.sample=:sample AND t.scientificName=:scientificName", Long.class);
+		Query query = entityManager.createQuery("SELECT COUNT(r.id) FROM Read r INNER JOIN r.taxonomicAssignment.taxon t WHERE r.sample=:sample AND t.scientificName=:scientificName", Long.class);
 		query.setParameter("sample", sample)
 		.setParameter("scientificName", scientificName);
 		return (Long) query.getSingleResult();

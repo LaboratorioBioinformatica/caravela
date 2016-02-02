@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
@@ -50,10 +51,10 @@
 			    	<tr>
 				    	<th>Reference</th>
 				    	<th>Size</th>
-				    	<th >TII</th>
 				    	<th>reads</th>
 				    	<th>reads classified</th>
 				    	<th>features</th>
+				    	<th>TII</th>
 				    	<th>Action</th>
 				    </tr>
 				</thead>
@@ -62,12 +63,14 @@
 						<tr>
 							<td>${contig.reference}</td>
 							<td>${contig.size}</td>
-							<td>${contig.taxonomicIdentificationIndex}</td>
 							<td>${contig.numberOfReads}</td>
 							<td>${contig.numberOfReadsClassified}</td>
 							<td>${contig.numberOfFeatures}</td>
 							<td>
-								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}"/>" role="button"></a>
+								<fmt:formatNumber type="number" maxIntegerDigits="3" value="${contig.taxonomicIdentificationIndex}" />	
+							</td>
+							<td>
+								<a class="btn btn-success glyphicon glyphicon-eye-open" href="<c:url value="/contig/view/${contig.id}/genus/readsOnContig"/>" role="button"></a>
 							</td>
 						</tr> 
 					</c:forEach>			
