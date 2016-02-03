@@ -7,12 +7,12 @@
 	<jsp:body>
 	<div class="container">
 		<div class="page-header">
-			<h1>Analyze -  ${sample.name} </h1>
+			<h1>Analyze - ${sample.name} </h1>
 		</div>
 		<div class="panel-heading well">
 			<h3>Search by taxon: ${scientificName}</h3>
-			<p>Number of taxon found: <b>${numberOfTaxonFound}</b></p>
-			<p>Number of contigs found with this taxon: <b>${numberOfContigFound}</b></p>
+			<p>Number of reads assigned to taxon: <b>${numberOfTaxonFound}</b></p>
+			<p>Number of contigs containing taxon: <b>${numberOfContigFound}</b></p>
 		</div>
 	<hr>
 	<div class="panel panel-default">

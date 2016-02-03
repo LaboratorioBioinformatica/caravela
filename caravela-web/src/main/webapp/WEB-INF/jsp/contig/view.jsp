@@ -49,7 +49,7 @@
 		    				<ul class="dropdown-menu">
 		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/readsOnContig"/>">reads</a></li>
 		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/consensusReadsOnContig"/>">consensus reads</a></li>
-									<li><a href="#">boundaries</a></li>
+							<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/boundariesReadsOnContig"/>">boundaries</a></li>
 		    			</ul>
 	  				</div>
 					</div>

@@ -18,12 +18,12 @@ import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.model.Read;
 
 @RequestScoped
-public class ReadsOnContigHelper {
+public class ContigControllerHelper {
 	
 	private static final String NO_TAXON = "no taxon";
 	private static final Long NO_TAXON_ID = 0L;
 
-	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerDataScientificNameKeyMapTO(List<Read> readsOnContig, String rank){
+	public Map<String, List<FeatureViewerDataTO>> createReadsFeatureViwer(List<Read> readsOnContig, String rank){
 		
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
 		
@@ -33,7 +33,8 @@ public class ReadsOnContigHelper {
 					
 					String scientificName = read.getScientificNameByRank(rank);
 					if(scientificName == null){
-						scientificName = read.getScientificName();
+						
+						scientificName = read.getScientificName() + "[" + read.getTaxon().getRank() + "]";
 					}
 					
 					List<FeatureViewerDataTO> taxonList = featureViewerDataMap.get(scientificName);
@@ -84,11 +85,11 @@ public class ReadsOnContigHelper {
 		return sortedMap;
 	}
 	
-	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerConsensusDataScientificNameKeyMapTO(List<Read> readsOnContig, String rank){
+	public Map<String, List<FeatureViewerDataTO>> createConsensusFeatureViwer(List<Read> readsOnContig, String rank){
 		
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
 		
-		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createFeatureViwerDataScientificNameKeyMapTO(readsOnContig, rank).entrySet();
+		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createReadsFeatureViwer(readsOnContig, rank).entrySet();
 		
 		for (Entry<String, List<FeatureViewerDataTO>> featureViewerDataEntity : featureViewerDataSet) {
 			String key = featureViewerDataEntity.getKey();
@@ -136,6 +137,61 @@ public class ReadsOnContigHelper {
 		}
 		
 		return sortMap(featureViewerConsensusDataMap);
+		
+	}
+	
+public Map<String, List<FeatureViewerDataTO>> createBoundariesFeatureViwer(List<Read> readsOnContig, String rank){
+		
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		
+		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createReadsFeatureViwer(readsOnContig, rank).entrySet();
+		
+		for (Entry<String, List<FeatureViewerDataTO>> featureViewerDataEntity : featureViewerDataSet) {
+			String key = featureViewerDataEntity.getKey();
+			List<FeatureViewerDataTO> list = featureViewerDataEntity.getValue();
+			Collections.sort(list);
+			
+			
+			List<FeatureViewerDataTO> listConsensus = new ArrayList<FeatureViewerDataTO>();
+			FeatureViewerDataTO current = null;
+			
+			
+			Iterator<FeatureViewerDataTO> itList = list.iterator();
+			
+			while(itList.hasNext()){
+				
+				FeatureViewerDataTO next = itList.next();
+				
+				if(current == null){
+					current = next;
+					continue;
+				}
+				
+				if(current.intersects(next)){
+					current = new FeatureViewerDataTO(current.getX(), next.getY(), current.getDescription(), current.getId());
+					
+					//não existe mais elementos na lista! 
+					if( ! itList.hasNext()) {
+						listConsensus.add(current);
+					}
+					
+				}  else {
+					listConsensus.add(current);
+					
+					//não existe mais elementos na lista! 
+					if( ! itList.hasNext()) {
+						listConsensus.add(next);
+					} else {
+						current = next;
+					}
+					
+				}
+			}
+			
+			featureViewerConsensusDataMap.put(key, listConsensus);
+		}
+		
+		return featureViewerConsensusDataMap;
 		
 	}
 	

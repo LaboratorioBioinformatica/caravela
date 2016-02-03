@@ -39,7 +39,7 @@ public class ContigController {
 	private final SampleDAO sampleDAO;
 	private final ContigDAO contigDAO;
 	private final ContigManager contigManager;
-	private final ReadsOnContigHelper readsOnContigHelper;
+	private final ContigControllerHelper contigControllerHelper;
 
 	public ContigController() {
 		this(null, null, null, null, null, null);
@@ -47,13 +47,13 @@ public class ContigController {
 
 	@Inject
 	public ContigController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigDAO contigDAO,
-			ContigManager contigManager, ReadsOnContigHelper readsOnContigHelper) {
+			ContigManager contigManager, ContigControllerHelper readsOnContigHelper) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
 		this.contigDAO = contigDAO;
 		this.contigManager = contigManager;
-		this.readsOnContigHelper = readsOnContigHelper;
+		this.contigControllerHelper = readsOnContigHelper;
 
 	}
 
@@ -61,7 +61,15 @@ public class ContigController {
 	@Path("/contig/consensusReadsOnContig/{contigId}/{rank}")
 	public void consensusReadsOnContig(Long contigId, String rank) {
 		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
-		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = readsOnContigHelper.createFeatureViwerConsensusDataScientificNameKeyMapTO(readsOnContig, rank);
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.createConsensusFeatureViwer(readsOnContig, rank);
+		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
+	}
+	
+	@Get
+	@Path("/contig/boundariesReadsOnContig/{contigId}/{rank}")
+	public void boundariesOnContig(Long contigId, String rank) {
+		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.createBoundariesFeatureViwer(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
 	
@@ -69,7 +77,7 @@ public class ContigController {
 	@Path("/contig/readsOnContig/{contigId}/{rank}")
 	public void readsOnContig(Long contigId, String rank) {
 		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
-		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = readsOnContigHelper.createFeatureViwerDataScientificNameKeyMapTO(readsOnContig, rank);
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.createReadsFeatureViwer(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
 	}
 
