@@ -8,8 +8,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
-
 
 public class FeatureViewerDataTOTest {
 
@@ -41,6 +39,191 @@ public class FeatureViewerDataTOTest {
 		}
 		
 	}
+	
+	@Test
+	public void testIntersects() throws Exception {
+		
+		FeatureViewerDataTO interval1 = new FeatureViewerDataTO(1, 100, "description", "1");
+		FeatureViewerDataTO interval2 = new FeatureViewerDataTO(1, 100, "description", "1");
+		FeatureViewerDataTO interval3 = new FeatureViewerDataTO(30, 50, "description", "1");
+		FeatureViewerDataTO interval4 = new FeatureViewerDataTO(1, 29, "description", "1");
+		FeatureViewerDataTO interval5 = new FeatureViewerDataTO(51, 90, "description", "1");
+		
+		FeatureViewerDataTO interval6 = new FeatureViewerDataTO(1, 30, "description", "1");
+		FeatureViewerDataTO interval7 = new FeatureViewerDataTO(50, 90, "description", "1");
+		
+		
+		
+		Assert.assertTrue(interval1.intersects(interval2));
+		Assert.assertTrue(interval2.intersects(interval1));
+		
+		Assert.assertFalse(interval3.intersects(interval4));
+		Assert.assertFalse(interval3.intersects(interval5));
+		
+		Assert.assertTrue(interval3.intersects(interval6));
+		Assert.assertTrue(interval3.intersects(interval7));
+		
+	}
+	
+	@Test
+	public void testCotains() throws Exception {
+		
+		FeatureViewerDataTO reference = new FeatureViewerDataTO(10, 100, "description", "1");
+		FeatureViewerDataTO sameReference = new FeatureViewerDataTO(10, 100, "description", "1");
+		FeatureViewerDataTO LimitsInsedeReference = new FeatureViewerDataTO(11, 99, "description", "1");
+		FeatureViewerDataTO insedeReference = new FeatureViewerDataTO(20, 29, "description", "1");
+		
+		FeatureViewerDataTO onLeftOfReferenceLimit = new FeatureViewerDataTO(1, 9, "description", "1");
+		FeatureViewerDataTO onLeftOfReference = new FeatureViewerDataTO(2, 7, "description", "1");
+		
+		FeatureViewerDataTO onRigthtOfReferenceLimit = new FeatureViewerDataTO(101, 110, "description", "1");
+		FeatureViewerDataTO onRigthOfReference = new FeatureViewerDataTO(105, 115, "description", "1");
+		
+		Assert.assertTrue(reference.contains((LimitsInsedeReference)));
+		Assert.assertFalse(LimitsInsedeReference.contains((reference)));
+		
+		Assert.assertTrue(reference.contains((sameReference)));
+		Assert.assertTrue(sameReference.contains((reference)));
+		
+		Assert.assertTrue(reference.contains((insedeReference)));
+		
+		Assert.assertFalse(reference.contains((onLeftOfReferenceLimit)));
+		Assert.assertFalse(reference.contains((onLeftOfReference)));
+		Assert.assertFalse(reference.contains((onRigthtOfReferenceLimit)));
+		Assert.assertFalse(reference.contains((onRigthOfReference)));
+		
+	}
+	
+	@Test
+	public void getIntersect() throws Exception {
+		
+		String taxonA = "A";
+		String taxonB = "B";
+		
+		FeatureViewerDataTO reference = new FeatureViewerDataTO(10, 100, taxonA, "1");
+		FeatureViewerDataTO sameReference = new FeatureViewerDataTO(10, 100, taxonB, "1");
+		FeatureViewerDataTO insedeReference = new FeatureViewerDataTO(20, 29, taxonB, "1");
+		FeatureViewerDataTO onLimitOfRigthOfReference = new FeatureViewerDataTO(100, 110, taxonB, "1");
+		FeatureViewerDataTO onRigthOfReference = new FeatureViewerDataTO(80, 115, taxonB, "1");
+		FeatureViewerDataTO limitsInsedeReference = new FeatureViewerDataTO(11, 99, taxonB, "1");
+		FeatureViewerDataTO OnLimitOfLeftOfReference = new FeatureViewerDataTO(1, 10, taxonB, "1");
+		FeatureViewerDataTO onLeftOfReference = new FeatureViewerDataTO(5, 25, taxonB, "1");
+		
+		FeatureViewerDataTO outOfLimitOfRigthtOfReference = new FeatureViewerDataTO(101, 110, taxonB, "1");
+		FeatureViewerDataTO outOfLimitOfLeftOfReference = new FeatureViewerDataTO(1, 9, taxonB, "1");
+		
+		ArrayList<String> taxonList = new ArrayList<String>();
+		taxonList.add(taxonA);
+		taxonList.add(taxonB);
+		
+		Segment segmentSameReference = new Segment(10, 100, taxonList);
+		Segment segmentInsedeReference = new Segment(20, 29, taxonList);
+		Segment segmentOnLimitOfRigthtOfReference = new Segment(100, 100, taxonList);
+		Segment segmentOnRigthOfReference = new Segment(80, 100, taxonList);
+		Segment segmentLimitsInsedeReference = new Segment(11, 99, taxonList);
+		Segment segmentOnLimitOfLeftOfReference = new Segment(10, 10, taxonList);
+		Segment segmentOnLeftOfReference = new Segment(10, 25, taxonList);
+		
+		
+		Assert.assertEquals(segmentSameReference, reference.getIntersect(sameReference));
+		Assert.assertEquals(segmentInsedeReference, reference.getIntersect(insedeReference));
+		Assert.assertEquals(segmentOnLimitOfRigthtOfReference, reference.getIntersect(onLimitOfRigthOfReference));
+		Assert.assertEquals(segmentOnRigthOfReference, reference.getIntersect(onRigthOfReference));
+		Assert.assertEquals(segmentLimitsInsedeReference, reference.getIntersect(limitsInsedeReference));
+		Assert.assertEquals(segmentOnLimitOfLeftOfReference, reference.getIntersect(OnLimitOfLeftOfReference));
+		Assert.assertEquals(segmentOnLeftOfReference, reference.getIntersect(onLeftOfReference));
+
+		Assert.assertNull(reference.getIntersect(outOfLimitOfRigthtOfReference));
+		Assert.assertNull(reference.getIntersect(outOfLimitOfLeftOfReference));
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
+	}
+
+	
+	@Test
+	public void testIsOnLeft() throws Exception {
+		
+		FeatureViewerDataTO reference = new FeatureViewerDataTO(10, 100, "description", "1");
+		FeatureViewerDataTO sameReference = new FeatureViewerDataTO(10, 100, "description", "1");
+		FeatureViewerDataTO LimitsInsedeReference = new FeatureViewerDataTO(11, 99, "description", "1");
+		FeatureViewerDataTO insedeReference = new FeatureViewerDataTO(20, 29, "description", "1");
+		
+		FeatureViewerDataTO onLeftOfReferenceLimit = new FeatureViewerDataTO(1, 9, "description", "1");
+		FeatureViewerDataTO onLeftOfReference = new FeatureViewerDataTO(2, 7, "description", "1");
+		
+		FeatureViewerDataTO onRigthtOfReferenceLimit = new FeatureViewerDataTO(101, 110, "description", "1");
+		FeatureViewerDataTO onRigthOfReference = new FeatureViewerDataTO(105, 115, "description", "1");
+		
+		Assert.assertFalse(reference.isOnLeft((LimitsInsedeReference)));
+		
+		Assert.assertFalse(LimitsInsedeReference.isOnLeft((reference)));
+		
+		Assert.assertFalse(reference.isOnLeft((sameReference)));
+		Assert.assertFalse(sameReference.isOnLeft((reference)));
+		
+		
+		Assert.assertFalse(reference.isOnLeft((insedeReference)));
+
+		Assert.assertTrue(reference.isOnLeft((onLeftOfReferenceLimit)));
+		Assert.assertTrue(reference.isOnLeft((onLeftOfReference)));
+		
+		Assert.assertFalse(reference.isOnLeft((onRigthtOfReferenceLimit)));
+		Assert.assertFalse(reference.isOnLeft((onRigthOfReference)));
+		
+		
+	}
+	
+	@Test
+	public void testIsOnRigth() throws Exception {
+		
+		FeatureViewerDataTO reference = new FeatureViewerDataTO(10, 100, "description", "1");
+		FeatureViewerDataTO sameReference = new FeatureViewerDataTO(10, 100, "description", "1");
+		FeatureViewerDataTO LimitsInsedeReference = new FeatureViewerDataTO(11, 99, "description", "1");
+		FeatureViewerDataTO insedeReference = new FeatureViewerDataTO(20, 29, "description", "1");
+		
+		FeatureViewerDataTO onLeftOfReferenceLimit = new FeatureViewerDataTO(1, 9, "description", "1");
+		FeatureViewerDataTO onLeftOfReference = new FeatureViewerDataTO(2, 7, "description", "1");
+		
+		FeatureViewerDataTO onRigthtOfReferenceLimit = new FeatureViewerDataTO(101, 110, "description", "1");
+		FeatureViewerDataTO onRigthOfReference = new FeatureViewerDataTO(105, 115, "description", "1");
+		
+		Assert.assertFalse(reference.isOnRigth((LimitsInsedeReference)));
+		
+		Assert.assertFalse(LimitsInsedeReference.isOnRigth((reference)));
+		
+		Assert.assertFalse(reference.isOnRigth((sameReference)));
+		Assert.assertFalse(sameReference.isOnRigth((reference)));
+		
+		
+		Assert.assertFalse(reference.isOnRigth((insedeReference)));
+
+		Assert.assertFalse(reference.isOnRigth((onLeftOfReferenceLimit)));
+		Assert.assertFalse(reference.isOnRigth((onLeftOfReference)));
+		
+		Assert.assertTrue(reference.isOnRigth((onRigthtOfReferenceLimit)));
+		Assert.assertTrue(reference.isOnRigth((onRigthOfReference)));
+		
+		
+	}
+	
 	
 	@Test
 	public void testName() throws Exception {

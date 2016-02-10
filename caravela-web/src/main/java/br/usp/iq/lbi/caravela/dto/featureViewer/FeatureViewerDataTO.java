@@ -1,6 +1,7 @@
 package br.usp.iq.lbi.caravela.dto.featureViewer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Serializable {
 	
@@ -35,13 +36,52 @@ public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Se
 	}
 	
 	public boolean contains(int time) {
-		return time < y && time > x;
+		return time <= y && time >= x;
+	}
+	
+	// the reference is this. The other is on left?  
+	public boolean isOnLeft(FeatureViewerDataTO other){
+		return other.x < x && other.y < y;
+	}
+	
+	// the reference is this. The other Is on rigth?  
+	public boolean isOnRigth(FeatureViewerDataTO other){
+		return other.x > x && other.y > y;
+	}
+	
+	public boolean contains(FeatureViewerDataTO other){
+		return contains(other.getX()) && contains(other.getY());
 	}
 
 	
 	public boolean intersects(FeatureViewerDataTO other) {
 		// modify to close interval
 		return other.getY() >= x && other.getX() <= y;
+	}
+	
+	public Segment getIntersect(FeatureViewerDataTO other) {
+		
+		Segment segment = null;
+		if(this.intersects(other)){
+			if(this.contains(other)){
+				segment = new Segment(other.getX(), other.getY(), createTaxonList(other));
+			} else if(other.contains(this)){
+				segment = new Segment(x, y, createTaxonList(other));
+			} else if(this.isOnLeft(other)){
+				segment = new Segment(x, other.y, createTaxonList(other));
+			} else if(this.isOnRigth(other)){
+				segment = new Segment(other.x, y, createTaxonList(other));
+			}
+			
+		}
+		return segment;
+	}
+
+	private ArrayList<String> createTaxonList(FeatureViewerDataTO other) {
+		ArrayList<String> taxonList = new ArrayList<String>();
+		taxonList.add(getDescription());
+		taxonList.add(other.getDescription());
+		return taxonList;
 	}
 	
 	public int compareTo(FeatureViewerDataTO other) {

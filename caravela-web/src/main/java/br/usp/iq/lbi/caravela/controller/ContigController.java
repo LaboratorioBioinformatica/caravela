@@ -28,11 +28,10 @@ import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
+import br.usp.iq.lbi.caravela.model.Taxon;
 
 @Controller
 public class ContigController {
-
-	private static final String NO_TAXON = "no taxon";
 
 	private final Result result;
 	private WebUser webUser;
@@ -140,7 +139,7 @@ public class ContigController {
 		if (readOnContigTO.getTaxon() != null) {
 			return readOnContigTO.getTaxon().getScientificName();
 		} else {
-			return NO_TAXON;
+			return Taxon.NO_TAXON;
 		}
 
 	}

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 public class Taxon implements Serializable {
 	
 	private static final long serialVersionUID = 3637514606101828793L;
+	public static final String NO_TAXON = "no taxon";
 	
 	@Id
 	@GeneratedValue
@@ -57,7 +58,7 @@ public class Taxon implements Serializable {
 	public String getRank() {
 		return rank;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return  Math.toIntExact(this.taxonomyId);
