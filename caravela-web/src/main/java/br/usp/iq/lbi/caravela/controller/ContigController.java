@@ -28,11 +28,10 @@ import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
+import br.usp.iq.lbi.caravela.model.Taxon;
 
 @Controller
 public class ContigController {
-
-	private static final String NO_TAXON = "no taxon";
 
 	private final Result result;
 	private WebUser webUser;
@@ -68,8 +67,16 @@ public class ContigController {
 	@Get
 	@Path("/contig/boundariesReadsOnContig/{contigId}/{rank}")
 	public void boundariesOnContig(Long contigId, String rank) {
+//		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+//		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.searchOverlapTaxaOnContig(readsOnContig, rank);
+//		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
+	}
+	
+	@Get
+	@Path("/contig/overlapTaxaOnContig/{contigId}/{rank}")
+	public void overlapTaxaOnContig(Long contigId, String rank) {
 		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
-		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.createBoundariesFeatureViwer(readsOnContig, rank);
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.searchOverlapTaxaOnContig(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
 	
@@ -140,7 +147,7 @@ public class ContigController {
 		if (readOnContigTO.getTaxon() != null) {
 			return readOnContigTO.getTaxon().getScientificName();
 		} else {
-			return NO_TAXON;
+			return Taxon.NO_TAXON;
 		}
 
 	}

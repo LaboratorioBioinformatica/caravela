@@ -49,7 +49,6 @@
 		    				<ul class="dropdown-menu">
 		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/readsOnContig"/>">reads</a></li>
 		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/consensusReadsOnContig"/>">consensus reads</a></li>
-							<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/boundariesReadsOnContig"/>">boundaries</a></li>
 		    			</ul>
 	  				</div>
 					</div>
@@ -93,27 +92,45 @@
 $(document).ready(function(){
 
 	var urlReadsOnCOntig = '<c:url value="/contig/${viewingMode}/${contig.id}/${rank}"/>';
-
-
-	$.ajax({url:urlReadsOnCOntig, success: function(result){
-		$.each(result, function(k, v) {
-			console.log(k + ":" + v.length);
-
-			ft.addFeature({
-		        data: v,
-		        name: k,
-		        className: "reads_"+k.substring(0,3),
-		        color: randColor(),
-		        type: "multipleRect"
-		    });
-	   	});
-}});
+	var urlBoundariesReadsOnCOntig = '<c:url value="/contig/overlapTaxaOnContig/${contig.id}/${rank}"/>';
+	
+	var queueName = 'featureQueue';
+	var concurrentCalls = 2;
+	
+	addCallFeatureViewerToQueue(queueName,'multipleRect',urlReadsOnCOntig);
+	addCallFeatureViewerToQueue(queueName,'path',urlBoundariesReadsOnCOntig);
+	
+	$(document).dequeue(queueName);
+	
 
 
 });
 
 function randColor(){
 	return '#'+Math.floor(Math.random()*16777215).toString(16);
+}
+
+function addCallFeatureViewerToQueue(qName, fvType, apiURL) {
+	
+    $(document).queue(qName, function() {
+    	$.ajax({url:apiURL, success: function(result){
+    		$.each(result, function(k, v) {
+    			
+    			console.log(k + ":" + v.length);
+    			
+    			ft.addFeature({
+    		        data: v,
+    		        name: k,
+    		        className: "reads_"+k.substring(0,3),
+    		        color: randColor(),
+    		        type: fvType
+    		    });
+    	   	});
+    		 // activate the next ajax call when this one finishes
+    		$(document).dequeue(qName);
+    	}});
+        
+    });
 }
 </script>
 
