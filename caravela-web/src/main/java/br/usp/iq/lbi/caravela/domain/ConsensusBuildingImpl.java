@@ -23,8 +23,10 @@ public class ConsensusBuildingImpl implements ConsensusBuilding {
 		Iterator<FeatureViewerDataTO> iteratorFeature = featureViewerDataTOList.iterator();
 		
 		while(iteratorFeature.hasNext()){
-			
+	
 			FeatureViewerDataTO next = iteratorFeature.next();
+			
+			
 			
 			if(current == null){
 				current = next;
@@ -32,6 +34,7 @@ public class ConsensusBuildingImpl implements ConsensusBuilding {
 			}
 			
 			FeatureViewerDataTO unionFeature = current.unionFeature(next);
+			
 			if(unionFeature != null ){
 				current = unionFeature;
 			} else {
@@ -43,6 +46,7 @@ public class ConsensusBuildingImpl implements ConsensusBuilding {
 			if( ! iteratorFeature.hasNext()) {
 				listConsensus.add(current);
 			}
+			
 		}
 		
 		return listConsensus;
