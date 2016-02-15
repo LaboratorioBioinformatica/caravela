@@ -65,11 +65,11 @@ public class ContigController {
 	}
 	
 	@Get
-	@Path("/contig/boundariesReadsOnContig/{contigId}/{rank}")
-	public void boundariesOnContig(Long contigId, String rank) {
-//		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
-//		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.searchOverlapTaxaOnContig(readsOnContig, rank);
-//		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
+	@Path("/contig/undefinedRegionsOnContig/{contigId}/{rank}")
+	public void undefinedRegionsOnContig(Long contigId, String rank) {
+		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.undefinedRegions(readsOnContig, rank);
+		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
 	
 	@Get

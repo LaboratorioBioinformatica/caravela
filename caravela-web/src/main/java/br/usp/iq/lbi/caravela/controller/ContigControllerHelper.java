@@ -26,6 +26,8 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 @RequestScoped
 public class ContigControllerHelper {
 	
+	private static final String UNDEFINED_REGION_KEY = "Undefined Region";
+	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	@Inject
 	private ReadWrapper readWrapper; 
 	@Inject
@@ -66,22 +68,33 @@ public class ContigControllerHelper {
 		
 	}
 	
-	public Map<String, List<FeatureViewerDataTO>> searchOverlapTaxaOnContig(List<Read> readsOnContig, String rank){
-
+	public Map<String, List<FeatureViewerDataTO>> undefinedRegions(List<Read> readsOnContig, String rank){
+		
+		Map<String, List<FeatureViewerDataTO>> searchOverlapTaxaOnContig = searchOverlapTaxaOnContig(readsOnContig, rank);
+		List<FeatureViewerDataTO> overlapTaxaList = searchOverlapTaxaOnContig.get(OVERLAP_TAXA_KEY);
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
 		
-		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createReadsFeatureViwer(readsOnContig, rank).entrySet();
-		
-		for (Entry<String, List<FeatureViewerDataTO>> featureViewerDataEntity : featureViewerDataSet) {
-			String key = featureViewerDataEntity.getKey();
-			List<FeatureViewerDataTO> featureViewerDataTOListConsensus = consensusBuilding.buildConsensus(featureViewerDataEntity.getValue());
-			featureViewerConsensusDataMap.put(key, featureViewerDataTOListConsensus);
+		if( moreThanOne(overlapTaxaList) ){
+			List<FeatureViewerDataTO> featureViewerDataTOListConsensus = consensusBuilding.buildConsensus(overlapTaxaList);
+			featureViewerConsensusDataMap.put(UNDEFINED_REGION_KEY, featureViewerDataTOListConsensus);
+		} else {
+			featureViewerConsensusDataMap.put(UNDEFINED_REGION_KEY, overlapTaxaList);
 		}
 		
-		//No taxon should not participate of undefine segments building.  
-		featureViewerConsensusDataMap.remove(Taxon.NO_TAXON);
 		
-		List<Segment> buildUndfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(featureViewerConsensusDataMap);
+		
+		return featureViewerConsensusDataMap;
+		
+	}
+
+
+	private boolean moreThanOne(List<FeatureViewerDataTO> overlapTaxaList) {
+		return overlapTaxaList.size() > 1;
+	}
+	
+	public Map<String, List<FeatureViewerDataTO>> searchOverlapTaxaOnContig(List<Read> readsOnContig, String rank){
+
+		List<Segment> buildUndfinedSegmentsByTaxon = searchOverlap(readsOnContig, rank);
 		
 		List<FeatureViewerDataTO> list = new ArrayList<FeatureViewerDataTO>();
 		
@@ -99,11 +112,30 @@ public class ContigControllerHelper {
 		}
 		
 		Map<String, List<FeatureViewerDataTO>> mapResult = new HashMap<String, List<FeatureViewerDataTO>>();
-		mapResult.put("Overlap taxa", list);
+		mapResult.put(OVERLAP_TAXA_KEY, list);
 		
 		
 		return mapResult;
 
+	}
+
+
+	private List<Segment> searchOverlap(List<Read> readsOnContig, String rank) {
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		
+		Set<Entry<String,List<FeatureViewerDataTO>>> featureViewerDataSet = createReadsFeatureViwer(readsOnContig, rank).entrySet();
+		
+		for (Entry<String, List<FeatureViewerDataTO>> featureViewerDataEntity : featureViewerDataSet) {
+			String key = featureViewerDataEntity.getKey();
+			List<FeatureViewerDataTO> featureViewerDataTOListConsensus = consensusBuilding.buildConsensus(featureViewerDataEntity.getValue());
+			featureViewerConsensusDataMap.put(key, featureViewerDataTOListConsensus);
+		}
+		
+		//No taxon should not participate of undefine segments building.  
+		featureViewerConsensusDataMap.remove(Taxon.NO_TAXON);
+		
+		List<Segment> buildUndfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(featureViewerConsensusDataMap);
+		return buildUndfinedSegmentsByTaxon;
 	}
 	
 	
