@@ -34,7 +34,7 @@ public class ContigConverter {
 		TaxonTO taxonTO = null;
 		
 		if(read.hasTaxon()){
-			Taxon taxon = read.getTaxonLineagemByRank("genus");
+			Taxon taxon = read.getTaxonByRank("genus");
 			
 			if(taxon == null){
 				taxon = read.getTaxon();

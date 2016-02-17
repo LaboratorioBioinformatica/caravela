@@ -10,44 +10,46 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 
-import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
-import br.usp.iq.lbi.caravela.dto.featureViewer.Segment;
+import br.usp.iq.lbi.caravela.intervalTree.Segment;
+import br.usp.iq.lbi.caravela.model.Taxon;
 
 @RequestScoped
 public class SegmentsCalculatorImpl implements SegmentsCalculator {
 
 	
 
-	public List<Segment> buildUndfinedSegmentsByTaxon(Map<String, List<FeatureViewerDataTO>> featureViewerData) {
-		Map<String, List<FeatureViewerDataTO>> featureViewerDatacopy = new HashMap<String, List<FeatureViewerDataTO>>();
-		featureViewerDatacopy.putAll(featureViewerData);
+	public List<Segment<Taxon>> buildUndfinedSegmentsByTaxon(Map<Taxon, List<Segment<Taxon>>> segmentsConsensusList) {
 		
-		List<Segment> segments = new ArrayList<Segment>();
+		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusListCopy = new HashMap<Taxon, List<Segment<Taxon>>>();
 		
-		Set<Entry<String,List<FeatureViewerDataTO>>> allFeatureViewerDataSet = featureViewerData.entrySet();
+		segmentsConsensusListCopy.putAll(segmentsConsensusList);
+		
+		List<Segment<Taxon>> segments = new ArrayList<Segment<Taxon>>();
+		
+		Set<Entry<Taxon,List<Segment<Taxon>>>> allFeatureViewerDataSet = segmentsConsensusList.entrySet();
 		
 		
-		for (Entry<String, List<FeatureViewerDataTO>> currentFeatureViewerEntry : allFeatureViewerDataSet) {
-			List<FeatureViewerDataTO> currentList = currentFeatureViewerEntry.getValue();
-			String currentKey = currentFeatureViewerEntry.getKey(); 
+		for (Entry<Taxon, List<Segment<Taxon>>> currentSegmentConsensusEntry : allFeatureViewerDataSet) {
+			List<Segment<Taxon>> currentList = currentSegmentConsensusEntry.getValue();
+			Taxon currentKey = currentSegmentConsensusEntry.getKey(); 
 				
-			featureViewerDatacopy.remove(currentKey);
+			segmentsConsensusListCopy.remove(currentKey);
 			
-			Set<Entry<String,List<FeatureViewerDataTO>>> targetEntrySet = featureViewerDatacopy.entrySet();
+			Set<Entry<Taxon, List<Segment<Taxon>>>> targetEntrySet = segmentsConsensusListCopy.entrySet();
 			
-			for (Entry<String, List<FeatureViewerDataTO>> targetEntry : targetEntrySet) {
-				List<FeatureViewerDataTO> targetList = targetEntry.getValue();
-				for (FeatureViewerDataTO currentFeature : currentList) {
-					for (FeatureViewerDataTO targetFeature : targetList) {
-						Segment segment = currentFeature.getIntersect(targetFeature);
+			for (Entry<Taxon, List<Segment<Taxon>>> targetEntry : targetEntrySet) {
+				List<Segment<Taxon>> targetList = targetEntry.getValue();
+				for (Segment<Taxon> currentSegment : currentList) {
+					for (Segment<Taxon> targetFeature : targetList) {
+						Segment<Taxon> segment = currentSegment.getIntersect(targetFeature);
 						if(segment != null){
 							segments.add(segment);
 						}
 					}
 				}
 			}
-			currentKey = currentFeatureViewerEntry.getKey();
-			currentList = currentFeatureViewerEntry.getValue();
+			currentKey = currentSegmentConsensusEntry.getKey();
+			currentList = currentSegmentConsensusEntry.getValue();
 		}
 		
 		Collections.sort(segments);

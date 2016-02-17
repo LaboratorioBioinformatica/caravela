@@ -65,51 +65,7 @@ public class FeatureViewerDataTOTest {
 		
 	}
 	
-	@Test
-	public void testUnion() throws Exception {
-		
-		FeatureViewerDataTO reference = new FeatureViewerDataTO(10, 100, "description", "1");
-		FeatureViewerDataTO sameReference = new FeatureViewerDataTO(10, 100, "description", "1");
-		FeatureViewerDataTO LimitsInsedeReference = new FeatureViewerDataTO(11, 99, "description", "1");
-		FeatureViewerDataTO insedeReference = new FeatureViewerDataTO(20, 29, "description", "1");
-		
-		FeatureViewerDataTO IntersectOnLeftOfReference = new FeatureViewerDataTO(1, 15, "description", "1");
-		FeatureViewerDataTO IntersectOnLimitLeftOfReference = new FeatureViewerDataTO(1, 10, "description", "1");
-		
-		FeatureViewerDataTO NoIntersectOnLeftOfReference = new FeatureViewerDataTO(1, 5, "description", "1");
-		FeatureViewerDataTO NoIntersectOnLimitLeftOfReference = new FeatureViewerDataTO(1, 9, "description", "1");
-		
-		FeatureViewerDataTO IntersectOnLimitRigthOfReference = new FeatureViewerDataTO(100, 110, "description", "1");
-		FeatureViewerDataTO IntersectOnRigthOfReference = new FeatureViewerDataTO(90, 115, "description", "1");
-		
-		FeatureViewerDataTO NoIntersectOnLimitRigthOfReference = new FeatureViewerDataTO(101, 110, "description", "1");
-		FeatureViewerDataTO NoIntersectOnRigthOfReference = new FeatureViewerDataTO(150, 180, "description", "1");
-		
-		ArrayList<String> species = new ArrayList<String>();
-		
-		Assert.assertEquals(new Segment(10, 100, species), reference.union(sameReference));
-		Assert.assertEquals(new Segment(10, 100, species), sameReference.union(reference));
-		Assert.assertEquals(new Segment(10, 100, species), reference.union(LimitsInsedeReference));
-		Assert.assertEquals(new Segment(10, 100, species), LimitsInsedeReference.union(reference));
-		
-		Assert.assertEquals(new Segment(10, 100, species), reference.union(insedeReference));
-		Assert.assertEquals(new Segment(1, 100, species), reference.union(IntersectOnLeftOfReference));
-		Assert.assertEquals(new Segment(1, 100, species), reference.union(IntersectOnLimitLeftOfReference));
-		
-		Assert.assertNull(reference.union(NoIntersectOnLeftOfReference));
-		Assert.assertNull(reference.union(NoIntersectOnLimitLeftOfReference));
-
-		
-		Assert.assertEquals(new Segment(10, 110, species), reference.union(IntersectOnLimitRigthOfReference));
-		Assert.assertEquals(new Segment(10, 115, species), reference.union(IntersectOnRigthOfReference));
-//		
-		Assert.assertNull(reference.union(NoIntersectOnRigthOfReference));
-		Assert.assertNull(reference.union(NoIntersectOnLimitRigthOfReference));
-
-		
-		
-		
-	}
+	
 	
 	@Test
 	public void testCotains() throws Exception {
@@ -140,53 +96,6 @@ public class FeatureViewerDataTOTest {
 		
 	}
 	
-	@Test
-	public void getIntersect() throws Exception {
-		
-		String taxonA = "A";
-		String taxonB = "B";
-		
-		FeatureViewerDataTO reference = new FeatureViewerDataTO(10, 100, taxonA, "1");
-		FeatureViewerDataTO sameReference = new FeatureViewerDataTO(10, 100, taxonB, "1");
-		FeatureViewerDataTO insedeReference = new FeatureViewerDataTO(20, 29, taxonB, "1");
-		FeatureViewerDataTO onLimitOfRigthOfReference = new FeatureViewerDataTO(100, 110, taxonB, "1");
-		FeatureViewerDataTO onRigthOfReference = new FeatureViewerDataTO(80, 115, taxonB, "1");
-		FeatureViewerDataTO limitsInsedeReference = new FeatureViewerDataTO(11, 99, taxonB, "1");
-		FeatureViewerDataTO OnLimitOfLeftOfReference = new FeatureViewerDataTO(1, 10, taxonB, "1");
-		FeatureViewerDataTO onLeftOfReference = new FeatureViewerDataTO(5, 25, taxonB, "1");
-		
-		FeatureViewerDataTO outOfLimitOfRigthtOfReference = new FeatureViewerDataTO(101, 110, taxonB, "1");
-		FeatureViewerDataTO outOfLimitOfLeftOfReference = new FeatureViewerDataTO(1, 9, taxonB, "1");
-		
-		ArrayList<String> taxonList = new ArrayList<String>();
-		taxonList.add(taxonA);
-		taxonList.add(taxonB);
-		
-		Segment segmentSameReference = new Segment(10, 100, taxonList);
-		Segment segmentInsedeReference = new Segment(20, 29, taxonList);
-		Segment segmentOnLimitOfRigthtOfReference = new Segment(100, 100, taxonList);
-		Segment segmentOnRigthOfReference = new Segment(80, 100, taxonList);
-		Segment segmentLimitsInsedeReference = new Segment(11, 99, taxonList);
-		Segment segmentOnLimitOfLeftOfReference = new Segment(10, 10, taxonList);
-		Segment segmentOnLeftOfReference = new Segment(10, 25, taxonList);
-		
-		
-		Assert.assertEquals(segmentSameReference, reference.getIntersect(sameReference));
-		Assert.assertEquals(segmentInsedeReference, reference.getIntersect(insedeReference));
-		Assert.assertEquals(segmentOnLimitOfRigthtOfReference, reference.getIntersect(onLimitOfRigthOfReference));
-		Assert.assertEquals(segmentOnRigthOfReference, reference.getIntersect(onRigthOfReference));
-		Assert.assertEquals(segmentLimitsInsedeReference, reference.getIntersect(limitsInsedeReference));
-		Assert.assertEquals(segmentOnLimitOfLeftOfReference, reference.getIntersect(OnLimitOfLeftOfReference));
-		Assert.assertEquals(segmentOnLeftOfReference, reference.getIntersect(onLeftOfReference));
-
-		Assert.assertNull(reference.getIntersect(outOfLimitOfRigthtOfReference));
-		Assert.assertNull(reference.getIntersect(outOfLimitOfLeftOfReference));
-		
-
-
-		
-	}
-
 	
 	@Test
 	public void testIsOnLeft() throws Exception {

@@ -147,7 +147,7 @@ public class ContigController {
 		if (readOnContigTO.getTaxon() != null) {
 			return readOnContigTO.getTaxon().getScientificName();
 		} else {
-			return Taxon.NO_TAXON;
+			return Taxon.getNOTaxon().getScientificName();
 		}
 
 	}

@@ -9,6 +9,11 @@ import org.junit.Test;
 public class TaxonTest {
 	
 	
+	private static final Long NO_TAXON_ID = 0L;
+	private static final Long NO_TAXON_PARENT_ID = 0L;
+	private static final String NO_TAXON_SCIENTIFIC_NAME = "no taxon";
+	private static final String NO_TAXON_RANK = "no taxon";
+	
 	private String reference;
 	private Sample sample;
 	private Contig contig;
@@ -32,8 +37,11 @@ public class TaxonTest {
 		
 		Taxon taxon = new Taxon(taxonomyId, taxonomyParentId, "scientificName", "Rank");
 		Taxon otherTaxon = new Taxon(taxonomyId, taxonomyParentId, "scientificName", "hnk");
+		Taxon NOTaxon = new Taxon(NO_TAXON_ID, NO_TAXON_PARENT_ID, NO_TAXON_SCIENTIFIC_NAME, NO_TAXON_RANK);
 		
 		Assert.assertTrue(taxon.equals(otherTaxon));
+		
+		Assert.assertEquals(Taxon.getNOTaxon(), NOTaxon);
 	}
 
 

@@ -10,10 +10,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="taxon")
-public class Taxon implements Serializable {
+public class Taxon implements Comparable<Taxon>, Serializable {
 	
+
 	private static final long serialVersionUID = 3637514606101828793L;
-	public static final String NO_TAXON = "no taxon";
+	
+	private static final long NO_TAXONOMY_PARENT_ID = 0l;
+	private static final long NO_TAXONOMY_ID = 0l;
+	private static final String NO_TAXONOMY_SCIENTIFIC_NAME = "no taxon";
+	private static final String NO_TAXONOMY_RANK = "no taxon";
 	
 	@Id
 	@GeneratedValue
@@ -36,6 +41,11 @@ public class Taxon implements Serializable {
 		this.taxonomyParentId = taxonomyParentId;
 		this.scientificName = scientificName; 
 		this.rank = rank;
+	}
+	
+	public static final Taxon getNOTaxon(){
+		return new Taxon(NO_TAXONOMY_ID,NO_TAXONOMY_PARENT_ID, NO_TAXONOMY_SCIENTIFIC_NAME, NO_TAXONOMY_RANK);
+		
 	}
 
 	public Long getId() {
@@ -65,6 +75,11 @@ public class Taxon implements Serializable {
 	}
 	
 	@Override
+	public String toString() {
+		return getScientificName();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if(! (obj instanceof Taxon)) {
 			return false;
@@ -75,6 +90,10 @@ public class Taxon implements Serializable {
 		
 		Taxon taxon = (Taxon) obj;
 		return this.taxonomyId == taxon.getTaxonomyId() && this.scientificName.equals(taxon.getScientificName()); 
+	}
+
+	public int compareTo(Taxon o) {
+		return this.scientificName.compareTo(o.getScientificName());
 	}
 
 }

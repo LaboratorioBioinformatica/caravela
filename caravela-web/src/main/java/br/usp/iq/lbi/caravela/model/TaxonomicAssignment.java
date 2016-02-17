@@ -56,7 +56,7 @@ public class TaxonomicAssignment implements Serializable {
 	}
 	
 	
-	public Taxon getTaxonLineagemByRank(String rank){
+	public Taxon getTaxonByRank(String rank){
 		if(lineagem != null){
 			return lineagem.get(rank);
 		} else {

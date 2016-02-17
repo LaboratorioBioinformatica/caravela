@@ -9,8 +9,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
-import br.usp.iq.lbi.caravela.dto.featureViewer.Segment;
+import br.usp.iq.lbi.caravela.intervalTree.Segment;
+import br.usp.iq.lbi.caravela.model.Taxon;
 
 public class SegmentsCalculatorImplTest {
 	
@@ -20,49 +20,55 @@ public class SegmentsCalculatorImplTest {
 	public void teste1() throws Exception {
 	SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
 		
-		List<FeatureViewerDataTO> featureViewerDataA = new ArrayList<FeatureViewerDataTO>();
-		List<FeatureViewerDataTO> featureViewerDataB = new ArrayList<FeatureViewerDataTO>();
-		List<FeatureViewerDataTO> featureViewerDataC = new ArrayList<FeatureViewerDataTO>();
+		List<Segment<Taxon>> segmentListA = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> segmentListB = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> segmentListC = new ArrayList<Segment<Taxon>>();
 		
-		String taxonA = "Arcobacter";
-		String taxonB = "Streptococcus";
-		String taxonC = "no taxon";
+		Taxon taxonA = new Taxon(1l,1l,"Arcobacter", "genus");
+		Taxon taxonB = new Taxon(2l,1l,"Streptococcus", "genus");
+		Taxon taxonC = Taxon.getNOTaxon();
 		
-		featureViewerDataA.add(new FeatureViewerDataTO(25, 1321, taxonA, "1635638"));
-		featureViewerDataA.add(new FeatureViewerDataTO(1326, 1835, taxonA, "1635668"));
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> taxonListB = createTaxonList(taxonB);
+		List<Taxon> taxonListC = createTaxonList(taxonC);
+		
+		
+		segmentListA.add(new Segment<Taxon>(25, 1321, taxonListA));
+		segmentListA.add(new Segment<Taxon>(1326, 1835, taxonListA));
 
-		featureViewerDataB.add(new FeatureViewerDataTO(878, 1128, taxonB, "1635660"));
-		featureViewerDataB.add(new FeatureViewerDataTO(1182, 1425, taxonB, "1635667"));
+		segmentListB.add(new Segment<Taxon>(878, 1128, taxonListB));
+		segmentListB.add(new Segment<Taxon>(1182, 1425, taxonListB));
 		
-		featureViewerDataC.add(new FeatureViewerDataTO(1405, 1477, taxonC, "1635670"));
-		featureViewerDataC.add(new FeatureViewerDataTO(1696, 1758, taxonC, "1635684"));
+		segmentListC.add(new Segment<Taxon>(1405, 1477, taxonListC));
+		segmentListC.add(new Segment<Taxon>(1696, 1758, taxonListC));
 		
-		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		Map<Taxon, List<Segment<Taxon>>> segmentsMap = new HashMap<Taxon, List<Segment<Taxon>>>();
 		
-		featureViewerDataMap.put(taxonA, featureViewerDataA);
-		featureViewerDataMap.put(taxonB, featureViewerDataB);
-		featureViewerDataMap.put(taxonC, featureViewerDataC);
+		segmentsMap.put(taxonA, segmentListA);
+		segmentsMap.put(taxonB, segmentListB);
+		segmentsMap.put(taxonC, segmentListC);
 		
 		
-		List<Segment> expectedUndefinedSegmentsByTaxon = new ArrayList<Segment>();
+		List<Segment<Taxon>> expectedUndefinedSegmentsByTaxon = new ArrayList<Segment<Taxon>>();
 		
-		List<String> segmentTaxonListAB = new ArrayList<String>();
+		List<Taxon> segmentTaxonListAB = new ArrayList<Taxon>();
 		segmentTaxonListAB.add(taxonA);
 		segmentTaxonListAB.add(taxonB);
-		Segment s1 = new Segment(878, 1128, segmentTaxonListAB);
-		Segment s2 = new Segment(1182, 1321, segmentTaxonListAB);
-		Segment s3 = new Segment(1326, 1425, segmentTaxonListAB);
 		
-		List<String> segmentTaxonListAC = new ArrayList<String>();
+		Segment<Taxon> s1 = new Segment<Taxon>(878, 1128, segmentTaxonListAB);
+		Segment<Taxon> s2 = new Segment<Taxon>(1182, 1321, segmentTaxonListAB);
+		Segment<Taxon> s3 = new Segment<Taxon>(1326, 1425, segmentTaxonListAB);
+		
+		List<Taxon> segmentTaxonListAC = new ArrayList<Taxon>();
 		segmentTaxonListAC.add(taxonA);
 		segmentTaxonListAC.add(taxonC);
-		Segment s4 = new Segment(1405, 1477, segmentTaxonListAC);
-		Segment s5 = new Segment(1696, 1758, segmentTaxonListAC);
+		Segment<Taxon> s4 = new Segment<Taxon>(1405, 1477, segmentTaxonListAC);
+		Segment<Taxon> s5 = new Segment<Taxon>(1696, 1758, segmentTaxonListAC);
 
-		List<String> sl6 = new ArrayList<String>();
+		List<Taxon> sl6 = new ArrayList<Taxon>();
 		sl6.add(taxonB);
 		sl6.add(taxonC);
-		Segment s6 = new Segment(1405, 1425, sl6);
+		Segment<Taxon> s6 = new Segment<Taxon>(1405, 1425, sl6);
 		
 		expectedUndefinedSegmentsByTaxon.add(s1);
 		expectedUndefinedSegmentsByTaxon.add(s2);
@@ -71,82 +77,90 @@ public class SegmentsCalculatorImplTest {
 		expectedUndefinedSegmentsByTaxon.add(s5);
 		expectedUndefinedSegmentsByTaxon.add(s6);
 		
+		List<Segment<Taxon>> buildSegmentsByTaxon = target.buildUndfinedSegmentsByTaxon(segmentsMap);
+	
 		Collections.sort(expectedUndefinedSegmentsByTaxon);
-		
-		List<Segment> buildSegmentsByTaxon = target.buildUndfinedSegmentsByTaxon(featureViewerDataMap);
 		
 		Assert.assertEquals(expectedUndefinedSegmentsByTaxon, buildSegmentsByTaxon);
 		
 		
 	}
-	
+
 	@Test
 	public void teste2() throws Exception {
 	SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
 		
-		List<FeatureViewerDataTO> featureViewerDataA = new ArrayList<FeatureViewerDataTO>();
-		List<FeatureViewerDataTO> featureViewerDataB = new ArrayList<FeatureViewerDataTO>();
-		List<FeatureViewerDataTO> featureViewerDataC = new ArrayList<FeatureViewerDataTO>();
-		List<FeatureViewerDataTO> featureViewerDataD = new ArrayList<FeatureViewerDataTO>();
-		List<FeatureViewerDataTO> featureViewerDataE = new ArrayList<FeatureViewerDataTO>();
-		
-		String taxonA = "Arcobacter";
-		String taxonB = "Streptococcus";
-		String taxonC = "no taxon";
-		String taxonD = "Fusca";
-		String taxonE = "Bispora";
-		
-		featureViewerDataA.add(new FeatureViewerDataTO(1, 100, taxonA, "1635638"));
-		featureViewerDataB.add(new FeatureViewerDataTO(10, 30, taxonB, "1635660"));
-		featureViewerDataC.add(new FeatureViewerDataTO(40, 120, taxonC, "1635670"));
-		featureViewerDataD.add(new FeatureViewerDataTO(60, 90, taxonD, "1855668"));
-		featureViewerDataE.add(new FeatureViewerDataTO(80, 150, taxonE, "1637967"));
-		
-		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
-		
-		featureViewerDataMap.put(taxonA, featureViewerDataA);
-		featureViewerDataMap.put(taxonB, featureViewerDataB);
-		featureViewerDataMap.put(taxonC, featureViewerDataC);
-		featureViewerDataMap.put(taxonD, featureViewerDataD);
-		featureViewerDataMap.put(taxonE, featureViewerDataE);
+		List<Segment<Taxon>> featureViewerDataA = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> featureViewerDataB = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> featureViewerDataC = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> featureViewerDataD = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> featureViewerDataE = new ArrayList<Segment<Taxon>>();
 		
 		
-		List<Segment> expectedUndefinedSegmentsByTaxon = new ArrayList<Segment>();
+		Taxon taxonA = new Taxon(1l,1l,"Arcobacter", "genus");
+		Taxon taxonB = new Taxon(2l,1l,"Streptococcus", "genus");
+		Taxon taxonC = Taxon.getNOTaxon();
+		Taxon taxonD = new Taxon(3l,1l,"Fusca", "genus");
+		Taxon taxonE = new Taxon(4l,1l,"Bispora", "genus");
 		
-		List<String> segmentTaxonListAB = new ArrayList<String>();
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> taxonListB = createTaxonList(taxonB);
+		List<Taxon> taxonListC = createTaxonList(taxonC);
+		List<Taxon> taxonListD = createTaxonList(taxonD);
+		List<Taxon> taxonListE = createTaxonList(taxonE);
+		
+		featureViewerDataA.add(new Segment<Taxon>(1, 100, taxonListA));
+		featureViewerDataB.add(new Segment<Taxon>(10, 30, taxonListB));
+		featureViewerDataC.add(new Segment<Taxon>(40, 120, taxonListC));
+		featureViewerDataD.add(new Segment<Taxon>(60, 90, taxonListD));
+		featureViewerDataE.add(new Segment<Taxon>(80, 150, taxonListE));
+		
+		Map<Taxon, List<Segment<Taxon>>> segmentsMap = new HashMap<Taxon, List<Segment<Taxon>>>();
+		
+		segmentsMap.put(taxonA, featureViewerDataA);
+		segmentsMap.put(taxonB, featureViewerDataB);
+		segmentsMap.put(taxonC, featureViewerDataC);
+		segmentsMap.put(taxonD, featureViewerDataD);
+		segmentsMap.put(taxonE, featureViewerDataE);
+		
+		
+		List<Segment<Taxon>> expectedUndefinedSegmentsByTaxon = new ArrayList<Segment<Taxon>>();
+		
+		List<Taxon> segmentTaxonListAB = new ArrayList<Taxon>();
+		
 		segmentTaxonListAB.add(taxonA);
 		segmentTaxonListAB.add(taxonB);
-		Segment s1AB = new Segment(10, 30, segmentTaxonListAB);
+		Segment<Taxon> s1AB = new Segment<Taxon>(10, 30, segmentTaxonListAB);
 		
-		List<String> segmentTaxonListAC = new ArrayList<String>();
+		List<Taxon> segmentTaxonListAC = new ArrayList<Taxon>();
 		segmentTaxonListAC.add(taxonA);
 		segmentTaxonListAC.add(taxonC);
-		Segment s1AC = new Segment(40, 100, segmentTaxonListAC);
+		Segment<Taxon> s1AC = new Segment<Taxon>(40, 100, segmentTaxonListAC);
 		
-		List<String> segmentTaxonListAD = new ArrayList<String>();
+		List<Taxon> segmentTaxonListAD = new ArrayList<Taxon>();
 		segmentTaxonListAD.add(taxonA);
 		segmentTaxonListAD.add(taxonD);
-		Segment s1AD = new Segment(60, 90, segmentTaxonListAD);
+		Segment<Taxon> s1AD = new Segment<Taxon>(60, 90, segmentTaxonListAD);
 		
-		List<String> segmentTaxonListAE = new ArrayList<String>();
+		List<Taxon> segmentTaxonListAE = new ArrayList<Taxon>();
 		segmentTaxonListAE.add(taxonA);
 		segmentTaxonListAE.add(taxonE);
-		Segment s1AE = new Segment(80, 100, segmentTaxonListAE);
+		Segment<Taxon> s1AE = new Segment<Taxon>(80, 100, segmentTaxonListAE);
 		
-		List<String> segmentTaxonListCD = new ArrayList<String>();
+		List<Taxon> segmentTaxonListCD = new ArrayList<Taxon>();
 		segmentTaxonListCD.add(taxonC);
 		segmentTaxonListCD.add(taxonD);
-		Segment s1CD = new Segment(60, 90, segmentTaxonListCD);
+		Segment<Taxon> s1CD = new Segment<Taxon>(60, 90, segmentTaxonListCD);
 		
-		List<String> segmentTaxonListCE = new ArrayList<String>();
+		List<Taxon> segmentTaxonListCE = new ArrayList<Taxon>();
 		segmentTaxonListCE.add(taxonC);
 		segmentTaxonListCE.add(taxonE);
-		Segment s1CE = new Segment(80, 120, segmentTaxonListCE);
+		Segment<Taxon> s1CE = new Segment<Taxon>(80, 120, segmentTaxonListCE);
 		
-		List<String> segmentTaxonListDE = new ArrayList<String>();
+		List<Taxon> segmentTaxonListDE = new ArrayList<Taxon>();
 		segmentTaxonListDE.add(taxonD);
 		segmentTaxonListDE.add(taxonE);
-		Segment s1DE = new Segment(80, 90, segmentTaxonListDE);
+		Segment<Taxon> s1DE = new Segment<Taxon>(80, 90, segmentTaxonListDE);
 
 		
 		expectedUndefinedSegmentsByTaxon.add(s1AB);
@@ -159,12 +173,21 @@ public class SegmentsCalculatorImplTest {
 		
 		Collections.sort(expectedUndefinedSegmentsByTaxon);
 		
-		List<Segment> buildSegmentsByTaxon = target.buildUndfinedSegmentsByTaxon(featureViewerDataMap);
+		List<Segment<Taxon>> buildSegmentsByTaxon = target.buildUndfinedSegmentsByTaxon(segmentsMap);
 		
 		Assert.assertEquals(expectedUndefinedSegmentsByTaxon, buildSegmentsByTaxon);
 		
 		
 	}
+	
+	private List<Taxon> createTaxonList(Taxon... taxons) {
+		List<Taxon> taxonList = new ArrayList<Taxon>();
+		for (Taxon taxon : taxons) {
+			taxonList.add(taxon);
+		}
+		return taxonList;
+	}
+	
 
 
 }

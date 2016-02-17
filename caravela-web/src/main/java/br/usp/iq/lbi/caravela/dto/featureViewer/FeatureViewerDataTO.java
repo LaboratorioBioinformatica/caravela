@@ -1,7 +1,6 @@
 package br.usp.iq.lbi.caravela.dto.featureViewer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Serializable {
 	
@@ -53,67 +52,12 @@ public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Se
 		return contains(other.getX()) && contains(other.getY());
 	}
 	
-	public Segment union(FeatureViewerDataTO other){
-		Segment segment = null;
-		if(this.intersects(other)){
-			if(this.contains(other)){
-				segment = new Segment(this.x, this.y, new ArrayList<String>());
-			} else if(other.contains(this)){
-				segment = new Segment(other.x, other.y, new ArrayList<String>());
-			} else if(this.isOnLeft(other)) {
-				segment = new Segment(other.x, this.y, new ArrayList<String>());
-			} else if(this.isOnRigth(other)){
-				segment = new Segment(this.x, other.y, new ArrayList<String>());
-			}
-		}
-		return segment;
-	}
-
-	public FeatureViewerDataTO unionFeature(FeatureViewerDataTO other){
-		FeatureViewerDataTO feature = null;
-		if(this.intersects(other)){
-			if(this.contains(other)){
-				feature = new FeatureViewerDataTO(this.x, this.y, this.getDescription(), this.getId());
-			} else if(other.contains(this)){
-				feature =  new FeatureViewerDataTO(other.x, other.y, this.getDescription(), this.getId());
-			} else if(this.isOnLeft(other)) {
-				feature =  new FeatureViewerDataTO(other.x, this.y, this.getDescription(), this.getId());
-			} else if(this.isOnRigth(other)){
-				feature =  new FeatureViewerDataTO(this.x, other.y, this.getDescription(), this.getId());
-			}
-		}
-		return feature;
-	}
 	
 	public boolean intersects(FeatureViewerDataTO other) {
 		// modify to close interval
 		return other.getY() >= x && other.getX() <= y;
 	}
 	
-	public Segment getIntersect(FeatureViewerDataTO other) {
-		
-		Segment segment = null;
-		if(this.intersects(other)){
-			if(this.contains(other)){
-				segment = new Segment(other.getX(), other.getY(), createTaxonList(other));
-			} else if(other.contains(this)){
-				segment = new Segment(x, y, createTaxonList(other));
-			} else if(this.isOnLeft(other)){
-				segment = new Segment(x, other.y, createTaxonList(other));
-			} else if(this.isOnRigth(other)){
-				segment = new Segment(other.x, y, createTaxonList(other));
-			}
-			
-		}
-		return segment;
-	}
-
-	private ArrayList<String> createTaxonList(FeatureViewerDataTO other) {
-		ArrayList<String> taxonList = new ArrayList<String>();
-		taxonList.add(getDescription());
-		taxonList.add(other.getDescription());
-		return taxonList;
-	}
 	
 	public int compareTo(FeatureViewerDataTO other) {
 		if (x < other.getX())

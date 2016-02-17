@@ -7,49 +7,84 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 
-import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
+import br.usp.iq.lbi.caravela.intervalTree.Segment;
+import br.usp.iq.lbi.caravela.model.Read;
+import br.usp.iq.lbi.caravela.model.Taxon;
 
 @RequestScoped
 public class ConsensusBuildingImpl implements ConsensusBuilding {
+	
+	private static final int NUMBER_ELEMENT_ENOUGH_TO_BUILD_CONSENSUS = 2;
 
-	public List<FeatureViewerDataTO> buildConsensus(List<FeatureViewerDataTO> featureViewerDataTOList) {
+	public List<Segment<Taxon>> buildSegmentsConsensus(List<Read> readList, String rank) {
 		
-		Collections.sort(featureViewerDataTOList);
+		List<Segment<Taxon>> segmentTaxonList = createSegmentTaxonList(readList, rank);
+		
+		return buildSegmentsConsensus(segmentTaxonList);
+	}
+
+	public List<Segment<Taxon>> buildSegmentsConsensus(List<Segment<Taxon>> segmentTaxonList) {
+		
+		if(hasEnoughElementsToBuildConsensus(segmentTaxonList)){
+			return segmentTaxonList;
+		}
+		
+		Collections.sort(segmentTaxonList);
 	
-		List<FeatureViewerDataTO> listConsensus = new ArrayList<FeatureViewerDataTO>();
-		FeatureViewerDataTO current = null;
+		List<Segment<Taxon>> listConsensus = new ArrayList<Segment<Taxon>>();
+		Segment<Taxon> current = null;
 		
+		Iterator<Segment<Taxon>> segmentIt = segmentTaxonList.iterator();
 		
-		Iterator<FeatureViewerDataTO> iteratorFeature = featureViewerDataTOList.iterator();
-		
-		while(iteratorFeature.hasNext()){
+		while(segmentIt.hasNext()){
 	
-			FeatureViewerDataTO next = iteratorFeature.next();
-			
-			
+			Segment<Taxon> next = segmentIt.next();
 			
 			if(current == null){
 				current = next;
 				continue;
 			}
 			
-			FeatureViewerDataTO unionFeature = current.unionFeature(next);
+			Segment<Taxon> joinedSegments = current.union(next);
 			
-			if(unionFeature != null ){
-				current = unionFeature;
+			if(joinedSegments != null ){
+				current = joinedSegments;
 			} else {
 				listConsensus.add(current);
 				current = next;
 			}
-			
 			//não existe mais elementos na lista! 
-			if( ! iteratorFeature.hasNext()) {
+			if( ! segmentIt.hasNext()) {
 				listConsensus.add(current);
 			}
-			
 		}
 		
 		return listConsensus;
+	}
+
+	private boolean hasEnoughElementsToBuildConsensus(List<Segment<Taxon>> segmentTaxonList) {
+		return segmentTaxonList.size() < NUMBER_ELEMENT_ENOUGH_TO_BUILD_CONSENSUS;
+	}
+
+	private List<Segment<Taxon>> createSegmentTaxonList(List<Read> readList, String rank) {
+		List<Segment<Taxon>> segmentTaxonList = new ArrayList<Segment<Taxon>>();
+		
+		for (Read read : readList) {
+			Taxon taxon = read.getTaxonByRank(rank);
+			if(taxon == null) {
+				taxon = read.getTaxon();
+				if(taxon == null){
+					taxon = Taxon.getNOTaxon();
+				}
+			} 
+			
+			List<Taxon> dataList = new ArrayList<Taxon>();
+			dataList.add(taxon);
+			
+			segmentTaxonList.add(new Segment<Taxon>(read.getStartAlignment(), read.getEndAlignment(), dataList));
+			
+		}
+		return segmentTaxonList;
 	}
 
 }
