@@ -73,6 +73,14 @@ public class ContigController {
 	}
 	
 	@Get
+	@Path("/contig/unknowRegionsOnContig/{contigId}/{rank}")
+	public void unknowRegionsOnContig(Long contigId, String rank) {
+		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.createUnknowRegions(readsOnContig, rank);
+		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
+	}
+	
+	@Get
 	@Path("/contig/overlapTaxaOnContig/{contigId}/{rank}")
 	public void overlapTaxaOnContig(Long contigId, String rank) {
 		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);

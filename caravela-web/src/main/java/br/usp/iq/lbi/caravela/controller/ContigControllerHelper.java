@@ -1,6 +1,7 @@
 package br.usp.iq.lbi.caravela.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 @RequestScoped
 public class ContigControllerHelper {
 	
+	private static final String UNKNOW_REGIONS = "unknow Regions";
 	private static final String UNDEFINED_REGION_KEY = "Undefined Region";
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	@Inject
@@ -52,6 +54,31 @@ public class ContigControllerHelper {
 		
 		return sortMap(featureViewerDataMap, createComparatorByNumberOfSegments());
 		
+	}
+	
+	
+	
+	public Map<String, List<FeatureViewerDataTO>> createUnknowRegions(List<Read> readsOnContig, String rank){
+		Map<Taxon, List<Read>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank);
+		
+		List<Read> noTaxonReadList = readsGroupedByTaxon.remove(Taxon.getNOTaxon());
+		
+		Collection<List<Read>> AllTaxonsCollections = readsGroupedByTaxon.values();
+		List<Read> allTaxonReadList = new ArrayList<Read>();
+		for (List<Read> list : AllTaxonsCollections) {
+			allTaxonReadList.addAll(list);
+		}
+		
+		List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxonReadList, rank);
+		List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(noTaxonReadList, rank);
+		
+		List<FeatureViewerDataTO> allTaxonfeatureViewerDataTOListConsensus = createFeatureViewerDataTOListConsensus(allTaxonSegmentsConsensus);
+		List<FeatureViewerDataTO> noTaxonfeatureViewerDataTOListConsensus = createFeatureViewerDataTOListConsensus(noTaxonSegmentsConsensus);
+		
+		Map<String, List<FeatureViewerDataTO>> allTaxonfeatureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		allTaxonfeatureViewerConsensusDataMap.put("No Taxon", noTaxonfeatureViewerDataTOListConsensus);
+		allTaxonfeatureViewerConsensusDataMap.put(UNKNOW_REGIONS, allTaxonfeatureViewerDataTOListConsensus);
+		return allTaxonfeatureViewerConsensusDataMap;
 	}
 	
 	
@@ -86,31 +113,6 @@ public class ContigControllerHelper {
 		return featureViewerDataTOListConsensus;
 	}
 
-
-	private String createFeatureViewerId(List<Taxon> taxonList) {
-		String id = "no id";
-		if(taxonList.size() == 1){
-			Taxon taxon = taxonList.get(0);
-			if(taxon != null && taxon.getId() != null){
-				id = taxon.getId().toString();
-			}
-		}
-		return id;
-		
-	}
-
-
-	private String createFeatureViewerDescription(List<Taxon> taxonList) {
-		String description = "";
-		Set<String> descriptions = new HashSet<String>();
-		for (Taxon taxon : taxonList) {
-			descriptions.add(taxon.getScientificName());
-		}
-		for (String string : descriptions) {
-			description = description + " | " + string;
-		}
-		return description;
-	}
 
 
 	public Map<String, List<FeatureViewerDataTO>> undefinedRegions(List<Read> readsOnContig, String rank){
@@ -198,6 +200,31 @@ public class ContigControllerHelper {
 		return comparator;
 	}
 	
+	private String createFeatureViewerId(List<Taxon> taxonList) {
+		String id = "no id";
+		if(taxonList.size() == 1){
+			Taxon taxon = taxonList.get(0);
+			if(taxon != null && taxon.getId() != null){
+				id = taxon.getId().toString();
+			}
+		}
+		return id;
+		
+	}
+
+
+	private String createFeatureViewerDescription(List<Taxon> taxonList) {
+		String description = "";
+		Set<String> descriptions = new HashSet<String>();
+		for (Taxon taxon : taxonList) {
+			descriptions.add(taxon.getScientificName());
+		}
+		for (String string : descriptions) {
+			description = description + " | " + string;
+		}
+		return description;
+	}
+
 	
 	
 

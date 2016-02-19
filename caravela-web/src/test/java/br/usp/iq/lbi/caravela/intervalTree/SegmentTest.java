@@ -194,7 +194,7 @@ public class SegmentTest {
 		
 		Segment<Taxon> sameCoordinatesReferenceAndSameDataList = new Segment<Taxon>(10, 100, dataListTaxonA);
 		
-		Segment<Taxon> insedeReference = new Segment<Taxon>(20, 29, dataListTaxonB);
+		Segment<Taxon> insideReference = new Segment<Taxon>(20, 29, dataListTaxonB);
 		Segment<Taxon> onLimitOfRigthOfReference = new Segment<Taxon>(100, 110, dataListTaxonB);
 		Segment<Taxon> onRigthOfReference = new Segment<Taxon>(80, 115, dataListTaxonB);
 		Segment<Taxon> limitsInsedeReference = new Segment<Taxon>(11, 99, dataListTaxonB);
@@ -220,7 +220,7 @@ public class SegmentTest {
 		
 		Assert.assertEquals(segmentSameReference, reference.getIntersect(sameReference));
 		Assert.assertEquals(segmentsameCoordinatesReferenceAndSameDataList, reference.getIntersect(sameCoordinatesReferenceAndSameDataList));
-		Assert.assertEquals(segmentInsedeReference, reference.getIntersect(insedeReference));
+		Assert.assertEquals(segmentInsedeReference, reference.getIntersect(insideReference));
 		Assert.assertEquals(segmentOnLimitOfRigthtOfReference, reference.getIntersect(onLimitOfRigthOfReference));
 		Assert.assertEquals(segmentOnRigthOfReference, reference.getIntersect(onRigthOfReference));
 		Assert.assertEquals(segmentLimitsInsedeReference, reference.getIntersect(limitsInsedeReference));
@@ -230,11 +230,65 @@ public class SegmentTest {
 		Assert.assertNull(reference.getIntersect(outOfLimitOfRigthtOfReference));
 		Assert.assertNull(reference.getIntersect(outOfLimitOfLeftOfReference));
 		
-
-
+	}
+	
+	@Test
+	public void testSubtracionbetweenSegments() throws Exception {
+		List<Taxon> dataListTaxonA = createTaxonDataList(1l,1l,"A", "taxon hank A");
+		List<Taxon> dataListTaxonB = createTaxonDataList(2l, 1l,"B", "taxon hank B");
+		
+		Segment<Taxon> reference = new Segment<Taxon>(50, 80, dataListTaxonA);
+		
+		Segment<Taxon> sameReference = new Segment<Taxon>(50, 80, dataListTaxonA);
+		Segment<Taxon> insideReference = new Segment<Taxon>(60, 70, dataListTaxonB);
+		Segment<Taxon> intersecstReferenceOnRight = new Segment<Taxon>(30, 55, dataListTaxonB);
+		
+		Segment<Taxon> intersecstReferenceOnRightLimit = new Segment<Taxon>(50, 60, dataListTaxonB);
+		
+		Segment<Taxon> intersecstReferenceOnLeft = new Segment<Taxon>(70, 100, dataListTaxonB);
+		
+		
+		
+		List<Segment<Taxon>> subtractResultListEmpty = new ArrayList<Segment<Taxon>>();
+		
+		@SuppressWarnings("unchecked")
+		List<Segment<Taxon>> subtractResultListWhenReferenceIsInside = createSubtractResultList(
+				new Segment<Taxon>(50, 59, dataListTaxonA), 
+				new Segment<Taxon>(71, 80, dataListTaxonA));
+		
+		@SuppressWarnings("unchecked")
+		List<Segment<Taxon>> subtractResultListWhenOtherIntersectsReferenceOnRight = createSubtractResultList(
+				new Segment<Taxon>(56, 80, dataListTaxonA));
+		
+		@SuppressWarnings("unchecked")
+		List<Segment<Taxon>> subtractResultListWhenOtherIntersectsReferenceOnRightLimit = createSubtractResultList(
+				new Segment<Taxon>(61, 80, dataListTaxonA));
+		
+		@SuppressWarnings("unchecked")
+		List<Segment<Taxon>> subtractResultListWhenOtherIntersectsReferenceOnLeft = createSubtractResultList(
+				new Segment<Taxon>(50, 69, dataListTaxonA));
+		
+		
+		
+		Assert.assertEquals(subtractResultListEmpty, reference.subtract(reference));
+		Assert.assertEquals(subtractResultListEmpty, reference.subtract(sameReference));
+		
+		Assert.assertEquals(subtractResultListWhenReferenceIsInside, reference.subtract(insideReference));
+		Assert.assertEquals(subtractResultListWhenOtherIntersectsReferenceOnRight, reference.subtract(intersecstReferenceOnRight));
+		
+		Assert.assertEquals(subtractResultListWhenOtherIntersectsReferenceOnRightLimit, reference.subtract(intersecstReferenceOnRightLimit));
+		Assert.assertEquals(subtractResultListWhenOtherIntersectsReferenceOnLeft, reference.subtract(intersecstReferenceOnLeft));
+		
 		
 	}
 	
+	private List<Segment<Taxon>> createSubtractResultList(Segment<Taxon>... segments){
+		List<Segment<Taxon>> resultList = new ArrayList<Segment<Taxon>>();
+		for (Segment<Taxon> segment : segments) {
+			resultList.add(segment);
+		}
+		return resultList;
+	}
 
 	private List<Taxon> createTaxonDataList(Long taxonomyId, Long taxonomyParentId, String scientificName, String rank) {
 		List<Taxon> dataList = new ArrayList<Taxon>();

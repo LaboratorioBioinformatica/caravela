@@ -14,6 +14,146 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 
 public class SegmentsCalculatorImplTest {
 	
+	@Test
+	public void testSubtractionBetweenSegmentLists () throws Exception {
+		
+		List<Segment<Taxon>> taxonsSegmentList = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> noTaxonSegmentList = new ArrayList<Segment<Taxon>>();
+		
+		
+		Taxon taxonA = new Taxon(1l,1l,"Taxon A", "genus");
+		Taxon noTaxon = Taxon.getNOTaxon();
+		
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> NotaxonList = createTaxonList(noTaxon);
+		
+		noTaxonSegmentList.add(new Segment<Taxon>(50, 120, NotaxonList));
+		noTaxonSegmentList.add(new Segment<Taxon>(280, 350, NotaxonList));
+		
+		taxonsSegmentList.add(new Segment<Taxon>(30, 100, taxonListA));
+		taxonsSegmentList.add(new Segment<Taxon>(150, 300, taxonListA));
+		taxonsSegmentList.add(new Segment<Taxon>(320, 330, taxonListA));
+		
+
+		List<Segment<Taxon>> noTaxonSubtractedSegmentList = new ArrayList<Segment<Taxon>>();
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(101, 120, NotaxonList));
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(301, 319, NotaxonList));
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(331, 350, NotaxonList));
+		
+		SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
+		
+		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
+		
+	}
+	
+	@Test
+	public void testSubtractionBetweenMinuendAndSubtrahendListWithJustOnlyOneElementWhenElementIsOnStartOfMinuend () throws Exception {
+		
+		List<Segment<Taxon>> taxonsSegmentList = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> noTaxonSegmentList = new ArrayList<Segment<Taxon>>();
+		
+		
+		Taxon taxonA = new Taxon(1l,1l,"Taxon A", "genus");
+		Taxon noTaxon = Taxon.getNOTaxon();
+		
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> NotaxonList = createTaxonList(noTaxon);
+		
+		noTaxonSegmentList.add(new Segment<Taxon>(1, 60, NotaxonList));
+		
+		taxonsSegmentList.add(new Segment<Taxon>(1, 10, taxonListA));
+		
+
+		List<Segment<Taxon>> noTaxonSubtractedSegmentList = new ArrayList<Segment<Taxon>>();
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(11, 60, NotaxonList));
+		
+		SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
+		
+		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
+		
+	}
+	
+	@Test
+	public void testSubtractionBetweenMinuendAndSubtrahendListWithJustOnlyOneElementWhenElementIsOnEndOfMinuend () throws Exception {
+		
+		List<Segment<Taxon>> taxonsSegmentList = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> noTaxonSegmentList = new ArrayList<Segment<Taxon>>();
+		
+		
+		Taxon taxonA = new Taxon(1l,1l,"Taxon A", "genus");
+		Taxon noTaxon = Taxon.getNOTaxon();
+		
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> NotaxonList = createTaxonList(noTaxon);
+		
+		noTaxonSegmentList.add(new Segment<Taxon>(1, 60, NotaxonList));
+		
+		taxonsSegmentList.add(new Segment<Taxon>(50, 60, taxonListA));
+		
+
+		List<Segment<Taxon>> noTaxonSubtractedSegmentList = new ArrayList<Segment<Taxon>>();
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(1, 49, NotaxonList));
+		
+		SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
+		
+		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
+		
+	}
+	
+	@Test
+	public void testSubtractionBetweenMinuendAndSubtrahendListWithJustOnlyOneElementWhenElementIsOnMidleOfMinuend () throws Exception {
+		
+		List<Segment<Taxon>> taxonsSegmentList = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> noTaxonSegmentList = new ArrayList<Segment<Taxon>>();
+		
+		
+		Taxon taxonA = new Taxon(1l,1l,"Taxon A", "genus");
+		Taxon noTaxon = Taxon.getNOTaxon();
+		
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> NotaxonList = createTaxonList(noTaxon);
+		
+		noTaxonSegmentList.add(new Segment<Taxon>(1, 60, NotaxonList));
+		
+		taxonsSegmentList.add(new Segment<Taxon>(20, 30, taxonListA));
+		
+
+		List<Segment<Taxon>> noTaxonSubtractedSegmentList = new ArrayList<Segment<Taxon>>();
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(1, 19, NotaxonList));
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(31, 60, NotaxonList));
+		
+		SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
+		
+		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
+		
+	}
+
+
+	
+	
+	@Test
+	public void testSubtractionBetweenMinuendAndSubtrahendListSegmentsWhenSubtrahendListIsEmpty() throws Exception {
+		
+		List<Segment<Taxon>> noTaxonSegmentList = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> taxonsSegmentList = new ArrayList<Segment<Taxon>>();
+		
+		Taxon noTaxon = Taxon.getNOTaxon();
+		
+		List<Taxon> NotaxonList = createTaxonList(noTaxon);
+		
+		Segment<Taxon> noTaxonSegment = new Segment<Taxon>(1, 60, NotaxonList);
+		noTaxonSegmentList.add(noTaxonSegment);
+		
+
+		List<Segment<Taxon>> noTaxonSubtractedSegmentList = new ArrayList<Segment<Taxon>>();
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(1, 60, NotaxonList));
+		
+		
+		SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
+		
+		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
+		
+	}
 	
 	
 	@Test

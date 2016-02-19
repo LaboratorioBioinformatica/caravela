@@ -94,14 +94,17 @@ $(document).ready(function(){
 	var urlReadsOnCOntig = '<c:url value="/contig/${viewingMode}/${contig.id}/${rank}"/>';
 	var urlOverlapTaxonOnCOntig = '<c:url value="/contig/overlapTaxaOnContig/${contig.id}/${rank}"/>';
 	var urlUndefinedRegionsOnCOntig = '<c:url value="/contig/undefinedRegionsOnContig/${contig.id}/${rank}"/>';
+	var urlUnknowRegionsOnContig = '<c:url value="/contig/unknowRegionsOnContig/${contig.id}/${rank}"/>';
 	
 	
 	var queueName = 'featureQueue';
 	var concurrentCalls = 2;
 	
-	addCallFeatureViewerToQueue(queueName,'multipleRect',urlReadsOnCOntig);
-	addCallFeatureViewerToQueue(queueName,'path',urlOverlapTaxonOnCOntig);
-	addCallFeatureViewerToQueue(queueName,'multipleRect',urlUndefinedRegionsOnCOntig);
+	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlReadsOnCOntig);
+	addCallFeatureViewerToQueue(queueName, 'path', urlOverlapTaxonOnCOntig);
+	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlUndefinedRegionsOnCOntig);
+	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlUnknowRegionsOnContig);
+	
 	
 	$(document).dequeue(queueName);
 	

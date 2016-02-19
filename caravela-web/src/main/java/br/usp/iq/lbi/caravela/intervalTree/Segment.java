@@ -42,7 +42,7 @@ private static final long serialVersionUID = 6552981806740144131L;
 	}
 	
 	// the reference is this. The other Is on rigth?  
-	public boolean isOnRigth(Segment<?> other){
+	public boolean isOnRight(Segment<?> other){
 		return other.x > x && other.y > y;
 	}
 	
@@ -55,6 +55,65 @@ private static final long serialVersionUID = 6552981806740144131L;
 		return other.getY() >= x && other.getX() <= y;
 	}
 	
+	public List<Segment<Type>> subtract(Segment<?> other){
+		List<Segment<Type>> resultList = new ArrayList<Segment<Type>>();
+		
+		if(this.intersects(other)){
+			if(other.contains(this)){
+				return resultList;
+			} 
+			if(this.contains(other)){
+	
+				if(hasRemnantSegmentOnRight(this.y, other.y)){
+					Segment<Type> remnantSegmentOnRigth = createRemnantSegment(other.y +1, this.y, this.getData());
+					resultList.add(remnantSegmentOnRigth);
+				}
+			
+				if (hasRemnantSegmentOnLeft(this.x, other.x -1)) {
+					Segment<Type> remnantSegmentOnLeft = createRemnantSegment(this.x, other.x -1, this.getData());
+					resultList.add(remnantSegmentOnLeft);
+				}
+				
+			}
+			if(this.isOnLeft(other)){
+				Segment<Type> remnantSegmentOnRigth = createRemnantSegment(other.y +1, this.y, this.getData());
+				resultList.add(remnantSegmentOnRigth);
+			}
+			if(this.isOnRight(other)){
+				Segment<Type> remnantSegmentOnLeft = createRemnantSegment(this.x, other.x -1, this.getData());
+				resultList.add(remnantSegmentOnLeft);
+			}
+		}
+		Collections.sort(resultList);
+		return resultList;
+	}
+	
+	private Segment<Type> createRemnantSegment(Integer x, Integer y, List<Type> data){
+		Segment<Type> segment = null;
+		if(x <= y){
+			segment = new Segment<Type>(x, y, data);
+		}
+		return segment;
+		
+	}
+	
+	private boolean hasRemnantSegmentOnRight(Integer thisY, Integer otherY){
+		if(thisY > otherY){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean hasRemnantSegmentOnLeft(Integer thisX, Integer otherX){
+		if(otherX > thisX){
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
 	public Segment<Type> union(Segment<Type> other){
 		Segment<Type> segment = null;
 		if(this.intersects(other)){
@@ -65,7 +124,7 @@ private static final long serialVersionUID = 6552981806740144131L;
 				segment = new Segment<Type>(other.x, other.y, dataListMerged);
 			} else if(this.isOnLeft(other)) {
 				segment = new Segment<Type>(other.x, this.y, dataListMerged);
-			} else if(this.isOnRigth(other)){
+			} else if(this.isOnRight(other)){
 				segment = new Segment<Type>(this.x, other.y, dataListMerged);
 			}
 		}
@@ -82,7 +141,7 @@ private static final long serialVersionUID = 6552981806740144131L;
 				segment = new Segment<Type>(x, y, dataListMerged);
 			} else if(this.isOnLeft(other)){
 				segment = new Segment<Type>(x, other.y, dataListMerged);
-			} else if(this.isOnRigth(other)){
+			} else if(this.isOnRight(other)){
 				segment = new Segment<Type>(other.x, y, dataListMerged);
 			}
 			
