@@ -59,52 +59,35 @@ public class SegmentsCalculatorImpl implements SegmentsCalculator {
 		
 		for (int i = 0; i < minuendList.size(); i++) {
 			
-			Segment<Taxon> minuend = minuendList.remove(i);
+			Segment<Taxon> minuend = minuendList.get(i);
 			List<Segment<Taxon>> subtractResult = subtract(minuend, subtrahendList);
 			
-			if( subtractResult.isEmpty() && endSubtrahendList(subtrahendList, i) ){
+			if( subtractResult.isEmpty() ){
 				resultList.add(minuend);
 			}
 		
 			if( ! subtractResult.isEmpty()) {
-				resultList.addAll(subtract(subtractResult, subtrahendList));
+				return subtract(subtractResult, subtrahendList);
 			}
 			
 		}
-		
 
 		return resultList;
 	}
 	
 	private List<Segment<Taxon>> subtract(Segment<Taxon> minuend, List<Segment<Taxon>> subtrahendList) {
-		
-		List<Segment<Taxon>> resultList = new ArrayList<Segment<Taxon>>();
-		
 		for (int i = 0; i < subtrahendList.size(); i++) {
-			Segment<Taxon> subtrahend = subtrahendList.remove(i);
-			
+			Segment<Taxon> subtrahend = subtrahendList.get(i);
 			List<Segment<Taxon>> subtractResult = minuend.subtract(subtrahend);
-			if(subtractResult.isEmpty() && endSubtrahendList(subtrahendList, i)){
-				resultList.add(minuend);
-			}
 			
 			if( ! subtractResult.isEmpty()) {
-				resultList.addAll(subtract(subtractResult, subtrahendList));
+				return subtractResult;
 			}
 			
 		}
+		return new ArrayList<Segment<Taxon>>();
 		
-		return resultList;
 	}
-
-	private boolean endMinuendList(List<Segment<Taxon>> minuendList, int i) {
-		return ! (i < minuendList.size());
-	}
-	
-	private boolean endSubtrahendList(List<Segment<Taxon>> subtrahendList, int i) {
-		return endMinuendList(subtrahendList, i);
-	}
-
 
 
 }

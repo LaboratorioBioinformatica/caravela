@@ -127,6 +127,35 @@ public class SegmentsCalculatorImplTest {
 		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
 		
 	}
+	
+	@Test
+	public void testSubtractionBetweenMinuendAndSubtrahendListWithJustOnlyOneElementWhenElementIsOnMidleOfMinuend2 () throws Exception {
+		
+		List<Segment<Taxon>> taxonsSegmentList = new ArrayList<Segment<Taxon>>();
+		List<Segment<Taxon>> noTaxonSegmentList = new ArrayList<Segment<Taxon>>();
+		
+		
+		Taxon taxonA = new Taxon(1l,1l,"Taxon A", "genus");
+		Taxon noTaxon = Taxon.getNOTaxon();
+		
+		List<Taxon> taxonListA = createTaxonList(taxonA);
+		List<Taxon> NotaxonList = createTaxonList(noTaxon);
+		
+		noTaxonSegmentList.add(new Segment<Taxon>(1, 60, NotaxonList));
+		taxonsSegmentList.add(new Segment<Taxon>(10, 20, taxonListA));
+		taxonsSegmentList.add(new Segment<Taxon>(20, 30, taxonListA));
+		
+
+		List<Segment<Taxon>> noTaxonSubtractedSegmentList = new ArrayList<Segment<Taxon>>();
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(1, 9, NotaxonList));
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(21, 29, NotaxonList));
+		noTaxonSubtractedSegmentList.add(new Segment<Taxon>(41, 60, NotaxonList));
+		
+		SegmentsCalculatorImpl target = new SegmentsCalculatorImpl();
+		
+		Assert.assertEquals(noTaxonSubtractedSegmentList, target.subtract(noTaxonSegmentList, taxonsSegmentList));
+		
+	}
 
 
 	
