@@ -279,8 +279,24 @@ public class SegmentTest {
 		Assert.assertEquals(subtractResultListWhenOtherIntersectsReferenceOnRightLimit, reference.subtract(intersecstReferenceOnRightLimit));
 		Assert.assertEquals(subtractResultListWhenOtherIntersectsReferenceOnLeft, reference.subtract(intersecstReferenceOnLeft));
 		
+	
+	}
+	
+	@Test
+	public void testSubtracionbetweenSegmentsWhenSubtrahendIsToLargeThanMinuendSegment() throws Exception {
+		List<Taxon> dataListTaxonA = createTaxonDataList(1l,1l,"A", "taxon hank A");
+		List<Taxon> dataListTaxonB = createTaxonDataList(2l, 1l,"B", "taxon hank B");
+		
+		Segment<Taxon> reference = new Segment<Taxon>(57, 285, dataListTaxonA);
+		
+		Segment<Taxon> subtrahend = new Segment<Taxon>(1, 444, dataListTaxonB);
+		
+		List<Segment<Taxon>> subtractResultListEmpty = new ArrayList<Segment<Taxon>>();
+		Assert.assertEquals(subtractResultListEmpty, reference.subtract(subtrahend));
+		
 		
 	}
+	
 	
 	private List<Segment<Taxon>> createSubtractResultList(Segment<Taxon>... segments){
 		List<Segment<Taxon>> resultList = new ArrayList<Segment<Taxon>>();

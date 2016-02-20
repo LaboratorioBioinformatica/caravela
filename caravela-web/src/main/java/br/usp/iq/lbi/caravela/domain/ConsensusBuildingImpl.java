@@ -58,7 +58,7 @@ public class ConsensusBuildingImpl implements ConsensusBuilding {
 				listConsensus.add(current);
 			}
 		}
-		
+		Collections.sort(listConsensus);
 		return listConsensus;
 	}
 

@@ -28,8 +28,8 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 @RequestScoped
 public class ContigControllerHelper {
 	
-	private static final String UNKNOW_REGIONS = "unknow Regions";
-	private static final String UNDEFINED_REGION_KEY = "Undefined Region";
+	private static final String UNCLASSIFIED_REGIONS = "Unclassified";
+	private static final String UNDEFINED_REGION_KEY = "Undefined";
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	@Inject
 	private ReadWrapper readWrapper; 
@@ -71,13 +71,12 @@ public class ContigControllerHelper {
 		
 		List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxonReadList, rank);
 		List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(noTaxonReadList, rank);
+		List<Segment<Taxon>> justOnlyNoTaxonSegmentConsensus = segmentsCalculator.subtract(noTaxonSegmentsConsensus, allTaxonSegmentsConsensus);
 		
-		List<FeatureViewerDataTO> allTaxonfeatureViewerDataTOListConsensus = createFeatureViewerDataTOListConsensus(allTaxonSegmentsConsensus);
-		List<FeatureViewerDataTO> noTaxonfeatureViewerDataTOListConsensus = createFeatureViewerDataTOListConsensus(noTaxonSegmentsConsensus);
+		List<FeatureViewerDataTO> unknowViwerDataToListConsensus = createFeatureViewerDataTOListConsensus(justOnlyNoTaxonSegmentConsensus);
 		
 		Map<String, List<FeatureViewerDataTO>> allTaxonfeatureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
-		allTaxonfeatureViewerConsensusDataMap.put("No Taxon", noTaxonfeatureViewerDataTOListConsensus);
-		allTaxonfeatureViewerConsensusDataMap.put(UNKNOW_REGIONS, allTaxonfeatureViewerDataTOListConsensus);
+		allTaxonfeatureViewerConsensusDataMap.put(UNCLASSIFIED_REGIONS, unknowViwerDataToListConsensus);
 		return allTaxonfeatureViewerConsensusDataMap;
 	}
 	
