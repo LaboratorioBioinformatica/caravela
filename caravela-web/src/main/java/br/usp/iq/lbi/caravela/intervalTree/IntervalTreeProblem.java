@@ -24,8 +24,9 @@ public class IntervalTreeProblem {
 		
 		List<Integer> result1 = it.get(5L);
 		List<Integer> result2 = it.get(10L);
-		List<Integer> result3 = it.get(29L);
+		List<Integer> result3 = it.get(5L);
 		List<Integer> result4 = it.get(5L, 15L);
+		
 
 		System.out.print("\nIntervals that contain 5L:");
 		for (int r : result1)

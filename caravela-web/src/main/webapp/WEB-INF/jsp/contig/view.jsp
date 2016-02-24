@@ -95,6 +95,7 @@ $(document).ready(function(){
 	var urlOverlapTaxonOnCOntig = '<c:url value="/contig/overlapTaxaOnContig/${contig.id}/${rank}"/>';
 	var urlUndefinedRegionsOnCOntig = '<c:url value="/contig/undefinedRegionsOnContig/${contig.id}/${rank}"/>';
 	var urlUnknowRegionsOnContig = '<c:url value="/contig/unknowRegionsOnContig/${contig.id}/${rank}"/>';
+	var urlBoundariesRegionsOnContig = '<c:url value="/contig/boundariesRegionsOnContig/${contig.id}/${rank}"/>';
 	
 	
 	var queueName = 'featureQueue';
@@ -104,6 +105,7 @@ $(document).ready(function(){
 	addCallFeatureViewerToQueue(queueName, 'path', urlOverlapTaxonOnCOntig);
 	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlUndefinedRegionsOnCOntig);
 	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlUnknowRegionsOnContig);
+	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlBoundariesRegionsOnContig);
 	
 	
 	$(document).dequeue(queueName);

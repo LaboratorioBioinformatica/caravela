@@ -21,6 +21,7 @@ import br.usp.iq.lbi.caravela.domain.ConsensusBuilding;
 import br.usp.iq.lbi.caravela.domain.ReadWrapper;
 import br.usp.iq.lbi.caravela.domain.SegmentsCalculator;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
+import br.usp.iq.lbi.caravela.intervalTree.IntervalTree;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Taxon;
@@ -40,10 +41,7 @@ public class ContigControllerHelper {
 	private SegmentsCalculator segmentsCalculator;
 
 	public Map<String, List<FeatureViewerDataTO>> createReadsFeatureViwer(List<Read> readsOnContig, String rank){
-		
-		
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
-		
 		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
 		
 		for (Entry<Taxon, List<Read>> readGroup : readsGroupedByTaxon) {
@@ -128,6 +126,76 @@ public class ContigControllerHelper {
 		return featureViewerConsensusDataMap;
 		
 	}
+	
+	public Map<String, List<FeatureViewerDataTO>> boundariesRegions(List<Read> readsOnContig, String rank){
+		IntervalTree<Taxon> intervalTree = new IntervalTree<Taxon>();
+		List<Segment<Taxon>> segmentsCandidatesToBeBoundaries = new ArrayList<Segment<Taxon>>(); 
+		
+		Map<Taxon, List<Read>> readsGroupedByTaxonMap = readWrapper.groupBy(readsOnContig, rank);
+		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readsGroupedByTaxonMap.entrySet();
+		
+		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
+		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
+			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
+			List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
+			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
+			
+			if( ! taxonKey.equals(Taxon.getNOTaxon())){
+				
+				for (Segment<Taxon> segment : taxonSegmentsConsensus) {
+					intervalTree.addInterval(segment.getX(), segment.getY(), taxonKey);
+				}
+			}
+			
+			segmentsConsensusMap.put(taxonKey, taxonSegmentsConsensus);
+		}
+		
+		//No taxon should not participate of undefine segments building.  
+		segmentsConsensusMap.remove(Taxon.getNOTaxon());
+		
+		List<Segment<Taxon>> undfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(segmentsConsensusMap);
+		List<Segment<Taxon>> undfinedSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(undfinedSegmentsByTaxon);
+		
+		segmentsCandidatesToBeBoundaries.addAll(undfinedSegmentsConsensus);
+	
+		List<Read> noTaxonReadList = readsGroupedByTaxonMap.remove(Taxon.getNOTaxon());
+		
+		Collection<List<Read>> AllTaxonsCollections = readsGroupedByTaxonMap.values();
+		List<Read> allTaxonReadList = new ArrayList<Read>();
+		for (List<Read> list : AllTaxonsCollections) {
+			allTaxonReadList.addAll(list);
+		}
+		
+		List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxonReadList, rank);
+		List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(noTaxonReadList, rank);
+		List<Segment<Taxon>> unclussifiedRegions = segmentsCalculator.subtract(noTaxonSegmentsConsensus, allTaxonSegmentsConsensus);
+		segmentsCandidatesToBeBoundaries.addAll(unclussifiedRegions);
+		
+		List<FeatureViewerDataTO> featureViewerDataTOList = new ArrayList<FeatureViewerDataTO>();
+		
+		
+		for (Segment<Taxon> segmentCandidatesToBeBoundary: segmentsCandidatesToBeBoundaries) {
+			int coordinateStartToQuery = segmentCandidatesToBeBoundary.getX()-1;
+			int coordinateEndToQuery = segmentCandidatesToBeBoundary.getY()+1;
+			List<Taxon> intervalsOnLeftOfSegment = intervalTree.get(coordinateStartToQuery);
+			List<Taxon> intervalsOnRightOfSegment = intervalTree.get(coordinateEndToQuery);
+			
+			if(intervalsOnLeftOfSegment.isEmpty() || intervalsOnRightOfSegment.isEmpty()){
+				continue;
+			}
+			
+			if( ! intervalsOnLeftOfSegment.equals(intervalsOnRightOfSegment)){
+				featureViewerDataTOList.add(new FeatureViewerDataTO(segmentCandidatesToBeBoundary.getX(), segmentCandidatesToBeBoundary.getY(), intervalsOnLeftOfSegment +":"+intervalsOnRightOfSegment, "boundary"));
+			}
+			
+		}
+		
+		Map<String, List<FeatureViewerDataTO>> featureViewerBoundariesDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		featureViewerBoundariesDataMap.put("boundaries", featureViewerDataTOList);
+
+		return featureViewerBoundariesDataMap;
+		
+	}
 
 	
 	public Map<String, List<FeatureViewerDataTO>> searchOverlapTaxaOnContig(List<Read> readsOnContig, String rank){
@@ -140,7 +208,8 @@ public class ContigControllerHelper {
 		return overlapFeatureViewerDataToConsensusMap;
 
 	}
-
+	
+	
 
 	private List<Segment<Taxon>> searchOverlap(List<Read> readsOnContig, String rank) {
 		

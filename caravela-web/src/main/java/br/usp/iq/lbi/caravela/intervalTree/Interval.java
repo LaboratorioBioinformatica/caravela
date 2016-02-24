@@ -1,10 +1,5 @@
 package br.usp.iq.lbi.caravela.intervalTree;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 public class Interval<Type> implements Comparable<Interval<Type>> {
 
 	private long start;
@@ -21,32 +16,22 @@ public class Interval<Type> implements Comparable<Interval<Type>> {
 		return start;
 	}
 
-	public void setStart(long start) {
-		this.start = start;
-	}
-
 	public long getEnd() {
 		return end;
-	}
-
-	public void setEnd(long end) {
-		this.end = end;
 	}
 
 	public Type getData() {
 		return data;
 	}
 
-	public void setData(Type data) {
-		this.data = data;
-	}
-
 	public boolean contains(long time) {
-		return time < end && time > start;
+		//modify to closed interval
+		return time <= end && time >= start;
 	}
 
 	public boolean intersects(Interval<?> other) {
-		return other.getEnd() > start && other.getStart() < end;
+		// modify to closed interval
+		return other.getEnd() >= start && other.getStart() <= end;
 	}
 
 	public int compareTo(Interval<Type> other) {
@@ -67,49 +52,49 @@ public class Interval<Type> implements Comparable<Interval<Type>> {
 		return new StringBuilder().append(start).append(":").append(end).toString();
 	}
 	
-	public static void main(String[] args) {
-		ArrayList<Interval<String>> intervalList = new ArrayList<Interval<String>>();
-		intervalList.add(new Interval<String>(22, 30, "teste"));
-		
-		intervalList.add(new Interval<String>(30, 35, "teste")); //?
-		
-		intervalList.add(new Interval<String>(15, 20, "teste"));
-		intervalList.add(new Interval<String>(1, 10, "teste"));
-		intervalList.add(new Interval<String>(1, 10, "teste"));
-		intervalList.add(new Interval<String>(9, 12, "teste"));
-		intervalList.add(new Interval<String>(11, 18, "teste"));
-		
-		
-		Collections.sort(intervalList);
-		
-		HashMap<String,List<Interval<String>>> hashMap = new HashMap<String, List<Interval<String>>>();
-		
-		for (Interval<String> interval : intervalList) {
-			String taxonomy = interval.getData();
-			List<Interval<String>> list = hashMap.get(taxonomy);
-			
-			if(list == null){
-				ArrayList<Interval<String>> intervals = new ArrayList<Interval<String>>();
-				intervals.add(interval);
-				hashMap.put(taxonomy, intervals);
-			} else {
-				ArrayList<Interval<String>> intervalsNews = new ArrayList<Interval<String>>();
-				for (Interval<String> interval2 : list) {
-					if(interval2.intersects(interval)){
-						// if has intersection - extend interval
-						System.out.println(interval);
-						System.out.println(interval2);
-						System.out.println("-------------");
-					} else {
-						// if does not have - add new interval
-						intervalsNews.add(interval2);
-					}
-				}
-				list.addAll(intervalsNews);
-			}
-			
-		}
-		
-	}
+//	public static void main(String[] args) {
+//		ArrayList<Interval<String>> intervalList = new ArrayList<Interval<String>>();
+//		intervalList.add(new Interval<String>(22, 30, "teste"));
+//		
+//		intervalList.add(new Interval<String>(30, 35, "teste")); //?
+//		
+//		intervalList.add(new Interval<String>(15, 20, "teste"));
+//		intervalList.add(new Interval<String>(1, 10, "teste"));
+//		intervalList.add(new Interval<String>(1, 10, "teste"));
+//		intervalList.add(new Interval<String>(9, 12, "teste"));
+//		intervalList.add(new Interval<String>(11, 18, "teste"));
+//		
+//		
+//		Collections.sort(intervalList);
+//		
+//		HashMap<String,List<Interval<String>>> hashMap = new HashMap<String, List<Interval<String>>>();
+//		
+//		for (Interval<String> interval : intervalList) {
+//			String taxonomy = interval.getData();
+//			List<Interval<String>> list = hashMap.get(taxonomy);
+//			
+//			if(list == null){
+//				ArrayList<Interval<String>> intervals = new ArrayList<Interval<String>>();
+//				intervals.add(interval);
+//				hashMap.put(taxonomy, intervals);
+//			} else {
+//				ArrayList<Interval<String>> intervalsNews = new ArrayList<Interval<String>>();
+//				for (Interval<String> interval2 : list) {
+//					if(interval2.intersects(interval)){
+//						// if has intersection - extend interval
+//						System.out.println(interval);
+//						System.out.println(interval2);
+//						System.out.println("-------------");
+//					} else {
+//						// if does not have - add new interval
+//						intervalsNews.add(interval2);
+//					}
+//				}
+//				list.addAll(intervalsNews);
+//			}
+//			
+//		}
+//		
+//	}
 
 }
