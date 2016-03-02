@@ -89,7 +89,7 @@ public class Taxon implements Comparable<Taxon>, Serializable {
 		}
 		
 		Taxon taxon = (Taxon) obj;
-		return this.taxonomyId == taxon.getTaxonomyId() && this.scientificName.equals(taxon.getScientificName()); 
+		return this.taxonomyId.equals(taxon.getTaxonomyId()); 
 	}
 
 	public int compareTo(Taxon o) {

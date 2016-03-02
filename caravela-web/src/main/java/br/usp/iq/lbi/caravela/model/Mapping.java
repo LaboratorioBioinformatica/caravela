@@ -11,11 +11,11 @@ public class Mapping implements Serializable {
 	private static final int NO_MAPPING_VALUE = 0;
 	private static final long serialVersionUID = -366412626925732691L;
 	@Column(name="start_alignment")
-	private final Integer start;
+	private Integer start;
 	@Column(name="end_alignment")
-	private final Integer end;
+	private Integer end;
 	@Column(name="flag_alignment")
-	private final Integer flag;
+	private Integer flag;
 
 	
 	public Mapping() {
@@ -47,6 +47,5 @@ public class Mapping implements Serializable {
 	public Integer getFlag() {
 		return flag;
 	}
-	
 	
 }

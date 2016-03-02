@@ -8,9 +8,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
-
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -29,6 +26,9 @@ import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Taxon;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
 
 @Controller
 public class ContigController {
@@ -59,7 +59,8 @@ public class ContigController {
 	@Get
 	@Path("/contig/consensusReadsOnContig/{contigId}/{rank}")
 	public void consensusReadsOnContig(Long contigId, String rank) {
-		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.createConsensusFeatureViwer(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
@@ -67,7 +68,8 @@ public class ContigController {
 	@Get
 	@Path("/contig/undefinedRegionsOnContig/{contigId}/{rank}")
 	public void undefinedRegionsOnContig(Long contigId, String rank) {
-		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.undefinedRegions(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
@@ -75,7 +77,8 @@ public class ContigController {
 	@Get
 	@Path("/contig/unknowRegionsOnContig/{contigId}/{rank}")
 	public void unknowRegionsOnContig(Long contigId, String rank) {
-		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.createUnknowRegions(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
 	}
@@ -83,7 +86,8 @@ public class ContigController {
 	@Get
 	@Path("/contig/boundariesRegionsOnContig/{contigId}/{rank}")
 	public void boundariesRegionsOnContig(Long contigId, String rank) {
-		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.boundariesRegions(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
 	}
@@ -92,7 +96,8 @@ public class ContigController {
 	@Get
 	@Path("/contig/overlapTaxaOnContig/{contigId}/{rank}")
 	public void overlapTaxaOnContig(Long contigId, String rank) {
-		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.searchOverlapTaxaOnContig(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
 	}
@@ -100,7 +105,8 @@ public class ContigController {
 	@Get
 	@Path("/contig/readsOnContig/{contigId}/{rank}")
 	public void readsOnContig(Long contigId, String rank) {
-		List<Read> readsOnContig = contigManager.searchReadOnContigByContigId(contigId);
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.createReadsFeatureViwer(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
 	}

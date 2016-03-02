@@ -13,6 +13,7 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
+import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Treatment;
@@ -26,18 +27,20 @@ public class SampleController {
 	private final TreatmentDAO treatmentDAO;
 	private final SampleDAO sampleDAO;
 	private final ContigDAO contigDAO;
+	private final SampleReporter sampleReporter;
 	
 	protected SampleController(){
-		this(null, null, null, null, null);
+		this(null, null, null, null, null, null);
 	}
 	
 	@Inject
-	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, ContigDAO contigDAO){
+	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, ContigDAO contigDAO, SampleReporter sampleReporter){
 		this.result = result;
 		this.webUser = webUser;
 		this.treatmentDAO = treatmentDAO;
 		this.sampleDAO = sampleDAO;
 		this.contigDAO = contigDAO;
+		this.sampleReporter = sampleReporter;
 	}
 	
 	public void view(){
@@ -62,6 +65,17 @@ public class SampleController {
 		result.include("contigList", contigList);
 		result.include("sample", sample);
 	}
+	
+	@Get
+	@Path("/sample/report/{sampleId}/{tiiValue}/{rank}")
+	public void reportChimericPotential(Long sampleId, String tiiValue, String rank){
+		Sample sample = sampleDAO.load(sampleId);
+		Double tii = new Double(tiiValue);
+		sampleReporter.reportChimericPotentialFromContig(sample, tii, rank);
+		
+	}
+	
+	
 	
 	@Post
 	@Path("/sample/analyze")

@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -26,7 +28,9 @@ public class Read implements Serializable {
 	private Sample sample;
 	@ManyToOne
 	private Contig contig;
+	@Basic(fetch=FetchType.LAZY)
 	private String reference;
+	@Basic(fetch=FetchType.LAZY)
 	private String sequence;
 	private Integer pair;
 	

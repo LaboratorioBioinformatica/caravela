@@ -49,10 +49,11 @@ public class TaxonTest {
 	public void testNotEquals() throws Exception {
 		
 		Long taxonomyId = 1289127l;
+		Long otherTaxonomyId = 1289121l;
 		Long taxonomyParentId = 1289122l;
 		
 		Taxon taxon = new Taxon(taxonomyId, taxonomyParentId, "scientificName", "rank");
-		Taxon otherTaxon = new Taxon(taxonomyId, taxonomyParentId, "scientific", "hnk");
+		Taxon otherTaxon = new Taxon(otherTaxonomyId, taxonomyParentId, "scientificName", "rank");
 		
 		Assert.assertFalse(taxon.equals(otherTaxon));
 	}

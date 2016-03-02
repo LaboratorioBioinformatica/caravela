@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Taxon;
@@ -13,15 +14,22 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 @RequestScoped
 public class ReadWrapperImpl implements ReadWrapper {
 	
+	@Inject private ReadManager readManager;
+	
 	public Map<Taxon, List<Read>> groupBy(List<Read> reads, String taxonomicRank) {
 		
+		
 		Map<Taxon,List<Read>> readsGroupedByTaxon = new HashMap<Taxon, List<Read>>();
+		
 		
 		for (Read read : reads) {
 			if(read.isMapping()){
 				if(read.hasTaxon()){
-					Taxon taxon = read.getTaxonByRank(taxonomicRank);
+					//LOADING LINEAGEM!!!
+					HashMap<String, Taxon> lineagem = readManager.loadLineagem(read);
+					read.setLineagem(lineagem);
 					
+					Taxon taxon = read.getTaxonByRank(taxonomicRank);
 					if(taxon == null){
 						taxon = read.getTaxon();
 					}

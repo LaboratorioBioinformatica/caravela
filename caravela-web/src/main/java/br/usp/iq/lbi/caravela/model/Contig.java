@@ -48,7 +48,7 @@ public class Contig implements Serializable {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig")
 	private List<Feature> features;
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig")
 	private List<Read> reads;
 	
 	public Contig() {}
@@ -69,6 +69,10 @@ public class Contig implements Serializable {
 
 	public String getReference() {
 		return reference;
+	}
+	
+	public List<Read> getReads(){
+		return reads;
 	}
 
 	public String getSequence() {
@@ -155,11 +159,6 @@ public class Contig implements Serializable {
 		}
 		return taxonCounterTOhashMap;
 	}
-	
-	
-	
-	
-	
 	
 
 }

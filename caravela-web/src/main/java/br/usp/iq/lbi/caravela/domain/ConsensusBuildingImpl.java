@@ -69,21 +69,24 @@ public class ConsensusBuildingImpl implements ConsensusBuilding {
 	private List<Segment<Taxon>> createSegmentTaxonList(List<Read> readList, String rank) {
 		List<Segment<Taxon>> segmentTaxonList = new ArrayList<Segment<Taxon>>();
 		
-		for (Read read : readList) {
-			Taxon taxon = read.getTaxonByRank(rank);
-			if(taxon == null) {
-				taxon = read.getTaxon();
-				if(taxon == null){
-					taxon = Taxon.getNOTaxon();
-				}
-			} 
-			
-			List<Taxon> dataList = new ArrayList<Taxon>();
-			dataList.add(taxon);
-			
-			segmentTaxonList.add(new Segment<Taxon>(read.getStartAlignment(), read.getEndAlignment(), dataList));
-			
+		if(readList != null){
+			for (Read read : readList) {
+				Taxon taxon = read.getTaxonByRank(rank);
+				if(taxon == null) {
+					taxon = read.getTaxon();
+					if(taxon == null){
+						taxon = Taxon.getNOTaxon();
+					}
+				} 
+				
+				List<Taxon> dataList = new ArrayList<Taxon>();
+				dataList.add(taxon);
+				
+				segmentTaxonList.add(new Segment<Taxon>(read.getStartAlignment(), read.getEndAlignment(), dataList));
+				
+			}
 		}
+		
 		return segmentTaxonList;
 	}
 
