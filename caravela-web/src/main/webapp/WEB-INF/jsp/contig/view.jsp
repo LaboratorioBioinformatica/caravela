@@ -83,8 +83,7 @@
         data: features,
         name: "Features",
         className: "features",
-        height: "16",
-        color: "#c180ff",
+        color: "#fd8d3c",
         type: "rect"
     });
 
