@@ -4,8 +4,7 @@
 
 <t:default>
 	<jsp:attribute name="headImport">
-		<link type="text/css" rel="stylesheet" href="http://parce.li/bundle/feature-viewer@0.1.26">
-		<script src=<c:url value="/js/feature-viewer@0.1.27"/>></script>
+		<script src=<c:url value="/js/feature-viewer@0.1.35.js"/>></script>
 	</jsp:attribute>
     <jsp:body>
     <div class="container-fluid">
@@ -57,7 +56,6 @@
 	 </div>
 
 	<script type="text/javascript">
-	var reads = ${reads};
 	var contigSize = ${contig.size};
 	var features = ${features};
 	var FeatureViewer = require("feature-viewer");
@@ -85,8 +83,9 @@
         data: features,
         name: "Features",
         className: "features",
-        color: "#7a17e3",
-        type: "multipleRect"
+        height: "16",
+        color: "#c180ff",
+        type: "rect"
     });
 
 $(document).ready(function(){
@@ -101,11 +100,11 @@ $(document).ready(function(){
 	var queueName = 'featureQueue';
 	var concurrentCalls = 2;
 	
-	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlReadsOnCOntig);
-	addCallFeatureViewerToQueue(queueName, 'path', urlOverlapTaxonOnCOntig);
-	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlUndefinedRegionsOnCOntig);
-	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlUnknowRegionsOnContig);
-	addCallFeatureViewerToQueue(queueName, 'multipleRect', urlBoundariesRegionsOnContig);
+	addCallFeatureViewerToQueue(queueName, randColor(), 'multipleRect', urlReadsOnCOntig);
+	addCallFeatureViewerToQueue(queueName, "#FF0000", 'path', urlOverlapTaxonOnCOntig);
+	addCallFeatureViewerToQueue(queueName, "#FF0000", 'multipleRect', urlUndefinedRegionsOnCOntig);
+	addCallFeatureViewerToQueue(queueName, "#CCCCCC", 'multipleRect', urlUnknowRegionsOnContig);
+	addCallFeatureViewerToQueue(queueName, "#000000", 'multipleRect', urlBoundariesRegionsOnContig);
 	
 	
 	$(document).dequeue(queueName);
@@ -118,7 +117,7 @@ function randColor(){
 	return '#'+Math.floor(Math.random()*16777215).toString(16);
 }
 
-function addCallFeatureViewerToQueue(qName, fvType, apiURL) {
+function addCallFeatureViewerToQueue(qName, color, fvType, apiURL) {
 	
     $(document).queue(qName, function() {
     	$.ajax({url:apiURL, success: function(result){
@@ -130,7 +129,7 @@ function addCallFeatureViewerToQueue(qName, fvType, apiURL) {
     		        data: v,
     		        name: k,
     		        className: "reads_"+k.substring(0,3),
-    		        color: randColor(),
+    		        color: color,
     		        type: fvType
     		    });
     	   	});

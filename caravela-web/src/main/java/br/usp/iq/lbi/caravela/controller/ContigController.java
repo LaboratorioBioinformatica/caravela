@@ -130,49 +130,14 @@ public class ContigController {
 			features.add(featureString.toString());
 		}
 
-		List<ReadOnContigTO> readsOnCotig = contigTO.getReadsOnCotig();
-
-		List<String> reads = new ArrayList<String>();
-
-		for (ReadOnContigTO readOnContigTO : readsOnCotig) {
-
-			StringBuffer readString = new StringBuffer().append("{x:")
-					.append(readOnContigTO.getStartAlignment().toString()).append(",").append("y:")
-					.append(readOnContigTO.getEndAlignment().toString()).append(",").append("description: \"[")
-					.append(getTaxonRank(readOnContigTO)).append("] - ").append(getTaxonName(readOnContigTO))
-					.append("\",").append("id: \"")
-					.append(readOnContigTO.getReference() + "_" + readOnContigTO.getPair()).append("\"}");
-
-			reads.add(readString.toString());
-
-		}
-		
 		if(viewingMode == null){
 			viewingMode = "readsOnContig";
 		}
 		result.include("rank", rank);
 		result.include("viewingMode", viewingMode);
 		result.include("sample", sample);
-		result.include("reads", reads);
 		result.include("features", features);
 		result.include("contig", contigTO);
-	}
-
-	private String getTaxonRank(ReadOnContigTO readOnContigTO) {
-		if (readOnContigTO.getTaxon() != null) {
-			return readOnContigTO.getTaxon().getHank();
-		} else {
-			return "no rank";
-		}
-	}
-
-	private String getTaxonName(ReadOnContigTO readOnContigTO) {
-		if (readOnContigTO.getTaxon() != null) {
-			return readOnContigTO.getTaxon().getScientificName();
-		} else {
-			return Taxon.getNOTaxon().getScientificName();
-		}
-
 	}
 
 	private String getFeatureName(FeatureTO featureTO) {

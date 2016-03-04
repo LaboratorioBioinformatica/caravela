@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import br.usp.iq.lbi.caravela.domain.ColorPicker;
 import br.usp.iq.lbi.caravela.domain.ConsensusBuilding;
 import br.usp.iq.lbi.caravela.domain.ReadWrapper;
 import br.usp.iq.lbi.caravela.domain.SegmentsCalculator;
@@ -32,25 +33,35 @@ public class ContigControllerHelper {
 	private static final String UNCLASSIFIED_REGIONS = "Unclassified";
 	private static final String UNDEFINED_REGION_KEY = "Undefined";
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
+	private static final String TAXA = "Taxa";
+	
 	@Inject
 	private ReadWrapper readWrapper; 
 	@Inject
 	private ConsensusBuilding consensusBuilding;
 	
+	@Inject private ColorPicker colorPicker;
+	
 	@Inject
 	private SegmentsCalculator segmentsCalculator;
 
 	public Map<String, List<FeatureViewerDataTO>> createReadsFeatureViwer(List<Read> readsOnContig, String rank){
-		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+
 		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
+		List<FeatureViewerDataTO> featureViewerDataTOList = new ArrayList<FeatureViewerDataTO>();
 		
 		for (Entry<Taxon, List<Read>> readGroup : readsGroupedByTaxon) {
 			Taxon taxon = readGroup.getKey();
 			String scientificName = taxon.getScientificName();
-			featureViewerDataMap.put(scientificName, createFeatureViewerDataTO(readGroup, scientificName));
+			String color = colorPicker.generateColorByTaxon(taxon);
+			featureViewerDataTOList.addAll(createFeatureViewerDataTO(readGroup, scientificName, color));
+			
 		}
 		
-		return sortMap(featureViewerDataMap, createComparatorByNumberOfSegments());
+		
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		featureViewerDataMap.put(TAXA, featureViewerDataTOList);
+		return featureViewerDataMap;
 		
 	}
 	
@@ -81,35 +92,41 @@ public class ContigControllerHelper {
 	
 	public Map<String, List<FeatureViewerDataTO>> createConsensusFeatureViwer(List<Read> readsOnContig, String rank){
 		
-		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
 		
 		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
-		
+		List<FeatureViewerDataTO> featureViewerDataTOListConsensus = new ArrayList<FeatureViewerDataTO>();
 		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
 			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
-	
+			String color = colorPicker.generateColorByTaxon(taxonKey);
 			List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
 			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
-			List<FeatureViewerDataTO> featureViewerDataTOListConsensus = createFeatureViewerDataTOListConsensus(taxonSegmentsConsensus);
+			featureViewerDataTOListConsensus.addAll(createFeatureViewerDataTOListConsensus(taxonSegmentsConsensus,color)) ;
 			
-			featureViewerConsensusDataMap.put(taxonKey.getScientificName(), featureViewerDataTOListConsensus);
 		}
 		
-		return sortMap(featureViewerConsensusDataMap, createComparatorByNumberOfSegments());
+		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		featureViewerConsensusDataMap.put(TAXA, featureViewerDataTOListConsensus);
+		return featureViewerConsensusDataMap;
 		
 	}
 	
 	private List<FeatureViewerDataTO> createFeatureViewerDataTOListConsensus(List<Segment<Taxon>> taxonSegmentsConsensus) {
-		
 		List<FeatureViewerDataTO> featureViewerDataTOListConsensus = new ArrayList<FeatureViewerDataTO>();
-		
 		for (Segment<Taxon> segment : taxonSegmentsConsensus) {
 			FeatureViewerDataTO featureViewerDataTO = new FeatureViewerDataTO(segment.getX(), segment.getY(), createFeatureViewerDescription(segment.getData()), createFeatureViewerId(segment.getData()));
 			featureViewerDataTOListConsensus.add(featureViewerDataTO);
 		}
 		return featureViewerDataTOListConsensus;
 	}
-
+	
+	private List<FeatureViewerDataTO> createFeatureViewerDataTOListConsensus(List<Segment<Taxon>> taxonSegmentsConsensus, String color) {
+		List<FeatureViewerDataTO> featureViewerDataTOListConsensus = new ArrayList<FeatureViewerDataTO>();
+		for (Segment<Taxon> segment : taxonSegmentsConsensus) {
+			FeatureViewerDataTO featureViewerDataTO = new FeatureViewerDataTO(segment.getX(), segment.getY(), createFeatureViewerDescription(segment.getData()), createFeatureViewerId(segment.getData()), color);
+			featureViewerDataTOListConsensus.add(featureViewerDataTO);
+		}
+		return featureViewerDataTOListConsensus;
+	}
 
 
 	public Map<String, List<FeatureViewerDataTO>> undefinedRegions(List<Read> readsOnContig, String rank){
@@ -230,12 +247,12 @@ public class ContigControllerHelper {
 	}
 	
 	
-	private List<FeatureViewerDataTO> createFeatureViewerDataTO(Entry<Taxon, List<Read>> readsGrouped, String scientificName) {
+	private List<FeatureViewerDataTO> createFeatureViewerDataTO(Entry<Taxon, List<Read>> readsGrouped, String scientificName, String color) {
 		List<FeatureViewerDataTO> list = new ArrayList<FeatureViewerDataTO>();
 		List<Read> reads = readsGrouped.getValue();
 		
 		for (Read read : reads) {
-			list.add(new FeatureViewerDataTO(read.getStartAlignment(), read.getEndAlignment(), scientificName, read.getId().toString()));
+			list.add(new FeatureViewerDataTO(read.getStartAlignment(), read.getEndAlignment(), scientificName, read.getId().toString(), color));
 		}
 		return list;
 	}

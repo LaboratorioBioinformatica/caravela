@@ -10,12 +10,21 @@ public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Se
 	private Integer y;
 	private String description;
 	private String id;
+	private String color;
 	
 	public FeatureViewerDataTO(Integer x, Integer y, String description, String id) {
 		this.x = x;
 		this.y = y;
 		this.description = description;
 		this.id = id;
+	}
+	
+	public FeatureViewerDataTO(Integer x, Integer y, String description, String id, String color) {
+		this.x = x;
+		this.y = y;
+		this.description = description;
+		this.id = id;
+		this.color = color;
 	}
 
 	public Integer getX() {
@@ -56,6 +65,10 @@ public class FeatureViewerDataTO implements Comparable<FeatureViewerDataTO>,  Se
 	public boolean intersects(FeatureViewerDataTO other) {
 		// modify to close interval
 		return other.getY() >= x && other.getX() <= y;
+	}
+	
+	public String getColor(){
+		return this.color;
 	}
 	
 	

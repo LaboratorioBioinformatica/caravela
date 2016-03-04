@@ -41,6 +41,14 @@ public class FeatureViewerDataTOTest {
 	}
 	
 	@Test
+	public void testColor() throws Exception {
+		String color = "#ffffff";
+		FeatureViewerDataTO target = new FeatureViewerDataTO(1, 100, "description", "1", color);
+		Assert.assertEquals(color, target.getColor());
+		
+	}
+	
+	@Test
 	public void testIntersects() throws Exception {
 		
 		FeatureViewerDataTO interval1 = new FeatureViewerDataTO(1, 100, "description", "1");

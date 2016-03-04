@@ -10435,7 +10435,7 @@ module.exports = require('./backbone-events-standalone');
 }();
 },{}],7:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.2.0
+ * jQuery JavaScript Library v2.2.1
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -10445,7 +10445,7 @@ module.exports = require('./backbone-events-standalone');
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-01-08T20:02Z
+ * Date: 2016-02-22T19:11Z
  */
 
 (function( global, factory ) {
@@ -10501,7 +10501,7 @@ var support = {};
 
 
 var
-	version = "2.2.0",
+	version = "2.2.1",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -14915,7 +14915,7 @@ function on( elem, types, selector, data, fn, one ) {
 	if ( fn === false ) {
 		fn = returnFalse;
 	} else if ( !fn ) {
-		return this;
+		return elem;
 	}
 
 	if ( one === 1 ) {
@@ -15564,14 +15564,14 @@ var
 	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
 
+// Manipulating tables requires a tbody
 function manipulationTarget( elem, content ) {
-	if ( jQuery.nodeName( elem, "table" ) &&
-		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
+	return jQuery.nodeName( elem, "table" ) &&
+		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ?
 
-		return elem.getElementsByTagName( "tbody" )[ 0 ] || elem;
-	}
-
-	return elem;
+		elem.getElementsByTagName( "tbody" )[ 0 ] ||
+			elem.appendChild( elem.ownerDocument.createElement( "tbody" ) ) :
+		elem;
 }
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
@@ -16078,7 +16078,7 @@ var getStyles = function( elem ) {
 		// FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
 		var view = elem.ownerDocument.defaultView;
 
-		if ( !view.opener ) {
+		if ( !view || !view.opener ) {
 			view = window;
 		}
 
@@ -16227,15 +16227,18 @@ function curCSS( elem, name, computed ) {
 		style = elem.style;
 
 	computed = computed || getStyles( elem );
+	ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined;
+
+	// Support: Opera 12.1x only
+	// Fall back to style even without computed
+	// computed is undefined for elems on document fragments
+	if ( ( ret === "" || ret === undefined ) && !jQuery.contains( elem.ownerDocument, elem ) ) {
+		ret = jQuery.style( elem, name );
+	}
 
 	// Support: IE9
 	// getPropertyValue is only needed for .css('filter') (#12537)
 	if ( computed ) {
-		ret = computed.getPropertyValue( name ) || computed[ name ];
-
-		if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
-			ret = jQuery.style( elem, name );
-		}
 
 		// A tribute to the "awesome hack by Dean Edwards"
 		// Android Browser returns percentage for some values,
@@ -18285,7 +18288,7 @@ jQuery.extend( jQuery.event, {
 				// But now, this "simulate" function is used only for events
 				// for which stopPropagation() is noop, so there is no need for that anymore.
 				//
-				// For the compat branch though, guard for "click" and "submit"
+				// For the 1.x branch though, guard for "click" and "submit"
 				// events is still used, but was moved to jQuery.event.stopPropagation function
 				// because `originalEvent` should point to the original event for the constancy
 				// with other events and for more focused logic
@@ -20055,11 +20058,8 @@ jQuery.fn.extend( {
 			}
 
 			// Add offsetParent borders
-			// Subtract offsetParent scroll positions
-			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true ) -
-				offsetParent.scrollTop();
-			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true ) -
-				offsetParent.scrollLeft();
+			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
+			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
 		}
 
 		// Subtract parent offsets and element margins
@@ -20267,9 +20267,730 @@ return jQuery;
 }));
 
 },{}],8:[function(require,module,exports){
+/**
+ * A neXtProt js client
+ */
+(function (root) {
+    //
+    'use strict';
+    if (root.Nextprot === undefined) {
+        root.Nextprot = {};
+    }
+
+
+    (function () {
+
+        //Utility methods
+        var _getURLParameter = function (name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        };
+
+        function _changeParamOrAddParamByName(href, paramName, newVal) {
+            var tmpRegex = new RegExp("(" + paramName + "=)[a-zA-Z0-9_]+", 'ig');
+            if (href.match(tmpRegex) !== null) {
+                return href.replace(tmpRegex, '$1' + newVal);
+            }
+            return href += (((href.indexOf("?") !== -1) ? "&" : "?") + paramName + "=" + newVal);
+        }
+
+        var _convertToTupleMap = function (data) {
+            var publiMap = {};
+            var xrefMap = {};
+            data.entry.publications.forEach(function (p) {
+                publiMap[p.md5] = p;
+            });
+            data.entry.xrefs.forEach(function (p) {
+                xrefMap[p.dbXrefId] = p;
+            });
+            //return data.entry.annotations;
+            return {
+                annot: data.entry.annotations,
+                publi: publiMap,
+                xrefs: xrefMap
+            };
+        };
+
+        var normalizeEntry = function (entry) {
+            if (entry.substring(0, 3) !== "NX_") {
+                entry = "NX_" + entry;
+            }
+            return entry;
+        };
+
+
+        var environment = _getURLParameter("env") || 'pro'; //By default returns the production
+        var apiBaseUrl = "https://api.nextprot.org";
+        if (environment !== 'pro') {
+            apiBaseUrl = "http://" + environment + "-api.nextprot.org";
+        }
+        var sparqlEndpoint = apiBaseUrl + "/sparql";
+        var sparqlFormat = "?output=json";
+
+        var applicationName = null;
+        var clientInfo = null;
+
+
+        function _getJSON(url) {
+
+            var finalURL = url;
+            finalURL = _changeParamOrAddParamByName(finalURL, "clientInfo", clientInfo);
+            finalURL = _changeParamOrAddParamByName(finalURL, "applicationName", applicationName);
+
+            return Promise.resolve($.getJSON(finalURL));
+            //return get(url).then(JSON.parse);
+        }
+
+
+        var _getEntry = function (entry, context) {
+            var entryName = normalizeEntry(entry || (_getURLParameter("nxentry") || 'NX_P01308'));
+            var url = apiBaseUrl + "/entry/" + entryName;
+            if (context) {
+                url += "/" + context;
+            }
+            return _getJSON(url);
+        };
+
+        var _callPepX = function (seq, mode) {
+            var url = apiBaseUrl + "/entries/search/peptide?peptide=" + seq + "&modeIL=" + mode;
+            return _getJSON(url);
+        };
+
+
+        var NextprotClient = function (appName, clientInformation) {
+            applicationName = appName;
+            clientInfo = clientInformation;
+            if (!appName) {
+                throw "Please provide some application name  ex:  new Nextprot.Client('demo application for visualizing peptides', clientInformation);";
+            }
+
+            if (!clientInformation) {
+                throw "Please provide some client information ex:  new Nextprot.Client(applicationName, 'Calipho SIB at Geneva');";
+            }
+        };
+
+        //////////////// BEGIN Setters ////////////////////////////////////////////////////////////////////////
+
+        /** By default it is set to https://api.nextprot.org */
+        NextprotClient.prototype.setApiBaseUrl = function (_apiBaseUrl) {
+            apiBaseUrl = _apiBaseUrl;
+            sparqlEndpoint = apiBaseUrl + "/sparql";
+        };
+        /** By default it is set to https://api.nextprot.org/sparql */
+        NextprotClient.prototype.setSparqlEndpoint = function (_sparqlEndpoint) {
+            sparqlEndpoint = _sparqlEndpoint;
+        };
+
+        //////////////// END Setters ////////////////////////////////////////////////////////////////////////
+
+        //Gets the entry set in the parameter
+        NextprotClient.prototype.getEnvironment = function () {
+            return _getURLParameter("env") || 'pro'; //By default returns the insulin
+        };
+        NextprotClient.prototype.getApiBaseUrl = function () {
+            return apiBaseUrl;
+        };
+
+        //Gets the entry set in the parameter
+        NextprotClient.prototype.getEntryName = function () {
+            return normalizeEntry(_getURLParameter("nxentry") || 'NX_P01308'); //By default returns the insulin
+        };
+
+        NextprotClient.prototype.getInputOption = function () {
+            return _getURLParameter("inputOption") || ''; //By default returns the insulin
+        };
+
+        NextprotClient.prototype.changeEntry = function (elem) {
+            var new_url = _changeParamOrAddParamByName(window.location.href, "nxentry", elem.value);
+            window.location.href = new_url;
+        };
+
+        NextprotClient.prototype.getEntryforPeptide = function (seq) {
+            return _callPepX(seq, "true").then(function (data) {
+                return data;
+            });
+        };
+
+
+        var _transformPrefixesFunction = function (result) {
+            var sparqlPrefixes = "";
+            result.map(function (p) {
+                sparqlPrefixes += (p + "\n");
+            });
+            return sparqlPrefixes;
+        };
+
+        // Keeps SPARQL prefixes in cache
+        var sparqlPrefixPromise;
+        NextprotClient.prototype.getSparqlPrefixes = function () {
+            sparqlPrefixPromise = sparqlPrefixPromise || _getJSON(apiBaseUrl + "/sparql-prefixes").then(_transformPrefixesFunction);
+            return sparqlPrefixPromise;
+        };
+
+        NextprotClient.prototype.executeSparql = function (sparql, includePrefixes) {
+            return this.getSparqlPrefixes().then(function (sparqlPrefixes) {
+
+                var incPrefs = (includePrefixes === undefined) ? true : includePrefixes;
+                var sparqlQuery = incPrefs ? sparqlPrefixes + sparql : sparql; //add SPARQL prefixes if flag not set to false
+                var url = sparqlEndpoint + sparqlFormat + "&query=" + encodeURIComponent(sparqlQuery);
+                return _getJSON(url);
+            });
+        };
+
+        NextprotClient.prototype.getEntryProperties = function (entry) {
+            return _getEntry(entry, "accession").then(function (data) {
+                return data.entry.properties;
+            });
+        };
+
+        NextprotClient.prototype.getProteinOverview = function (entry) {
+            return _getEntry(entry, "overview").then(function (data) {
+                return data.entry.overview;
+            });
+        };
+
+        NextprotClient.prototype.getProteinSequence = function (entry) {
+            return _getEntry(entry, "isoform").then(function (data) {
+                return data.entry.isoforms;
+            });
+        };
+        NextprotClient.prototype.getXrefs = function (entry) {
+            return _getEntry(entry, "xref").then(function (data) {
+                return data.entry.xrefs;
+            });
+        };
+        /** USE THIS INSTEAD OF THE OTHERS for example getEntryPart(NX_1038042, "ptm") */
+        NextprotClient.prototype.getAnnotationsByCategory = function (entry, category) {
+            return _getEntry(entry, category).then(function (data) {
+                return _convertToTupleMap(data);
+            });
+        };
+
+        NextprotClient.prototype.getEntry = function (entry, category) {
+            return _getEntry(entry, category).then(function (data) {
+                return data.entry;
+            });
+        };
+
+        NextprotClient.prototype.getEntryProperties = function (entry) {
+            return _getEntry(entry, "accession").then(function (data) {
+                return data.entry.properties;
+            });
+        };
+
+
+        /*  Special method to retrieve isoforms mapping on the master sequence (should not be used by public)  */
+        NextprotClient.prototype.getIsoformMapping = function (entry) {
+            return _getEntry(entry, "isoform/mapping").then(function (data) {
+                return data;
+            });
+        };
+
+        NextprotClient.prototype.getGenomicMappings = function (entry) {
+            return _getEntry(entry, "genomic-mapping").then(function (data) {
+                return data.entry.genomicMappings;
+            });
+        };
+
+        // BEGIN Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
+        NextprotClient.prototype.getPeptide = function (entry) {
+            console.warn("getPeptide is deprecated. use getAnnotationsByCategory(entry, 'peptide-mapping') instead ");
+            return _getEntry(entry, "peptide-mapping").then(function (data) {
+                return data.entry.peptideMappings;
+            });
+        };
+
+        NextprotClient.prototype.getSrmPeptide = function (entry) {
+            console.warn("getSrmPeptide is deprecated. use getAnnotationsByCategory(entry, 'srm-peptide-mapping') instead ");
+            return _getEntry(entry, "srm-peptide-mapping").then(function (data) {
+                return data.entry.srmPeptideMappings;
+            });
+        };
+
+        NextprotClient.prototype.getAntibody = function (entry) {
+            //this is not deprecated yet
+            return _getEntry(entry, "antibody").then(function (data) {
+                return data.entry.antibodyMappings;
+            });
+        };
+        // END Special cases to be deprecated  //////////////////////////////////////////////////////////////////////////////
+
+
+        //node.js compatibility
+        if (typeof exports !== 'undefined') {
+            exports.Client = NextprotClient;
+        }
+
+        root.Nextprot.Client = NextprotClient;
+
+    }());
+
+
+}(this));
+
+},{}],9:[function(require,module,exports){
+//Utility methods
+var NXUtils = {
+
+    checkIsoformMatch: function (isoname, isonumber) {
+        return isoname.endsWith("-" + isonumber)
+    },
+    getIsoforms: function(isoforms){
+        if (isoforms && isoforms.length > 1 ) {
+            isoforms.sort(NXUtils.sortIsoformNames);
+            isoforms.forEach(function(iso){
+                console.log(iso);
+                if (iso.synonyms && iso.synonyms.length > 1) iso.synonyms.sort(NXUtils.sortByAlphabet);
+            })
+            return isoforms;
+        }
+        else return null;
+    },
+    getORFNames: function (geneName) {
+        var names = [];
+        if (geneName.category === "ORF") {
+            names.push({name: geneName.name})
+        }
+
+        if (geneName.synonyms) {
+            geneName.synonyms.forEach(function (gns) {
+                if (gns.category === "ORF") {
+                    names.push({name: gns.name})
+                }
+            })
+        }
+        if (names.length) names.sort(NXUtils.sortByAlphabet);
+        return names;
+    },
+    getSynonyms: function (syn) {
+        var synonyms = {};
+        if (syn) {
+            syn.forEach(function (s) {
+                if (synonyms.hasOwnProperty(s.qualifier)) {
+                    synonyms[s.qualifier].push(s.name);
+                }
+                else {
+                    synonyms[s.qualifier]=[s.name];
+                }
+            });
+        }
+        for (var qualifier in synonyms) {
+            synonyms[qualifier].sort(NXUtils.sortByAlphabet);
+        }
+        return synonyms;
+    },
+    sortSynonyms: function(a,b){
+        var a = a;
+        var b = b;
+        if (typeof a !== "string") {
+            var a = a.name;
+            var b = b.name;
+        }
+        if (a.length === b.length) {
+            return a.toLowerCase() > b.toLowerCase()
+        }
+        return b.toLowerCase().length - a.toLowerCase().length;
+    },
+    sortIsoformNames: function(a,b){
+        if (parseInt(a.name.replace("Iso", "").replace(" ", ""))) {
+            var first = parseInt(a.name.replace("Iso", "").replace(" ", ""));
+            var second = parseInt(b.name.replace("Iso", "").replace(" ", ""));
+            if(first > second) return 1;
+            if(first < second) return -1;
+            return 0;
+        }
+        else return a.name > b.name;
+    },
+    sortByAlphabet: function(a,b) {
+        var a = typeof a === "string" ? a : a.name ? a.name : null;        
+        var b = typeof b === "string" ? b : b.name ? b.name : null;        
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    },
+    getRecommendedName: function (geneName) {
+        var name = "";
+        if (geneName.category === "gene name" && geneName.main === true) {
+            name = geneName.name;
+        }
+        return name;
+    },
+    getAlternativeNames: function (altNames) {
+        var names = [];
+        if (altNames) {
+            altNames.forEach(function (an) {
+                var found = false;
+                var type = an.type === "name" ? "Alternative name" : an.type;
+                for (var elem in names) {
+                    if (names[elem].type === type) {
+                        names[elem].names.push({name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)});
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    names.push({type: type, names: [{name: an.name, synonyms: NXUtils.getSynonyms(an.synonyms)}]})
+                }
+            });
+        }
+        names.map(function(n){n.names.sort(NXUtils.sortByAlphabet)});
+        names.forEach(function(n) {if (n.type === "Alternative name" && n.names.length > 1) {n.type = "Alternative names"}});
+        return names;
+    },
+    getMainSynonym: function (sy) {
+        var mainName;
+        var syProtNames= sy.filter(function(a) {return a.qualifier === "full"});
+        if (syProtNames.length) {
+            var name = syProtNames.sort(function (a, b) {
+                return b.name.length - a.name.length;
+            })[0];
+            mainName = {
+                name: name.name,
+                synonym: name.synonyms ? name.synonyms.sort(NXUtils.sortByAlphabet)[0].name : null
+            }
+        }
+        return mainName;
+    },
+    getMainShort: function (sh) {
+        var name;
+        name = sh[sh.length-1].charAt(0) === "h" ? sh[sh.length-2] ? sh[sh.length-2] : sh[sh.length-1] : sh[sh.length-1];
+        return name;
+    },
+    getFamily: function (f,family) {
+        f.level === "Superfamily" ? family["superfamily"]= {name:f.name, accession:f.accession} : "";
+        f.level === "Family" ? family["family"]= {name:f.name, accession:f.accession} : "";
+        f.level === "Subfamily" ? family["subfamily"]= {name:f.name, accession:f.accession} : "";
+        if (f.parent) {
+            NXUtils.getFamily(f.parent,family);
+        }
+        return family;
+    },
+    getProteinExistence: function(term){
+        var existence = term.split('_').join(' ').toLowerCase();
+        mainSentence = "Entry whose protein(s) existence is ";
+        based = "based on ";
+        switch(existence) {
+            case "uncertain":
+                return mainSentence + existence;
+                break;
+            case "inferred from homology":
+                return mainSentence + existence;
+                break;
+            default:
+                return mainSentence + based + existence;
+                break;
+        }
+    },
+    getSequenceForIsoform: function (isoSequences, isoformName) {
+        var result = null;
+        //TODO allow users to specify isoform name without NX_
+        //TODO the API should return the results in a sorted array
+
+        if (typeof isoformName === "number") {
+            isoSequences.forEach(function (d) {
+
+                if (d.uniqueName.endsWith("-" + isoformName)) {
+                    result = d.sequence;
+                }
+            });
+        } else {
+            isoSequences.forEach(function (d) {
+                if (d.uniqueName === isoformName)
+                    return d.sequence;
+            })
+        }
+        return result;
+    },
+    getLinkForFeature: function (accession, description, type) {
+        if (type === "Peptide" || type === "SRM Peptide") {
+            if (description) {
+                var url = "https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/GetPeptide?searchWithinThis=Peptide+Name&searchForThis=" + description + ";organism_name=Human";
+                return "<a href='" + url + "'>" + description + "</a>";
+            }
+        } else if (type === "antibody") {
+            var url = accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        } else if (accession) {
+            var url = "http://www.nextprot.org/db/term/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        } else if (type === "publication") {
+            var url = "http://www.nextprot.org/db/publication/" + accession;
+            return "<a href='" + url + "'>" + description + "</a>";
+        } else if (description) return description;
+        else return "";
+    },
+    getDescription: function (elem, category) {
+        if (category === "Peptide" || category === "SRM Peptide") {
+            for (var ev in elem.evidences) {
+                if (elem.evidences[ev].resourceDb === "PeptideAtlas" || elem.evidences[ev].resourceDb === "SRMAtlas") {
+                    return elem.evidences[ev].resourceAccession;
+                }
+            }
+            return "";
+        }
+        else return elem.description;
+    },
+    getEvidenceCodeName: function (elem, category) {
+        if (category === "Peptide") {
+            return "EXP";
+        }
+        else return elem.evidenceCodeName;
+    },
+    getAssignedBy: function (elem) {
+        if (elem === "Uniprot") {
+            return "UniprotKB";
+        }
+        if (elem.startsWith("MD") || elem.startsWith("PM")) {
+            return "neXtProt";
+        }
+        else return elem;
+    },
+    getProteotypicity: function (elem) {
+        if (elem) {
+            var proteo = true;
+            elem.forEach(function(p) {
+                if (p.name === "is proteotypic" && p.value === "N") proteo=false;
+            });
+            return proteo;
+        }
+        else return true;
+    },
+    convertMappingsToIsoformMap: function (featMappings, category, group) {
+        var mappings = jQuery.extend([], featMappings);
+        var publiActive = false;
+        if (featMappings.hasOwnProperty("annot")) {
+            publiActive = true;
+            mappings = jQuery.extend([], featMappings.annot);
+        }
+        var result = {};
+        mappings.forEach(function (mapping) {
+            if (mapping.hasOwnProperty("targetingIsoformsMap")) {
+                for (var name in mapping.targetingIsoformsMap) {
+                    if (mapping.targetingIsoformsMap.hasOwnProperty(name)) {
+                        var start = mapping.targetingIsoformsMap[name].firstPosition,
+                            end = mapping.targetingIsoformsMap[name].lastPosition,
+                            description = NXUtils.getDescription(mapping,category),
+                            link = NXUtils.getLinkForFeature(mapping.cvTermAccessionCode, description, category),
+                            quality = mapping.qualityQualifier !== "GOLD" ? mapping.qualityQualifier.toLowerCase() : "",
+                            proteotypic = NXUtils.getProteotypicity(mapping.properties),
+                            source = mapping.evidences.map(function (d) {
+                                var pub = null;
+                                var xref = null;
+                                if (publiActive) {
+                                    if (featMappings.publi[d.publicationMD5]) {
+                                        pub = d.publicationMD5;
+                                    }
+                                    if (featMappings.xrefs[d.resourceId]) {
+                                        xref = featMappings.xrefs[d.resourceId];
+                                    }
+                                    return {
+                                        evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                        assignedBy: NXUtils.getAssignedBy(d.assignedBy),
+                                        resourceDb: d.resourceDb,
+                                        externalDb: d.resourceDb !== "UniProt",
+                                        publicationMD5: d.publicationMD5,
+                                        title: pub ? NXUtils.getLinkForFeature(featMappings.publi[pub].publicationId, featMappings.publi[pub].title, "publication") : "",
+                                        authors: pub ? featMappings.publi[pub].authors.map(function (d) {
+                                            return {
+                                                lastName: d.lastName,
+                                                initials: d.initials
+                                            }
+                                        }) : [],
+                                        journal: pub ? featMappings.publi[pub].cvJournal ? featMappings.publi[pub].cvJournal.name : "" : "",
+                                        volume: pub ? featMappings.publi[pub].volume : "",
+                                        year: pub ? featMappings.publi[pub].publicationYear : "",
+                                        firstPage: pub ? featMappings.publi[pub].firstPage : "",
+                                        lastPage: pub ? (featMappings.publi[pub].lastPage === "" ? featMappings.publi[pub].firstPage : featMappings.publi[pub].lastPage) : "",
+                                        pubId: pub ? featMappings.publi[pub].publicationId : "",
+                                        abstract: pub ? featMappings.publi[pub].abstractText : "",
+                                        dbXrefs: pub ? featMappings.publi[pub].dbXrefs.map(function (o) {
+                                            return {
+                                                name: o.databaseName === "DOI" ? "Full Text" : o.databaseName,
+                                                url: o.resolvedUrl,
+                                                accession: o.accession
+                                            }
+                                        }) : [],
+                                        crossRef: xref ? {
+                                            dbName: xref.databaseName,
+                                            name: xref.accession,
+                                            url: xref.resolvedUrl
+                                        } : null
+                                    }
+                                } else return {
+                                    evidenceCodeName: NXUtils.getEvidenceCodeName(d,category),
+                                    assignedBy: NXUtils.getAssignedBy(d.assignedBy),
+                                    publicationMD5: d.publicationMD5,
+                                    title: "",
+                                    authors: [],
+                                    journal: "",
+                                    volume: "",
+                                    abstract: ""
+                                }
+                            }),
+                            variant = false;
+                        if (mapping.hasOwnProperty("variant") && !jQuery.isEmptyObject(mapping.variant)) {
+                            link = "<span style='color:#00C500'>" + mapping.variant.original + " → " + mapping.variant.variant + "</span>";
+                            description = "<span style=\"color:#00C500\">" + mapping.variant.original + " → " + mapping.variant.variant + "</span>  ";
+                            variant = true;
+                            if (mapping.description) {
+                                var reg = /\[(.*?)\]/g;
+                                var match = reg.exec(mapping.description);
+                                var desc = mapping.description;
+                                if (match) {
+                                    var parseMatch = match[1].split(":");
+                                    var desc = mapping.description.replace(/(\[.*?\])/g, NXUtils.getLinkForFeature(parseMatch[2], parseMatch[0]));
+
+                                }
+                                link += " ; " + desc;
+                            }
+                        }
+                        if (!result[name]) result[name] = [];
+                        result[name].push({
+                            start: start,
+                            end: end,
+                            length: end - start + 1,
+                            id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
+                            description: description,
+                            quality: quality,
+                            proteotypicity: proteotypic,
+                            category: category,
+                            group: group,
+                            link: link,
+                            evidenceLength: source.length,
+                            source: source,
+                            variant: variant
+                        });
+                    }
+                }
+            }
+            //TODO This is the old format, the API should evolve
+            else if (mapping.hasOwnProperty("isoformSpecificity")) {
+                for (var name in mapping.isoformSpecificity) {
+                    if (mapping.isoformSpecificity.hasOwnProperty(name)) {
+                        for (var i = 0; i < mapping.isoformSpecificity[name].positions.length; i++) {
+                            var start = mapping.isoformSpecificity[name].positions[i].first,
+                                end = mapping.isoformSpecificity[name].positions[i].second,
+                                description = "",
+                                link = "",
+                                source = [];
+                            if (mapping.hasOwnProperty("evidences")) {
+                                source = mapping.evidences.map(function (d) {
+                                    return {
+                                        evidenceCodeName: d.evidenceCodeName,
+                                        assignedBy: d.assignedBy,
+                                        publicationMD5: d.publicationMD5
+                                    }
+                                });
+                            }
+                            if (mapping.hasOwnProperty("xrefs")) {
+                                description = mapping.xrefs[0].accession;
+                                link = NXUtils.getLinkForFeature(mapping.xrefs[0].resolvedUrl, description, "antibody")
+                            } else {
+                                description = mapping.evidences[0].accession;
+                                for (ev in mapping.evidences)
+                                    if (mapping.evidences[ev].databaseName === "PeptideAtlas" || mapping.evidences[ev].databaseName === "SRMAtlas") {
+                                        description = mapping.evidences[ev].accession;
+                                        link = NXUtils.getLinkForFeature(description, description, "peptide");
+
+                                        break;
+                                    }
+                            }
+
+                            if (!result[name]) result[name] = [];
+                            result[name].push({
+                                start: start,
+                                end: end,
+                                length: end - start,
+                                id: category.replace(/\s/g, '') + "_" + start.toString() + "_" + end.toString(),
+                                description: description,
+                                category: category,
+                                group: group,
+                                link: link,
+                                evidenceLength: source.length,
+                                source: source
+                            });
+                        }
+                    }
+                }
+            }
+        });
+        for (var iso in result) {
+            result[iso].sort(function (a, b) {
+                if (a.start === b.start) {
+                    if (a.length === b.length) return b.id > a.id;
+                    else return b.length - a.length;
+                }
+                if (a.end === null) return 1;
+                return a.start - b.start;
+            })
+        }
+        return result;
+    },
+    convertPublications: function (publi, HashMD5) {
+        for (var pub in publi) {
+            HashMD5[publi[pub].md5] = {
+                title: publi[pub].title,
+                author: publi[pub].authors.map(function (d) {
+                    return {
+                        lastName: d.lastName,
+                        initials: d.initials
+                    }
+                }),
+                journal: publi[pub].cvJournal.name,
+                volume: publi[pub].volume,
+                abstract: publi[pub].abstractText
+            }
+        }
+
+    },
+    convertExonsMappingsToIsoformMap: function (mappings) {
+        return mappings.map(function (d) {
+            return {
+                uniqueName: d.uniqueName,
+                isoMainName: d.isoMainName,
+                mapping: d.positionsOfIsoformOnReferencedGene.map(function (o) {
+                    return {
+                        start: o.key,
+                        end: o.value
+                    };
+                })
+            }
+        })
+    }
+};
+
+var NXViewerUtils = {
+    convertNXAnnotations: function (annotations, metadata) {
+        if (!annotations) return "Cannot load this";
+        var result = {};
+        for (name in annotations) {
+            var meta = jQuery.extend({}, metadata);
+            meta.data = annotations[name].map(function (annotation) {
+                return {
+                    x: annotation.start,
+                    y: annotation.end,
+                    id: annotation.id,
+                    category: annotation.category,
+                    description: annotation.description
+                }
+            });
+            result[name] = meta;
+        }
+        return result;
+    }
+};
+if ( typeof module === "object" && typeof module.exports === "object" ) {
+    module.exports = {
+        NXUtils: NXUtils,
+        NXViewerUtils : NXViewerUtils
+    }
+}
+},{}],10:[function(require,module,exports){
 var FeatureViewer = (function () {
 
     function FeatureViewer(sequence, div, options) {
+//        var nxSeq = sequence.startsWith('NX_') ? true : false;
         var self = this;
         // if (!div) var div = window;
         this.events = {
@@ -20304,8 +21025,8 @@ var FeatureViewer = (function () {
         function colorSelectedFeat(feat, object) {
             //change color && memorize
             if (featureSelected !== {}) d3.select(featureSelected.id).style("fill", featureSelected.originalColor);
-            if (object.type !== "path"){
-                featureSelected = {"id": feat, "originalColor": object.color};
+            if (object.type !== "path" && object.type !== "line"){
+                featureSelected = {"id": feat, "originalColor": d3.select(feat).style("fill") || object.color};
                 d3.select(feat).style("fill", "orangered");
             }
         }
@@ -20335,6 +21056,21 @@ var FeatureViewer = (function () {
             .domain([0, width])
             .range([1, sequence.length]);
 
+        function updateLineTooltip(mouse,pD){
+            var xP = mouse-110;
+            var elemHover = "";
+            for (var l=0; l<pD.length;l++) {
+                if (scaling(pD[l].x) < xP && scaling(pD[l+1].x) > xP) {
+                    if ((xP - scaling(pD[l].x)) < (scaling(pD[l+1].x) - xP )) {
+                        elemHover = pD[l];
+                    }
+                    else elemHover = pD[l+1];
+                    break;
+                }
+            }
+            return elemHover;
+        }
+        
         d3.helper = {};
 
         d3.helper.tooltip = function (object) {
@@ -20374,11 +21110,15 @@ var FeatureViewer = (function () {
                         'text-align': 'center',
                         position: 'absolute',
                         'z-index': 45,
-                        'box-shadow': '0 1px 2px 0 #656565'
+                        'box-shadow': '0 1px 2px 0 #656565' 
                     });
                     if (object.type === "path") {
                         var first_line = '<p style="margin:2px;color:white">start : <span style="color:orangered">' + pD[0].x + '</span></p>';
                         var second_line = '<p style="margin:2px;color:white">end : <span style="color:orangered">' + pD[1].x + '</span></p>';
+                    } else if (object.type === "line") {
+                        var elemHover = updateLineTooltip(absoluteMousePos[0],pD);
+                        var first_line = '<p style="margin:2px;color:white">position : <span style="color:orangered" id="tLineX">' + elemHover.x + '</span></p>';
+                        var second_line = '<p style="margin:2px;color:white">count : <span style="color:orangered" id="tLineC">' + elemHover.y + '</span></p>';
                     } else if (object.type === "unique" || pD.x === pD.y) {
                         var first_line = '<p style="margin:2px;color:orangered">' + pD.x + '</p>';
                         if (pD.description) var second_line = '<p style="margin:2px;color:white;font-size:9px">' + pD.description + '</p>';
@@ -20397,6 +21137,13 @@ var FeatureViewer = (function () {
                     }
                 })
                     .on('mousemove.tooltip', function (pD, pI) {
+                    
+                        if (object.type === "line") {
+                            var absoluteMousePos = d3.mouse(bodyNode);
+                            var elemHover = updateLineTooltip(absoluteMousePos[0],pD);
+                            $('#tLineX').text(elemHover.x);
+                            $('#tLineC').text(elemHover.y);  
+                        }
                         // Move tooltip
                         // IE 11 sometimes fires mousemove before mouseover
                         if (tooltipDiv === undefined) { return; }
@@ -20425,6 +21172,7 @@ var FeatureViewer = (function () {
                         var yTemp;
                         var xRect;
                         var widthRect;
+                        var elemHover;
 
                         if(this.nodeName === "text") {
                             var rect = "#"+this.previousSibling.id;
@@ -20442,6 +21190,11 @@ var FeatureViewer = (function () {
                         if (object.type === "path") {
                             xTemp = pD[0].x;
                             yTemp = pD[1].x;
+                        } else if (object.type === "line") {
+                            var absoluteMousePos = d3.mouse(bodyNode);
+                            elemHover = updateLineTooltip(absoluteMousePos[0],pD);
+                            xTemp = elemHover.x - 0.5;
+                            yTemp = elemHover.x + 0.5;
                         } else if (object.type === "unique" || pD.x === pD.y) {
                             xTemp = pD.x - 0.4;
                             yTemp = pD.y + 0.4;
@@ -20478,10 +21231,10 @@ var FeatureViewer = (function () {
                         if (CustomEvent) {
                             var event = new CustomEvent(self.events.FEATURE_SELECTED_EVENT, {
                                 detail: {
-                                    start: object.type === "path" ? pD[0].x : pD.x,
-                                    end: object.type === "path" ? pD[1].x : pD.y,
-                                    id: object.type === "path" ? pD[0].id : pD.id,
-                                    description:object.type === "path" ? pD[0].description : pD.description
+                                    start: object.type === "path" ? pD[0].x : object.type === "line" ? elemHover.x : pD.x,
+                                    end: object.type === "path" ? pD[1].x : object.type === "line" ? elemHover.y : pD.y,
+                                    id: object.type === "path" ? pD[0].id : object.type === "line" ? elemHover.id : pD.id,
+                                    description:object.type === "path" ? pD[0].description : object.type === "line" ? elemHover.description : pD.description
                                 }
                             });
                             svgElement.dispatchEvent(event);
@@ -20489,10 +21242,10 @@ var FeatureViewer = (function () {
                             console.warn("CustomEvent is not defined....");
                         }
                         if (self.trigger) self.trigger(self.events.FEATURE_SELECTED_EVENT, {
-                            start: object.type === "path" ? pD[0].x : pD.x,
-                            end: object.type === "path" ? pD[1].x : pD.y,
-                            id:object.type === "path" ? pD[0].id : pD.id,
-                            description: object.type === "path" ? pD[0].description : pD.description
+                            start: object.type === "path" ? pD[0].x : object.type === "line" ? elemHover.x : pD.x,
+                            end: object.type === "path" ? pD[1].x : object.type === "line" ? elemHover.y : pD.y,
+                            id: object.type === "path" ? pD[0].id : object.type === "line" ? elemHover.id : pD.id,
+                            description:object.type === "path" ? pD[0].description : object.type === "line" ? elemHover.description : pD.description
                         });
 
                     });
@@ -20604,6 +21357,17 @@ var FeatureViewer = (function () {
             .y(function (d) {
                 return -d.y * 10 + pathLevel;
             });
+        var lineGen = d3.svg.line()
+          .interpolate("cardinal")
+          .x(function(d) {
+            return scaling(d.x);
+          })
+          .y(function (d) {
+                return lineYscale(-d.y) * 10 + pathLevel;
+            });
+        var lineYscale = d3.scale.linear()
+            .domain([0,-30])
+            .range([0,-20]);
         var line = d3.svg.line()
             .interpolate("linear")
             .x(function (d) {
@@ -20709,7 +21473,9 @@ var FeatureViewer = (function () {
                     return [{
                         x: d.x,
                         y: 0,
-                        id: d.id
+                        id: d.id,
+                        description: d.description,
+                        color: d.color
                     }, {
                         x: d.y,
                         y: d.level + 1,
@@ -20722,6 +21488,37 @@ var FeatureViewer = (function () {
                 })
                 pathLevel = level * 10 + 5;
                 object.height = level * 10 + 5;
+            },
+            line: function (object) {
+                if (!object.height) object.height = 10;
+                var shift = parseInt(object.height);
+                object.data.sort(function (a, b) {
+                    return a.x - b.x;
+                });
+                if (object.data[0].x !== 1) {
+                    object.data.unshift({
+                        x:1,
+                        y:0
+                    })
+                }
+                if (object.data[object.data.length -1] !== sequence.length -1){
+                    object.data.push({
+                        x:sequence.length-1,
+                        y:0
+                    })
+                }
+                var level = Math.max.apply(Math,object.data.map(function(o){return o.y;}))
+                lineYscale.range([0, -(shift)]).domain([0, -(level)]);
+                
+                object.data = [object.data.map(function (d) {
+                    return {
+                        x: d.x,
+                        y: d.y,
+                        id: d.id
+                    }
+                })]
+                pathLevel = shift * 10 + shift;
+                object.shift = shift * 10 + shift;
             },
             multipleRect: function (object) {
                 object.data.sort(function (a, b) {
@@ -20775,6 +21572,18 @@ var FeatureViewer = (function () {
                         y: Yposition - 10,
                         filter: object.filter
                     });
+                } else if (object.type === "line") {
+                    var negativeNumbers = object.data.filter(function(l){ return l.y < 0});
+                    console.log(negativeNumbers);
+                    preComputing.line(object);
+                    fillSVG.line(object, sequence, Yposition);
+                    Yposition += pathLevel;
+                    yData.push({
+                        title: object.name,
+                        y: Yposition - 10,
+                        filter: object.filter
+                    });
+                    Yposition += negativeNumbers.length ? pathLevel : 0;
                 }
             },
             sequence: function (seq, position, start) {
@@ -20802,8 +21611,10 @@ var FeatureViewer = (function () {
             rectangle: function (object, sequence, position) {
                 //var rectShift = 20;
                 var rectHeight =(object.height) ? object.height : 12;
+                
                 var rectShift = rectHeight + rectHeight/3;
                 var lineShift = rectHeight/2 - 6;
+//                var lineShift = rectHeight/2 - 6;
 
                 var rectsPro = svgContainer.append("g")
                     .attr("class", "rectangle")
@@ -20847,7 +21658,7 @@ var FeatureViewer = (function () {
                     })
                     .attr("width", rectWidth2)
                     .attr("height", rectHeight)
-                    .style("fill", object.color)
+                    .style("fill", function(d) { return d.color || object.color })
                     .style("z-index", "13")
                     .call(d3.helper.tooltip(object));
 
@@ -20887,7 +21698,8 @@ var FeatureViewer = (function () {
                 //    .call(d3.helper.tooltip(object));
 
                 forcePropagation(rectsProGroup);
-                Yposition += (level - 1) * rectShift;
+                var uniqueShift = level < 2 ? rectHeight-15 > 0 ? rectHeight-15 : 0 : 0;
+                Yposition += (level - 1) * (rectShift + lineShift + 1) + uniqueShift;
             },
             unique: function (object, sequence, position) {
                 var rectsPro = svgContainer.append("g")
@@ -20926,7 +21738,7 @@ var FeatureViewer = (function () {
                         else return scaling(d.x + 0.4) - scaling(d.x - 0.4);
                     })
                     .attr("height", 12)
-                    .style("fill", object.color)
+                    .style("fill", function(d) {return d.color ||  object.color})
                     .style("z-index", "3")
                     .call(d3.helper.tooltip(object));
 
@@ -20960,12 +21772,45 @@ var FeatureViewer = (function () {
                     })
                     .attr("d", lineBond)
                     .style("fill", "none")
-                    .style("stroke", object.color)
+                    .style("stroke", function(d) {return d[0].color || object.color})
                     .style("z-index", "3")
                     .style("stroke-width", "2px")
                     .call(d3.helper.tooltip(object));
 
                 forcePropagation(pathsDB);
+            },
+            line: function (object, sequence, position) {
+                var histog = svgContainer.append("g")
+                    .attr("class", "lining")
+                    .attr("transform", "translate(0," + position + ")");
+
+                histog.append("path")
+                    .attr("d", lineBond([{
+                        x: 1,
+                        y: 0
+                    }, {
+                        x: sequence.length,
+                        y: 0
+                    }]))
+                    .style("z-index", "0")
+                    .style("stroke", object.color)
+                    .style("stroke-width", "1px");
+
+                histog.selectAll("." + object.className)
+                    .data(object.data)
+                    .enter()
+                    .append("path")
+                    .attr("clip-path", "url(#clip)")
+                    .attr("class", "element " + object.className)
+                    .attr("d", lineGen)
+//                    .style("fill", "none")
+                    .style("stroke", object.color)
+                    .style("z-index", "3")
+                    .style("stroke-width", "2px")
+//                    .style("shape-rendering", "crispEdges")
+                    .call(d3.helper.tooltip(object));
+
+                forcePropagation(histog);
             },
             multipleRect: function (object, sequence, position, level) {
                 var rectHeight = 8;
@@ -21006,7 +21851,7 @@ var FeatureViewer = (function () {
                     })
                     .attr("width", rectWidth)
                     .attr("height", rectHeight)
-                    .style("fill", object.color)
+                    .style("fill", function(d) { return d.color || object.color })
                     .style("z-index", "13")
                     .call(d3.helper.tooltip(object));
 
@@ -21115,6 +21960,15 @@ var FeatureViewer = (function () {
                         return -d.y * 10 + object.height;
                     }));
             },
+            line: function (object) {
+                svgContainer.selectAll("." + object.className)
+                    .data(object.data)
+                    //.transition()
+                    //.duration(500)
+                    .attr("d", lineGen.y(function (d) {
+                        return lineYscale(-d.y) * 10 + object.shift;
+                    }));
+            },
             text: function (object, start) {
                 svgContainer.selectAll("." + object.className)
                     .data(object.data)
@@ -21215,6 +22069,8 @@ var FeatureViewer = (function () {
                     transition.unique(o);
                 } else if (o.type === "path") {
                     transition.path(o);
+                } else if (o.type === "line") {
+                    transition.line(o);
                 } else if (o.type === "text") {
                     transition.text(o, start);
                 }
@@ -21534,6 +22390,97 @@ var FeatureViewer = (function () {
 if ( typeof module === "object" && typeof module.exports === "object" ) {
     module.exports = FeatureViewer;
 }
+},{}],11:[function(require,module,exports){
+
+var nxClient;
+
+function nxFeatureViewer(nx, entry, div, options) {
+    nxClient = nx;
+    return new Promise(function(resolve, reject) {
+        var ft;
+        var isoform = entry;
+        var sequence = "";
+        if (entry.startsWith("NX_")) {
+            var isoNb = isoform.split("-")[1] ? isoform : isoform.split("-")[0] + "-1";
+            var nxEntry = isoform.split("-")[0];
+            nx.getProteinSequence(nxEntry).then(function (data) {
+                var isoSeq = data.filter(function(iso) {return iso.uniqueName === isoNb});
+                var sequence = isoSeq[0].sequence;
+                FeatureViewer.prototype.isoform = isoNb;
+                FeatureViewer.prototype.entry = nxEntry;
+                FeatureViewer.prototype.nxClient = nx;
+                FeatureViewer.prototype.addNxFeature = addNxFeature;
+                ft = new FeatureViewer(sequence, div, options);
+                resolve(ft);
+            })
+        }
+    });
+
+}
+
+function filterFeatures(featuresForViewer, viewer) {
+    var isoName = viewer.isoform;
+    for (var i = 0; i < featuresForViewer.length; i++) {
+        if (Object.keys(featuresForViewer[i]).length !== 0 && featuresForViewer[i].hasOwnProperty(isoName)) {
+            var feature = jQuery.extend({}, featuresForViewer[i][isoName]);
+            viewer.addFeature(feature);
+        }
+    }
+}
+
+function mergeData(oneData, metaData, viewer) {
+    featuresForViewer = [];
+
+    for (var i = 0; i < oneData.length; i++) {
+        var feat = NXUtils.convertMappingsToIsoformMap(oneData[i], metaData[i].name, metaData[i].filter);
+        var featForViewer = NXViewerUtils.convertNXAnnotations(feat, metaData[i]);
+        featuresForViewer.push(featForViewer);
+    }
+    return featuresForViewer;
+}
+
+function getFeaturesByview(nx, list, entry) {
+    
+    var data = [];
+    for (var feat in list) {
+        switch (list[feat]) {
+        case "sequence":
+            data.push(nx.getProteinSequence(entry));
+            break;
+        case "antibody":
+            data.push(nx.getAntibody(entry));
+            break;
+        case "isoform-mapping":
+            data.push(nx.getIsoformMapping(entry));
+            break;
+        default:
+            data.push(nx.getAnnotationsByCategory(entry, list[feat]));
+            break;
+        }
+    }
+    return data;
+}
+
+function addNxFeature(featuresName, featuresStyle) {
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        Promise.all(getFeaturesByview(that.nxClient, featuresName, that.entry))
+            .then(function (oneData) {
+                var featuresForViewer = mergeData(oneData, featuresStyle);
+                filterFeatures(featuresForViewer, that);
+                resolve(that);
+            }).catch(function (err) {
+                // catch any error that happened so far
+                console.log("Argh, broken: " + err.message);
+                console.log("Error at line : " + err.stack);
+            });
+        
+    });
+}
+
+if ( typeof module === "object" && typeof module.exports === "object" ) {
+    module.exports = nxFeatureViewer;
+}
 },{}],"feature-viewer":[function(require,module,exports){
 (function (global){
 /*
@@ -21554,9 +22501,18 @@ require("bootstrap/js/tooltip.js");
 require("bootstrap/js/popover.js");
 
 var FeatureViewer = require("../src/feature-viewer.js");
+ 
+//Optionnal : usage with nextprot
+Nextprot = require("nextprot/src/nextprot-core.js");
+NXUtils = require("nextprot/src/nextprot-utils.js")["NXUtils"];
+NXViewerUtils = require("nextprot/src/nextprot-utils.js")["NXViewerUtils"];
+
+//Optionnal : usage with nextprot
+nxFeatureViewer = require("../src/fv.nextprot.js");
+
 
 
 require("biojs-events").mixin(FeatureViewer.prototype);
 module.exports = FeatureViewer;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../src/feature-viewer.js":8,"biojs-events":1,"bootstrap/js/popover.js":4,"bootstrap/js/tooltip.js":5,"d3":6,"jquery":7}]},{},[]);
+},{"../src/feature-viewer.js":10,"../src/fv.nextprot.js":11,"biojs-events":1,"bootstrap/js/popover.js":4,"bootstrap/js/tooltip.js":5,"d3":6,"jquery":7,"nextprot/src/nextprot-core.js":8,"nextprot/src/nextprot-utils.js":9}]},{},[]);
