@@ -12,10 +12,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
+import br.usp.iq.lbi.caravela.dao.ReportContigDAO;
+import br.usp.iq.lbi.caravela.dao.ReportTaxonContigDAO;
 import br.usp.iq.lbi.caravela.intervalTree.IntervalTree;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
+import br.usp.iq.lbi.caravela.model.ReportContig;
+import br.usp.iq.lbi.caravela.model.ReportTaxonOnContig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
 
@@ -27,6 +31,8 @@ public class SampleReporterImpl implements SampleReporter {
 	@Inject private ReadWrapper readWrapper;
 	@Inject private ConsensusBuilding consensusBuilding;
 	@Inject private SegmentsCalculator segmentsCalculator;
+	@Inject private ReportContigDAO reportContigDAO;
+	@Inject private ReportTaxonContigDAO reportTaxonContigDAO;
 	
 	public void reportChimericPotentialFromContig(Sample sample, Double tii, String rank) {
 		
@@ -46,8 +52,7 @@ public class SampleReporterImpl implements SampleReporter {
 			
 			Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
 			
-			Map<Taxon, Double> taxonCovarageMap = new HashMap<Taxon, Double>(); 
-			
+			Map<Taxon, Double> taxonCovarageMap = new HashMap<Taxon, Double>();
 			for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
 				Double numberOfBaseOfPairAssignedToTaxon = 0d;
 				Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
@@ -128,6 +133,12 @@ public class SampleReporterImpl implements SampleReporter {
 				
 			}
 			
+			
+			
+			ReportContig reportContig = new ReportContig(contig, rank, boundariesSegments.size(),  percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
+			
+			reportContigDAO.save(reportContig);
+			
 			System.out.println(" tii: " + contig.getTaxonomicIdentificationIndex() + 
 					" boundaries: "+ boundariesSegments.size() +
 					" unclissified: " + percentageOfContingAssignedToUnclassified +
@@ -137,7 +148,10 @@ public class SampleReporterImpl implements SampleReporter {
 					);
 			
 			Set<Taxon> keySet = taxonCovarageMap.keySet();
+			int numberOfTaxonOnContig = keySet.size();
 			for (Taxon taxon : keySet) {
+				ReportTaxonOnContig reportTaxonOnContig = new ReportTaxonOnContig(reportContig, taxon, taxonCovarageMap.get(taxon));
+				reportTaxonContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig);
 				System.out.println(taxon.getScientificName() + " : " + taxonCovarageMap.get(taxon));
 			}
 			

@@ -92,6 +92,28 @@ create table contig (
 );
 
 
+-- create table report contig sequence
+create table report_contig (
+	id INT NOT NULL AUTO_INCREMENT,
+	contig_id INT NOT NULL,
+	rank VARCHAR(50) NOT NULL,
+	boundary INT NOT null,
+	unclassified DOUBLE NOT NULL,
+	undefined DOUBLE NOT NULL,
+	PRIMARY KEY(id) 
+);
+
+-- create table report taxon on contig sequence
+create table report_taxon_contig (
+	id INT NOT NULL AUTO_INCREMENT,
+	reportContig_id INT NOT NULL,
+	taxon_id INT NOT NULL,
+	covarage DOUBLE NOT NULL,
+	PRIMARY KEY(id) 
+);
+
+
+
 create table feature (
 	id INT NOT NULL AUTO_INCREMENT,
 	contig_id INT NOT NULL,
