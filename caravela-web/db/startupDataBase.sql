@@ -131,6 +131,7 @@ create table feature (
 
 
 insert into treatment values (id, "ZC3b", "Compostagem ZC3b");
+insert into treatment values (id, "ZC4", "Compostagem ZC4");
 
 
 select id from treatment where name = "ZC3b" into @treatmentId;
@@ -140,6 +141,21 @@ insert into sample values(id, @treatmentId, "ZC3b-day-64", "CREATED", "Compostag
 insert into sample values(id, @treatmentId, "ZC3b-day-78", "CREATED", "Compostagem ZC3b day 78 - Miseq");
 insert into sample values(id, @treatmentId, "ZC3b-day-99", "CREATED", "Compostagem ZC3b day 99 - Miseq");
 
+
+select id from treatment where name = "ZC4" into @treatmentId;
+insert into sample values(id, @treatmentId, "ZC4-day-00", "CREATED", "Compostagem ZC4 day 00");
+insert into sample values(id, @treatmentId, "ZC4-day-01", "CREATED", "Compostagem ZC4 day 01");
+insert into sample values(id, @treatmentId, "ZC4-day-03", "CREATED", "Compostagem ZC4 day 03");
+insert into sample values(id, @treatmentId, "ZC4-day-07", "CREATED", "Compostagem ZC4 day 07");
+insert into sample values(id, @treatmentId, "ZC4-day-15", "CREATED", "Compostagem ZC4 day 15");
+insert into sample values(id, @treatmentId, "ZC4-day-30", "CREATED", "Compostagem ZC4 day 30");
+insert into sample values(id, @treatmentId, "ZC4-day-64", "CREATED", "Compostagem ZC4 day 64");
+insert into sample values(id, @treatmentId, "ZC4-day-67", "CREATED", "Compostagem ZC4 day 67");
+insert into sample values(id, @treatmentId, "ZC4-day-78", "CREATED", "Compostagem ZC4 day 78");
+insert into sample values(id, @treatmentId, "ZC4-day-99", "CREATED", "Compostagem ZC4 day 99");
+
+
+-- ZC3 B SAMPLES FILES
 
 select id from sample where name = "ZC3b-day-01" into @sampleId;
 insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc3b-day-01.json");
@@ -155,3 +171,38 @@ insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/car
 
 select id from sample where name = "ZC3b-day-99" into @sampleId;
 insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc3b-day-99.json");
+
+
+-- ZC4 SAMPLES FILES
+
+select id from sample where name = "ZC4-day-00" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-00.json");
+
+select id from sample where name = "ZC4-day-01" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-01.json");
+
+select id from sample where name = "ZC4-day-03" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-03.json");
+
+select id from sample where name = "ZC4-day-07" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-07.json");
+
+select id from sample where name = "ZC4-day-15" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-15.json");
+
+select id from sample where name = "ZC4-day-30" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-30.json");
+
+select id from sample where name = "ZC4-day-64" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-64.json");
+
+select id from sample where name = "ZC4-day-67" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-67.json");
+
+select id from sample where name = "ZC4-day-78" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-78.json");
+
+select id from sample where name = "ZC4-day-99" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-99.json");
+
+
