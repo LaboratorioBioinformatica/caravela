@@ -86,6 +86,11 @@
         color: "#fd8d3c",
         type: "rect"
     });
+	
+    ft.onFeatureSelected(function (d) {
+    	
+        console.log(d.detail);
+    });
 
 $(document).ready(function(){
 
@@ -97,7 +102,6 @@ $(document).ready(function(){
 	
 	
 	var queueName = 'featureQueue';
-	var concurrentCalls = 2;
 	
 	addCallFeatureViewerToQueue(queueName, randColor(), 'multipleRect', urlReadsOnCOntig);
 	addCallFeatureViewerToQueue(queueName, "#FF0000", 'path', urlOverlapTaxonOnCOntig);
