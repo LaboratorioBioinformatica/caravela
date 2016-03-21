@@ -35,15 +35,19 @@ public class ContigControllerHelper {
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	private static final String TAXA = "Taxa";
 	
-	@Inject
+
 	private ReadWrapper readWrapper; 
-	@Inject
 	private ConsensusBuilding consensusBuilding;
-	
-	@Inject private ColorPicker colorPicker;
+	private ColorPicker colorPicker;
+	private SegmentsCalculator segmentsCalculator;
 	
 	@Inject
-	private SegmentsCalculator segmentsCalculator;
+	public ContigControllerHelper(ReadWrapper readWrapper, ConsensusBuilding consensusBuilding, ColorPicker colorPicker, SegmentsCalculator segmentsCalculator) {
+		this.readWrapper = readWrapper;
+		this.consensusBuilding = consensusBuilding;
+		this.colorPicker = colorPicker;
+		this.segmentsCalculator = segmentsCalculator;
+	}
 
 	public Map<String, List<FeatureViewerDataTO>> createReadsFeatureViwer(List<Read> readsOnContig, String rank){
 
