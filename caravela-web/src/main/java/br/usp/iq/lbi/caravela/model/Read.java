@@ -174,5 +174,11 @@ public class Read implements Serializable {
 		return this.reference.equals(read.getReference()) && this.sample.getName().equals(read.getSample().getName()) && this.pair == read.getPair(); 
 	}	
 	
+	@Override
+	public String toString() {
+		String toString = new StringBuilder().append(this.reference).append(":").append(this.sample.getName()).append(":").append(this.pair).toString();
+		return toString;
+	}
+	
 
 }

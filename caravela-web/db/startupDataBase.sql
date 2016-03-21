@@ -95,6 +95,7 @@ create table contig (
 -- create table report contig sequence
 create table report_contig (
 	id INT NOT NULL AUTO_INCREMENT,
+	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
 	rank VARCHAR(50) NOT NULL,
 	boundary INT NOT null,
@@ -109,6 +110,17 @@ create table report_taxon_contig (
 	reportContig_id INT NOT NULL,
 	taxon_id INT NOT NULL,
 	covarage DOUBLE NOT NULL,
+	PRIMARY KEY(id) 
+);
+
+-- create table report classified read by context
+create table report_classified_read_by_context (
+	id INT NOT NULL AUTO_INCREMENT,
+	sample_id INT NOT NULL,
+	contig_id INT NOT NULL,
+	read_id INT NOT NULL,
+	taxon_id INT NOT NULL,
+	rank VARCHAR(50) NOT NULL,
 	PRIMARY KEY(id) 
 );
 

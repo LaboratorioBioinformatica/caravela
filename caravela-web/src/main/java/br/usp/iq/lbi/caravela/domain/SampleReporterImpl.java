@@ -11,13 +11,16 @@ import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import br.usp.iq.lbi.caravela.controller.ContigControllerHelper;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
+import br.usp.iq.lbi.caravela.dao.ReportClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ReportContigDAO;
 import br.usp.iq.lbi.caravela.dao.ReportTaxonContigDAO;
 import br.usp.iq.lbi.caravela.intervalTree.IntervalTree;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
+import br.usp.iq.lbi.caravela.model.ReportClassifiedReadByContex;
 import br.usp.iq.lbi.caravela.model.ReportContig;
 import br.usp.iq.lbi.caravela.model.ReportTaxonOnContig;
 import br.usp.iq.lbi.caravela.model.Sample;
@@ -36,6 +39,8 @@ public class SampleReporterImpl implements SampleReporter {
 	@Inject private ReportContigDAO reportContigDAO;
 	@Inject private ReportTaxonContigDAO reportTaxonContigDAO;
 	@Inject private Paginator paginator;
+	@Inject private ContigControllerHelper contigControllerHelper;
+	@Inject private ReportClassifiedReadByContextDAO reportClassifiedReadByContextDAO;
 	
 	
 
@@ -156,7 +161,7 @@ public class SampleReporterImpl implements SampleReporter {
 
 			}
 
-			ReportContig reportContig = new ReportContig(contig, rank, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
+			ReportContig reportContig = new ReportContig(contig.getSample(), contig, rank, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
 
 			reportContigDAO.save(reportContig);
 
@@ -177,6 +182,18 @@ public class SampleReporterImpl implements SampleReporter {
 				reportTaxonContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
 //				System.out.println(taxon.getScientificName() + " : "+ taxonCovarageMap.get(taxon));
 			}
+			
+			Map<Taxon, List<Read>> unclassifiedReadThatCouldBeClassified = contigControllerHelper.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
+			Set<Taxon> taxons = unclassifiedReadThatCouldBeClassified.keySet();
+			int size = unclassifiedReadThatCouldBeClassified.values().size();
+			for (Taxon taxon : taxons) {
+				List<Read> list = unclassifiedReadThatCouldBeClassified.get(taxon);
+				for (Read read : list) {
+					ReportClassifiedReadByContex reportClassifiedReadByContex = new ReportClassifiedReadByContex(contig.getSample(), contig, read, taxon, rank);
+					reportClassifiedReadByContextDAO.addBatch(reportClassifiedReadByContex, size);
+				}
+			}
+			
 
 		}
 	}

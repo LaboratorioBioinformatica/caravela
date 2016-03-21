@@ -30,20 +30,28 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 @RequestScoped
 public class ContigControllerHelper {
 	
+	private static final int FIRST_POSITION = 0;
 	private static final String UNCLASSIFIED_REGIONS = "Unclassified";
 	private static final String UNDEFINED_REGION_KEY = "Undefined";
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	private static final String TAXA = "Taxa";
 	
-	@Inject
+
 	private ReadWrapper readWrapper; 
-	@Inject
 	private ConsensusBuilding consensusBuilding;
+	private ColorPicker colorPicker;
+	private SegmentsCalculator segmentsCalculator;
 	
-	@Inject private ColorPicker colorPicker;
+	public ContigControllerHelper() {
+	}
 	
 	@Inject
-	private SegmentsCalculator segmentsCalculator;
+	public ContigControllerHelper(ReadWrapper readWrapper, ConsensusBuilding consensusBuilding, ColorPicker colorPicker, SegmentsCalculator segmentsCalculator) {
+		this.readWrapper = readWrapper;
+		this.consensusBuilding = consensusBuilding;
+		this.colorPicker = colorPicker;
+		this.segmentsCalculator = segmentsCalculator;
+	}
 
 	public Map<String, List<FeatureViewerDataTO>> createReadsFeatureViwer(List<Read> readsOnContig, String rank){
 
@@ -66,34 +74,94 @@ public class ContigControllerHelper {
 	}
 	
 
-	public Map<Taxon, List<Read>> searchbyUnclassifiedReadThatWouldBeClassified(List<Read> readsOnContig, String rank){
-		
-		IntervalTree<Taxon> taxonsIntervalTree = new IntervalTree<Taxon>();
+	public Map<Taxon, List<Read>> searchbyUnclassifiedReadThatCouldBeClassified(List<Read> readsOnContig, String rank){
 		
 		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
 		
 		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
+		
+		IntervalTree<Taxon> taxonsIntervalTree = new IntervalTree<Taxon>();
+		List<Read> readsGroupedByNoTaxon = new ArrayList<Read>();
+		List<Read> allTaxons = new ArrayList<Read>(); 
+		
 		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
 			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
 			List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
-			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
 			
-			if( ! taxonKey.equals(Taxon.getNOTaxon())){
+			if(taxonKey.equals(Taxon.getNOTaxon())){
+				readsGroupedByNoTaxon.addAll(readListValue);
 				
+			} else {
+				allTaxons.addAll(readListValue);
+				List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
+				segmentsConsensusMap.put(taxonKey, taxonSegmentsConsensus);
+				
+				//create taxa segments consensus tree
 				for (Segment<Taxon> segment : taxonSegmentsConsensus) {
 					taxonsIntervalTree.addInterval(segment.getX(), segment.getY(), taxonKey);
 				}
 			}
 			
-			segmentsConsensusMap.put(taxonKey, taxonSegmentsConsensus);
 		}
 		
-		//No taxon should not participate of undefine segments building.  
-		segmentsConsensusMap.remove(Taxon.getNOTaxon());
+// find by undefined regions
+		IntervalTree<String> undefinedIntervalTree = new IntervalTree<String>();
+		List<Segment<Taxon>> undfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(segmentsConsensusMap);
+		List<Segment<Taxon>> undefinedSegmentsByTaxonConsensus = consensusBuilding.buildSegmentsConsensus(undfinedSegmentsByTaxon);
+		
+		//create undefined segments consensus tree
+		for (Segment<Taxon> undefinedSegment : undefinedSegmentsByTaxonConsensus) {
+			undefinedIntervalTree.addInterval(undefinedSegment.getX(), undefinedSegment.getY(), UNDEFINED_REGION_KEY);
+		}
+		
+//find by unknow regions 
+		IntervalTree<String> unknowIntervalTree = new IntervalTree<String>();
+		
+		List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxons, rank);
+		List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readsGroupedByNoTaxon, rank);
+		List<Segment<Taxon>> justOnlyNoTaxonSegmentConsensus = segmentsCalculator.subtract(noTaxonSegmentsConsensus, allTaxonSegmentsConsensus);
+		
+		for (Segment<Taxon> segment : justOnlyNoTaxonSegmentConsensus) {
+			unknowIntervalTree.addInterval(segment.getX(), segment.getY(), UNCLASSIFIED_REGIONS);
+		}
 		
 		
 		
-		return null;
+		Map<Taxon, List<Read>> mapResult = new HashMap<Taxon, List<Read>>();
+		
+		
+		for (Read noTaxonRead : readsGroupedByNoTaxon) {
+			Integer startAlignment = noTaxonRead.getStartAlignment();
+			Integer endAlignment = noTaxonRead.getEndAlignment();
+			
+			if(noIntersectUndefinedAndUnknowSegments(undefinedIntervalTree, unknowIntervalTree, startAlignment, endAlignment)){
+				List<Taxon> taxonList = taxonsIntervalTree.get(startAlignment, endAlignment);
+				if( ! taxonList.isEmpty()){
+					Taxon taxon = taxonList.get(FIRST_POSITION);
+					List<Read> readListWouldBeClassified = mapResult.get(taxon);
+					if(readListWouldBeClassified != null){
+						readListWouldBeClassified.add(noTaxonRead);
+					} else {
+						List<Read> newReadListWouldBeClassified = new ArrayList<Read>();
+						newReadListWouldBeClassified.add(noTaxonRead);
+						mapResult.put(taxon, newReadListWouldBeClassified);
+					}
+					
+				}
+				
+			}
+			
+			
+		}
+		
+
+		
+		
+		return mapResult;
+	}
+
+	private boolean noIntersectUndefinedAndUnknowSegments(IntervalTree<String> undefinedIntervalTree, IntervalTree<String> unknowIntervalTree, Integer startAlignment, Integer endAlignment) {
+		return undefinedIntervalTree.get(startAlignment, endAlignment).isEmpty() && unknowIntervalTree.get(startAlignment, endAlignment).isEmpty();
 	}
 	
 	

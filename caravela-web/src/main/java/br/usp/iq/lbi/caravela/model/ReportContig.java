@@ -17,6 +17,9 @@ public class ReportContig {
 	@ManyToOne
 	private Contig contig;
 	
+	@ManyToOne
+	private Sample sample;
+	
 	private String rank;
 	private Integer boundary;
 	private Double unclassified;
@@ -24,7 +27,8 @@ public class ReportContig {
 	
 	public ReportContig() {}
 	
-	public ReportContig(Contig contig, String rank, Integer boundary, Double unclassified, Double undefined) {
+	public ReportContig(Sample sample, Contig contig, String rank, Integer boundary, Double unclassified, Double undefined) {
+		this.sample = sample;
 		this.contig = contig;
 		this.rank = rank;
 		this.boundary = boundary;
@@ -54,6 +58,10 @@ public class ReportContig {
 
 	public Double getUndefined() {
 		return undefined;
+	}
+	
+	public Sample getSample(){
+		return sample;
 	}
 	
 }

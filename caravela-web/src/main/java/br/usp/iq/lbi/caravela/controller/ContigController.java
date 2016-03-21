@@ -19,7 +19,6 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.dto.FeatureTO;
-import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
@@ -91,6 +90,16 @@ public class ContigController {
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.boundariesRegions(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
 	}
+	@Get
+	@Path("/contig/readsUnclissifiedCouldBeClassified/{contigId}/{rank}")
+	public void readsUnclissifiedWouldBeClassified(Long contigId, String rank) {
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
+		Map<Taxon, List<Read>> readsUnclissifiedCouldBeClassified = contigControllerHelper.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
+		result.use(Results.json()).withoutRoot().from(readsUnclissifiedCouldBeClassified).serialize();
+	}
+	
+	
 	
 	
 	@Get
