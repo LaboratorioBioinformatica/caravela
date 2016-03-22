@@ -47,61 +47,61 @@ public class ContigControllerHelperTest {
 	}
 
 	@Test
-		public void testSearchbyUnclassifiedReadThatCouldBeClassified() throws Exception {
-			
-			Treatment treatment = new Treatment("ZC4","Zoo Composting 4");
-			Contig contig = new Contig();
-			Sample sample = new Sample(treatment, SampleStatus.PROCCESSED, "zc4 day 01","day 01 from zc4");
-			
-			
-			
-			List<Read> readsOnContig = createListOfReadsOnContig(contig, sample);
-			String rank = "genus";
-			
-			Map<Taxon, List<Read>> resultMapToGroupByFromReadWrapper = createResultMapToGroupByFromReadWrapper(sample, contig);
-			
-			List<Read> allTaxons = new ArrayList<Read>();
-			allTaxons.addAll(createListOfReadsAssignedToArcobacter(sample, contig));
-			
-			List<Segment<Taxon>> allTaxonSegmentsConsensus = createResultListArcobacterSegmentConsensus();
-			List<Segment<Taxon>> noTaxonSegmentsConsensus = createResultListNoTaxonSegmentConsensus();
-			
-			List<Segment<Taxon>> onlyNoTaxonSegmentConsensusResult = createResultListjustOnlyNoTaxonSegmentConsensus();
-			
-			List<Read> noTaxons = new ArrayList<Read>();
-			noTaxons.addAll(createListOfReadsAssignedToNOTaxon(sample, contig));
-			
-			
-			List<Segment<Taxon>> resultListArcobacterSegmentConsensus  = createResultListArcobacterSegmentConsensus();
-			List<Segment<Taxon>> resultListAllTaxonSegmentConsensus = resultListArcobacterSegmentConsensus;
-			List<Segment<Taxon>> resultListNoTaxonSegmentConsensus = createResultListNoTaxonSegmentConsensus();
-	
-			Map<Taxon, List<Segment<Taxon>>> taxonSegmentsConsensusResultList = new HashMap<Taxon, List<Segment<Taxon>>>();
-			taxonSegmentsConsensusResultList.put(ARCOBACTER, resultListArcobacterSegmentConsensus);
-			List<Segment<Taxon>> undfinedSegmentsByTaxonResult = new ArrayList<Segment<Taxon>>();
-			
-			
-			Mockito.when(readWrapperMock.groupBy(readsOnContig, rank)).thenReturn(resultMapToGroupByFromReadWrapper);
-			
-			Mockito.when(consensusBuildingMock.buildSegmentsConsensus(createListOfReadsAssignedToArcobacter(sample, contig), rank)).thenReturn(resultListArcobacterSegmentConsensus);
-			Mockito.when(consensusBuildingMock.buildSegmentsConsensus(createListOfReadsAssignedToNOTaxon(sample, contig), rank)).thenReturn(resultListNoTaxonSegmentConsensus);
-			Mockito.when(segmentsCalculatorMock.buildUndfinedSegmentsByTaxon(taxonSegmentsConsensusResultList)).thenReturn(undfinedSegmentsByTaxonResult);
-			Mockito.when(consensusBuildingMock.buildSegmentsConsensus(undfinedSegmentsByTaxonResult)).thenReturn(undfinedSegmentsByTaxonResult);
-			Mockito.when(consensusBuildingMock.buildSegmentsConsensus(allTaxons, rank)).thenReturn(resultListAllTaxonSegmentConsensus);
-			Mockito.when(consensusBuildingMock.buildSegmentsConsensus(noTaxons, rank)).thenReturn(resultListNoTaxonSegmentConsensus);
-			Mockito.when(segmentsCalculatorMock.subtract(noTaxonSegmentsConsensus, allTaxonSegmentsConsensus)).thenReturn(onlyNoTaxonSegmentConsensusResult);
-			
-			
-			Map<Taxon, List<Read>> expectedMapResult = createExpectedMapResult(contig, sample);
-			
-			Map<Taxon, List<Read>> MapResult = target.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
-			
-			Assert.assertEquals(expectedMapResult, MapResult);
-			
-			Mockito.verify(readWrapperMock, Mockito.atLeastOnce()).groupBy(readsOnContig, rank);
-			
-			
-		}
+	public void testSearchbyUnclassifiedReadThatWouldBeClassified() throws Exception {
+		
+		Treatment treatment = new Treatment("ZC4","Zoo Composting 4");
+		Contig contig = new Contig();
+		Sample sample = new Sample(treatment, SampleStatus.PROCCESSED, "zc4 day 01","day 01 from zc4");
+		
+		
+		
+		List<Read> readsOnContig = createListOfReadsOnContig(contig, sample);
+		String rank = "genus";
+		
+		Map<Taxon, List<Read>> resultMapToGroupByFromReadWrapper = createResultMapToGroupByFromReadWrapper(sample, contig);
+		
+		List<Read> allTaxons = new ArrayList<Read>();
+		allTaxons.addAll(createListOfReadsAssignedToArcobacter(sample, contig));
+		
+		List<Segment<Taxon>> allTaxonSegmentsConsensus = createResultListArcobacterSegmentConsensus();
+		List<Segment<Taxon>> noTaxonSegmentsConsensus = createResultListNoTaxonSegmentConsensus();
+		
+		List<Segment<Taxon>> onlyNoTaxonSegmentConsensusResult = createResultListjustOnlyNoTaxonSegmentConsensus();
+		
+		List<Read> noTaxons = new ArrayList<Read>();
+		noTaxons.addAll(createListOfReadsAssignedToNOTaxon(sample, contig));
+		
+		
+		List<Segment<Taxon>> resultListArcobacterSegmentConsensus  = createResultListArcobacterSegmentConsensus();
+		List<Segment<Taxon>> resultListAllTaxonSegmentConsensus = resultListArcobacterSegmentConsensus;
+		List<Segment<Taxon>> resultListNoTaxonSegmentConsensus = createResultListNoTaxonSegmentConsensus();
+
+		Map<Taxon, List<Segment<Taxon>>> taxonSegmentsConsensusResultList = new HashMap<Taxon, List<Segment<Taxon>>>();
+		taxonSegmentsConsensusResultList.put(ARCOBACTER, resultListArcobacterSegmentConsensus);
+		List<Segment<Taxon>> undfinedSegmentsByTaxonResult = new ArrayList<Segment<Taxon>>();
+		
+		
+		Mockito.when(readWrapperMock.groupBy(readsOnContig, rank)).thenReturn(resultMapToGroupByFromReadWrapper);
+		
+		Mockito.when(consensusBuildingMock.buildSegmentsConsensus(createListOfReadsAssignedToArcobacter(sample, contig), rank)).thenReturn(resultListArcobacterSegmentConsensus);
+		Mockito.when(consensusBuildingMock.buildSegmentsConsensus(createListOfReadsAssignedToNOTaxon(sample, contig), rank)).thenReturn(resultListNoTaxonSegmentConsensus);
+		Mockito.when(segmentsCalculatorMock.buildUndfinedSegmentsByTaxon(taxonSegmentsConsensusResultList)).thenReturn(undfinedSegmentsByTaxonResult);
+		Mockito.when(consensusBuildingMock.buildSegmentsConsensus(undfinedSegmentsByTaxonResult)).thenReturn(undfinedSegmentsByTaxonResult);
+		Mockito.when(consensusBuildingMock.buildSegmentsConsensus(allTaxons, rank)).thenReturn(resultListAllTaxonSegmentConsensus);
+		Mockito.when(consensusBuildingMock.buildSegmentsConsensus(noTaxons, rank)).thenReturn(resultListNoTaxonSegmentConsensus);
+		Mockito.when(segmentsCalculatorMock.subtract(noTaxonSegmentsConsensus, allTaxonSegmentsConsensus)).thenReturn(onlyNoTaxonSegmentConsensusResult);
+		
+		
+		Map<Taxon, List<Read>> expectedMapResult = createExpectedMapResult(contig, sample);
+		
+		Map<Taxon, List<Read>> MapResult = target.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
+		
+		Assert.assertEquals(expectedMapResult, MapResult);
+		
+		Mockito.verify(readWrapperMock, Mockito.atLeastOnce()).groupBy(readsOnContig, rank);
+		
+		
+	}
 
 
 	private List<Segment<Taxon>> createResultListArcobacterSegmentConsensus() {
