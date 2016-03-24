@@ -38,6 +38,7 @@
 	  					<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/species/${viewingMode}"/>">Species</a></button>
 	  					<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/genus/${viewingMode}"/>">Genus</a></button>
 							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/family/${viewingMode}"/>">Family</a></button>
+							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">phylum</a></button>
 							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/order/${viewingMode}"/>">Order</a></button>
 
 	  					<div class="btn-group" role="group">
@@ -128,13 +129,16 @@ function addCallFeatureViewerToQueue(qName, color, fvType, apiURL) {
     			
     			console.log(k + ":" + v.length);
     			
-    			ft.addFeature({
-    		        data: v,
-    		        name: k,
-    		        className: "reads_"+k.substring(0,3),
-    		        color: color,
-    		        type: fvType
-    		    });
+    			if(v.length > 0){
+    				ft.addFeature({
+        		        data: v,
+        		        name: k,
+        		        className: "reads_"+k.substring(0,3),
+        		        color: color,
+        		        type: fvType
+        		    });	
+    			}
+    			
     	   	});
     		 // activate the next ajax call when this one finishes
     		$(document).dequeue(qName);

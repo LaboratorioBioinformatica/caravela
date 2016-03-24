@@ -18,19 +18,17 @@ public class ReportContig {
 	private Contig contig;
 	
 	@ManyToOne
-	private Sample sample;
+	private ReportSample reportSample;
 	
-	private String rank;
 	private Integer boundary;
 	private Double unclassified;
 	private Double undefined;
 	
 	public ReportContig() {}
 	
-	public ReportContig(Sample sample, Contig contig, String rank, Integer boundary, Double unclassified, Double undefined) {
-		this.sample = sample;
+	public ReportContig(ReportSample reportSample, Contig contig, Integer boundary, Double unclassified, Double undefined) {
+		this.reportSample = reportSample;
 		this.contig = contig;
-		this.rank = rank;
 		this.boundary = boundary;
 		this.unclassified = unclassified;
 		this.undefined = undefined;
@@ -42,10 +40,6 @@ public class ReportContig {
 
 	public Contig getContig() {
 		return contig;
-	}
-
-	public String getRank() {
-		return rank;
 	}
 
 	public Integer getBoundary() {
@@ -60,8 +54,8 @@ public class ReportContig {
 		return undefined;
 	}
 	
-	public Sample getSample(){
-		return sample;
+	public ReportSample getReportSample(){
+		return reportSample;
 	}
 	
 }

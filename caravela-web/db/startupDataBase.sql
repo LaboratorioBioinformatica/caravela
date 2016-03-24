@@ -95,9 +95,8 @@ create table contig (
 -- create table report contig sequence
 create table report_contig (
 	id INT NOT NULL AUTO_INCREMENT,
-	sample_id INT NOT NULL,
+	reportSample_id INT NOT NULL,
 	contig_id INT NOT NULL,
-	rank VARCHAR(50) NOT NULL,
 	boundary INT NOT null,
 	unclassified DOUBLE NOT NULL,
 	undefined DOUBLE NOT NULL,
@@ -105,9 +104,10 @@ create table report_contig (
 );
 
 -- create table report taxon on contig sequence
-create table report_taxon_contig (
+create table report_taxon_on_contig (
 	id INT NOT NULL AUTO_INCREMENT,
-	reportContig_id INT NOT NULL,
+	reportSample_id INT NOT NULL,
+	contig_id INT NOT NULL,
 	taxon_id INT NOT NULL,
 	covarage DOUBLE NOT NULL,
 	PRIMARY KEY(id) 
@@ -116,15 +116,22 @@ create table report_taxon_contig (
 -- create table report classified read by context
 create table report_classified_read_by_context (
 	id INT NOT NULL AUTO_INCREMENT,
-	sample_id INT NOT NULL,
+	reportSample_id INT NOT NULL,
 	contig_id INT NOT NULL,
 	read_id INT NOT NULL,
 	taxon_id INT NOT NULL,
-	rank VARCHAR(50) NOT NULL,
 	PRIMARY KEY(id) 
 );
 
-
+-- create table report sample
+create table report_sample(
+	id INT NOT NULL AUTO_INCREMENT,
+	sample_id INT NOT NULL,
+	tii DOUBLE NOT NULL,
+	rank VARCHAR(50) NOT NULL,
+	date_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(id) 
+);
 
 create table feature (
 	id INT NOT NULL AUTO_INCREMENT,

@@ -13,9 +13,9 @@ public class ReportClassifiedReadByContex {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String rank;
+	
 	@ManyToOne
-	private Sample sample;
+	private ReportSample reportSample;
 	@ManyToOne
 	private Contig contig;
 	@ManyToOne
@@ -26,20 +26,19 @@ public class ReportClassifiedReadByContex {
 	public ReportClassifiedReadByContex() {
 	}
 	
-	public ReportClassifiedReadByContex(Sample sample, Contig contig, Read read, Taxon taxon, String rank) {
-		this.sample = sample;
+	public ReportClassifiedReadByContex(ReportSample reportSample, Contig contig, Read read, Taxon taxon) {
+		this.reportSample = reportSample;
 		this.contig = contig;
 		this.read = read;
 		this.taxon = taxon;
-		this.rank = rank;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public Sample getSample() {
-		return sample;
+	public ReportSample getReportSample() {
+		return reportSample;
 	}
 
 	public Contig getContig() {
@@ -54,9 +53,5 @@ public class ReportClassifiedReadByContex {
 		return taxon;
 	}
 
-	public String getRank() {
-		return rank;
-	}
-	
 	
 }

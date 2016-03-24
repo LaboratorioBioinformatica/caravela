@@ -15,6 +15,7 @@ import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigTOProcessor;
+import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
@@ -22,22 +23,28 @@ import br.usp.iq.lbi.caravela.model.SampleFile;
 @Controller
 public class UploadController {
 	
+	private static final String DEFAULT_RANK_TO_REPORT = "genus";
+
+	private static final Double DEFAULT_TII_VALUE = new Double(0d);
+
 	private final Result result;
 	
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
 	private final ContigTOProcessor contigTOProcessor;
+	private final SampleReporter sampleReporter;
 	
 	public UploadController() {
-		this(null, null, null, null);
+		this(null, null, null, null, null);
 	}
 	
 	@Inject
-	public UploadController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigTOProcessor contigTOProcessor) {
+	public UploadController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigTOProcessor contigTOProcessor, SampleReporter sampleReporter) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
 		this.contigTOProcessor = contigTOProcessor;
+		this.sampleReporter = sampleReporter;
 	}
 	
 	public void view(){
@@ -58,6 +65,9 @@ public class UploadController {
 			ContigTO contigTO = gson.fromJson(parser.next(), ContigTO.class);
 			contigTOProcessor.convert(sample, contigTO);
 		}
+		
+		sampleReporter.reportChimericPotentialFromContig(sample, DEFAULT_TII_VALUE, DEFAULT_RANK_TO_REPORT);
+		
 		
 		result.include("sample", sample);
 		

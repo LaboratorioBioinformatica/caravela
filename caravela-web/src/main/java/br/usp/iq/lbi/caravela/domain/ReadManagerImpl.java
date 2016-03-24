@@ -26,15 +26,7 @@ public class ReadManagerImpl implements ReadManager {
 	
 	public synchronized HashMap<String, Taxon> loadLineagem(Read read) {
 		
-		if(taxons.isEmpty()){
-			List<Taxon> allTaxons = taxonDAO.findAll();
-			for (Taxon taxon : allTaxons) {
-				taxons.put(taxon.getTaxonomyId(), taxon);
-			}
-			logger.info("########################################################################");
-			logger.info("total of taxons loading: " + taxons.size());
-			logger.info("########################################################################");
-		}
+		loadTaxonsToMemory();
 		
 		HashMap<String, Taxon> lineagem = new HashMap<String, Taxon>();
 		
@@ -45,6 +37,18 @@ public class ReadManagerImpl implements ReadManager {
 		} while (taxon.getId() != TREE_ROOT_ELEMENT && taxon.getTaxonomyParentId() != TREE_ROOT_ELEMENT);
 		read.setLineagem(lineagem);
 		return lineagem;
+	}
+
+	private void loadTaxonsToMemory() {
+		if(taxons.isEmpty()){
+			List<Taxon> allTaxons = taxonDAO.findAll();
+			for (Taxon taxon : allTaxons) {
+				taxons.put(taxon.getTaxonomyId(), taxon);
+			}
+			logger.info("########################################################################");
+			logger.info("total of taxons loading: " + taxons.size());
+			logger.info("########################################################################");
+		}
 	}
 
 }
