@@ -50,13 +50,33 @@
 	<hr>
 
 	<div class="jumbotron">
-		<h3>Filter By Taxonomic Identification Index (TII)</h3>
+		<h3>Filter By:</h3>
 		<div class="form-group">
-			<form action="<c:url value="/sample/analyze"/>" class="form-inline" role="form" method="post">
+			<form action="<c:url value="/sample/analyze/by"/>" class="form-inline" role="form" method="post">
 				<input type="hidden" name="sampleId" value="${sample.id}">
-				<label> TII (between 0.0 and 0.99)</label>
-				<input class="form-control" placeholder="0.8" value="${tiiValue}" size="4" maxlength="4" type="text" name="tiiValue">
-
+				<div class="col-md-*">
+					<label> TII (between 0.0 and 1) - greater or equals</label>
+					<input class="form-control" value="${tiiGreaterOrEqualsThan}" size="3" maxlength="3"  type="text" name="tiiGreaterOrEqualsThan">
+				</div>
+				
+				<div class="col-md-*">
+					<label> Number of features (CDSs) - Greater or equals</label>
+					<input class="form-control" value="${numberOfFeaturesGreaterOrEqualsThan}" size="4" maxlength="4" min=0 type="number" name="numberOfFeaturesGreaterOrEqualsThan">
+				</div>
+				
+				<div class="col-md-*">
+					<label> Number of boundaries - Less or equals</label>
+					<input class="form-control" value="${numberOfBoundariesLessOrEqualsThan}" size="4" maxlength="2" min=0 type="number" name="numberOfBoundariesLessOrEqualsThan">
+				</div>
+				
+				<div class="col-md-*">
+					<label> Percent of contig is unclassified - (between 0 and 100) - Less or equals </label>
+					<input class="form-control" value="${unclassifiedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" name="unclassifiedLessOrEqualsThan">
+				</div>
+				<div class="col-md-*">
+					<label> Percent of contig is undefined - (between 0 and 100) - Less or equals </label>
+					<input class="form-control" value="${undefinedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" name="undefinedLessOrEqualsThan">
+				</div>
 				<button type="submit" class="btn btn-default">Filter</button>
 			</form>
 		</div>

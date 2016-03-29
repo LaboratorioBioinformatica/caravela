@@ -3,6 +3,8 @@ package br.usp.iq.lbi.caravela.dao;
 
 import java.util.List;
 
+import javassist.compiler.NoFieldException;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -19,9 +21,22 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		super(entityManager);
 	}
 	
-	public List<Contig> FindByContigBySample(Sample sample, Integer maxResult) {
-		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample ORDER by length(c.sequence) DESC,  c.taxonomicIdentificationIndex DESC", Contig.class);
-		List<Contig> contigList = query.setParameter("sample", sample).setMaxResults(maxResult).getResultList();
+	public List<Contig> FindByContigBySample(Sample sample, Double tii, Integer numberOfFeatures, Integer numberOfBoundaries, Double unclassified, Double undefined, Integer firstResult, Integer maxResult) {
+		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM  ReportContig rc INNER JOIN rc.contig c  WHERE c.sample = :sample "
+				+ "AND c.taxonomicIdentificationIndex >= :tii "
+				+ "AND c.numberOfFeatures >= :NOF "
+				+ "AND rc.boundary <= :NOB "
+				+ "AND rc.unclassified <= :unclassified "
+				+ "AND rc.undefined <= :undefined "
+				+ "ORDER by c.size DESC", Contig.class);
+		List<Contig> contigList = query.setParameter("sample", sample)
+				.setParameter("tii", tii)
+				.setParameter("NOF", numberOfFeatures)
+				.setParameter("NOB", numberOfBoundaries)
+				.setParameter("unclassified", unclassified)
+				.setParameter("undefined", undefined)
+				.setFirstResult(firstResult)
+				.setMaxResults(maxResult).getResultList();
 		return contigList;
 	}
 	

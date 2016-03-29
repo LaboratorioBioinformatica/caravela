@@ -107,7 +107,7 @@ $(document).ready(function(){
 	addCallFeatureViewerToQueue(queueName, randColor(), 'multipleRect', urlReadsOnCOntig);
 	addCallFeatureViewerToQueue(queueName, "#FF0000", 'path', urlOverlapTaxonOnCOntig);
 	addCallFeatureViewerToQueue(queueName, "#FF0000", 'multipleRect', urlUndefinedRegionsOnCOntig);
-	addCallFeatureViewerToQueue(queueName, "#CCCCCC", 'multipleRect', urlUnknowRegionsOnContig);
+	addCallFeatureViewerToQueue(queueName, "#A0A0A0", 'multipleRect', urlUnknowRegionsOnContig);
 	addCallFeatureViewerToQueue(queueName, "#000000", 'multipleRect', urlBoundariesRegionsOnContig);
 	
 	

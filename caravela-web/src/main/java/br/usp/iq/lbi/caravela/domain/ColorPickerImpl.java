@@ -21,7 +21,7 @@ public class ColorPickerImpl implements ColorPicker {
 	
 	public String generateColorByTaxon(Taxon taxon){
 		if (Taxon.getNOTaxon().equals(taxon)) {
-			return "#CCCCCC";
+			return "#A0A0A0";
 		} else {
 			return generateRandomColor();
 		}

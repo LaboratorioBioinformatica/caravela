@@ -33,6 +33,8 @@ public class Contig implements Serializable {
 	private String reference;
 	private String sequence;
 	
+	private Integer size;
+	
 	@Column(name="number_of_reads")
 	private Integer numberOfReads;
 	
@@ -53,10 +55,11 @@ public class Contig implements Serializable {
 	
 	public Contig() {}
 	
-	public Contig(Sample sample, String reference, String sequence, Integer nOfR, Integer nOfRC, Integer nOfF, Double taxonomicIdentificationIndex) {
+	public Contig(Sample sample, String reference, String sequence, Integer size, Integer nOfR, Integer nOfRC, Integer nOfF, Double taxonomicIdentificationIndex) {
 		this.sample = sample;
 		this.reference = reference;
 		this.sequence = sequence;
+		this.size = size;
 		this.numberOfReads = nOfR;
 		this.numberOfReadsClassified = nOfRC;
 		this.numberOfFeatures = nOfF;
@@ -80,7 +83,7 @@ public class Contig implements Serializable {
 	}
 	
 	public Integer getSize(){
-		return sequence.length();
+		return size;
 	}
 	
 	public Double getTaxonomicIdentificationIndex(){

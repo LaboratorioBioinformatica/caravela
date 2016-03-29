@@ -61,7 +61,43 @@ public class SampleController {
 	@Path("/sample/analyze/{sampleId}")
 	public void analyze(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
-		List<Contig> contigList = contigDAO.FindByContigBySample(sample, 100);
+		Double tiiGreaterOrEqualsThan = 0.5;
+		Integer numberOfFeaturesGreaterOrEqualsThan = 1;
+		Integer numberOfBoundariesLessOrEqualsThan = 0;
+		Double unclassifiedLessOrEqualsThan = 0.0;
+		Double undefinedLessOrEqualsThan = 0.0;
+		Integer firstResult = 0;
+		Integer maxResult = 100;
+		
+		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, numberOfBoundariesLessOrEqualsThan, unclassifiedLessOrEqualsThan, undefinedLessOrEqualsThan, firstResult, maxResult);
+
+		result.include("tiiGreaterOrEqualsThan", tiiGreaterOrEqualsThan);
+		result.include("numberOfFeaturesGreaterOrEqualsThan", numberOfFeaturesGreaterOrEqualsThan);
+		result.include("numberOfBoundariesLessOrEqualsThan", numberOfBoundariesLessOrEqualsThan);
+		result.include("unclassifiedLessOrEqualsThan", unclassifiedLessOrEqualsThan);
+		result.include("undefinedLessOrEqualsThan", undefinedLessOrEqualsThan);
+		result.include("firstResult", firstResult);
+		
+		result.include("contigList", contigList);
+		result.include("sample", sample);
+	}
+	
+	
+	@Post
+	@Path("/sample/analyze/by")
+	public void analyze(Long sampleId, Double tiiGreaterOrEqualsThan, Integer numberOfFeaturesGreaterOrEqualsThan, Integer numberOfBoundariesLessOrEqualsThan, Double unclassifiedLessOrEqualsThan, Double undefinedLessOrEqualsThan){
+		Sample sample = sampleDAO.load(sampleId);
+		Integer firstResult = 0;
+		Integer maxResult = 100;
+		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, numberOfBoundariesLessOrEqualsThan, unclassifiedLessOrEqualsThan, undefinedLessOrEqualsThan, firstResult, maxResult);
+	
+		result.include("tiiGreaterOrEqualsThan", tiiGreaterOrEqualsThan);
+		result.include("numberOfFeaturesGreaterOrEqualsThan", numberOfFeaturesGreaterOrEqualsThan);
+		result.include("numberOfBoundariesLessOrEqualsThan", numberOfBoundariesLessOrEqualsThan);
+		result.include("unclassifiedLessOrEqualsThan", unclassifiedLessOrEqualsThan);
+		result.include("undefinedLessOrEqualsThan", undefinedLessOrEqualsThan);
+		result.include("firstResult", firstResult);
+		
 		result.include("contigList", contigList);
 		result.include("sample", sample);
 	}

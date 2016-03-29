@@ -38,7 +38,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 
 	public Contig convert(Sample sample, ContigTO contigTO) {
 		
-		Contig contig = new Contig(sample, contigTO.getReference(), contigTO.getSequence(), 
+		Contig contig = new Contig(sample, contigTO.getReference(), contigTO.getSequence(), contigTO.getSize(), 
 				contigTO.getNumberOfreads(), contigTO.getNumberOfReadsClassified(), contigTO.getNumberOfFeatures(), 
 				contigTO.getTaxonomicIdentificationIndex());
 		

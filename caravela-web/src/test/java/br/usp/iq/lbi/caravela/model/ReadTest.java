@@ -48,7 +48,7 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		Double tii = new Double(0.5);
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_02, firstPair, mapping);
@@ -85,7 +85,7 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		Double tii = new Double(0.5);
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_01, secPair, mapping);
@@ -123,7 +123,7 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		Double tii = new Double(0.5);
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(reference, sampleZC3bDay30, contig, sequence_01, firstPair, mapping);
@@ -158,7 +158,7 @@ public class ReadTest {
 		List<Read> reads = new ArrayList<Read>();
 		List<Feature> Features = new ArrayList<Feature>();
 		Double tii = new Double(0.5);
-		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
+		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
 		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
 		Read readEq = new Read(otherReference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
