@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,6 +32,8 @@ public class Contig implements Serializable {
 	private Sample sample;
 	
 	private String reference;
+	
+	@Basic(fetch=FetchType.LAZY)
 	private String sequence;
 	
 	private Integer size;
