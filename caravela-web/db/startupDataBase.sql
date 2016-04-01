@@ -36,7 +36,8 @@ create table sample (
 	name VARCHAR(100) NOT NULL,
 	sample_status VARCHAR(50) NOT NULL,
 	description VARCHAR(500) NOT NULL,
-	PRIMARY KEY(id)
+	PRIMARY KEY(id),
+	INDEX (treatment_id) 
 );
 
 -- create table sample files
@@ -46,10 +47,11 @@ create table sample_file (
 	file_type VARCHAR(50) NOT NULL,
 	file_status VARCHAR(50) NOT NULL,
 	file_path VARCHAR(300) NOT NULL,
-	PRIMARY KEY(id)
+	PRIMARY KEY(id),
+	INDEX (sample_id) 
 );
 
-
+-- TO BE DELETE? 
 -- create table taxonomic_assignment
 -- original taxon id = taxon id provide by taxonomy file
 -- taxon id = taxon id in databasse, NCBI taxonomy for example. 
@@ -88,50 +90,47 @@ create table contig (
 	number_of_reads INT NOT null,
 	number_of_features INT NOT null,
 	tii DOUBLE NOT NULL,
-	PRIMARY KEY(id) 
+	PRIMARY KEY(id), 
+	INDEX (sample_id), INDEX (size), INDEX (tii)
 );
 
 
--- create table report contig sequence
-create table report_contig (
+
+-- create table contig statistic by tii
+create table contig_statistic_by_tii (
 	id INT NOT NULL AUTO_INCREMENT,
-	reportSample_id INT NOT NULL,
+	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
 	boundary INT NOT null,
 	unclassified DOUBLE NOT NULL,
 	undefined DOUBLE NOT NULL,
-	PRIMARY KEY(id) 
+	PRIMARY KEY(id),
+	INDEX (sample_id), INDEX(contig_id)
 );
 
--- create table report taxon on contig sequence
-create table report_taxon_on_contig (
+
+-- create table taxon on contig sequence
+create table taxon_on_contig (
 	id INT NOT NULL AUTO_INCREMENT,
-	reportSample_id INT NOT NULL,
+	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
 	taxon_id INT NOT NULL,
 	covarage DOUBLE NOT NULL,
-	PRIMARY KEY(id) 
+	PRIMARY KEY(id),
+	INDEX (sample_id), INDEX(contig_id), INDEX(taxon_id)
 );
 
--- create table report classified read by context
-create table report_classified_read_by_context (
+-- create table classified read by context
+create table classified_read_by_context (
 	id INT NOT NULL AUTO_INCREMENT,
-	reportSample_id INT NOT NULL,
+	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
 	read_id INT NOT NULL,
 	taxon_id INT NOT NULL,
-	PRIMARY KEY(id) 
+	PRIMARY KEY(id), 
+	INDEX (sample_id), INDEX (contig_id)
 );
 
--- create table report sample
-create table report_sample(
-	id INT NOT NULL AUTO_INCREMENT,
-	sample_id INT NOT NULL,
-	tii DOUBLE NOT NULL,
-	rank VARCHAR(50) NOT NULL,
-	date_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(id) 
-);
 
 create table feature (
 	id INT NOT NULL AUTO_INCREMENT,
