@@ -7,15 +7,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="report_classified_read_by_context")
-public class ReportClassifiedReadByContex {
+@Table(name="classified_read_by_context")
+public class ClassifiedReadByContex {
 	
 	@Id
 	@GeneratedValue
 	private Long id;
 	
 	@ManyToOne
-	private ReportSample reportSample;
+	private Sample sample;
 	@ManyToOne
 	private Contig contig;
 	@ManyToOne
@@ -23,11 +23,11 @@ public class ReportClassifiedReadByContex {
 	@ManyToOne
 	private Taxon taxon;
 	
-	public ReportClassifiedReadByContex() {
+	public ClassifiedReadByContex() {
 	}
 	
-	public ReportClassifiedReadByContex(ReportSample reportSample, Contig contig, Read read, Taxon taxon) {
-		this.reportSample = reportSample;
+	public ClassifiedReadByContex(Sample sample, Contig contig, Read read, Taxon taxon) {
+		this.sample = sample;
 		this.contig = contig;
 		this.read = read;
 		this.taxon = taxon;
@@ -37,8 +37,8 @@ public class ReportClassifiedReadByContex {
 		return id;
 	}
 
-	public ReportSample getReportSample() {
-		return reportSample;
+	public Sample getSample() {
+		return sample;
 	}
 
 	public Contig getContig() {

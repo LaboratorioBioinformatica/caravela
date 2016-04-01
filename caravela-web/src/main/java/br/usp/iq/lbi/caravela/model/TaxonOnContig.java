@@ -7,15 +7,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="report_taxon_on_contig")
-public class ReportTaxonOnContig {
+@Table(name="taxon_on_contig")
+public class TaxonOnContig {
 	
 	@Id
 	@GeneratedValue
 	private Long id;
 	
 	@ManyToOne
-	private ReportSample reportSample;
+	private Sample sample;
 	
 	@ManyToOne
 	private Contig contig;
@@ -25,15 +25,15 @@ public class ReportTaxonOnContig {
 	
 	private Double covarage;
 	
-	public ReportTaxonOnContig() {
+	public TaxonOnContig() {
 		
 	}
 	
-	public ReportTaxonOnContig(ReportSample reportSample, Contig contig, Taxon taxon, Double covarage) {
+	public TaxonOnContig(Sample sample, Contig contig, Taxon taxon, Double covarage) {
 		this.contig = contig;
 		this.taxon = taxon;
 		this.covarage = covarage;
-		this.reportSample = reportSample;
+		this.sample = sample;
 	}
 
 	public Long getId() {
@@ -49,8 +49,8 @@ public class ReportTaxonOnContig {
 		return covarage;
 	}
 
-	public ReportSample getReportSample() {
-		return reportSample;
+	public Sample getSample() {
+		return sample;
 	}
 
 	public Contig getContig() {

@@ -7,8 +7,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="report_contig")
-public class ReportContig {
+@Table(name="contig_statistic_by_tii")
+public class ContigStatisticByTii {
 	
 	@Id
 	@GeneratedValue
@@ -18,16 +18,15 @@ public class ReportContig {
 	private Contig contig;
 	
 	@ManyToOne
-	private ReportSample reportSample;
-	
+	private Sample sample;
 	private Integer boundary;
 	private Double unclassified;
 	private Double undefined;
 	
-	public ReportContig() {}
+	public ContigStatisticByTii() {}
 	
-	public ReportContig(ReportSample reportSample, Contig contig, Integer boundary, Double unclassified, Double undefined) {
-		this.reportSample = reportSample;
+	public ContigStatisticByTii(Sample sample, Contig contig, Integer boundary, Double unclassified, Double undefined) {
+		this.sample = sample;
 		this.contig = contig;
 		this.boundary = boundary;
 		this.unclassified = unclassified;
@@ -54,8 +53,8 @@ public class ReportContig {
 		return undefined;
 	}
 	
-	public ReportSample getReportSample(){
-		return reportSample;
+	public Sample getSample(){
+		return sample;
 	}
 	
 }

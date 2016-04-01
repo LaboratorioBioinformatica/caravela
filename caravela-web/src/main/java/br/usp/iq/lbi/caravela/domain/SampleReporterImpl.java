@@ -12,21 +12,19 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import br.usp.iq.lbi.caravela.controller.ContigControllerHelper;
+import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
-import br.usp.iq.lbi.caravela.dao.ReportClassifiedReadByContextDAO;
-import br.usp.iq.lbi.caravela.dao.ReportContigDAO;
-import br.usp.iq.lbi.caravela.dao.ReportSampleDAO;
-import br.usp.iq.lbi.caravela.dao.ReportTaxonContigDAO;
+import br.usp.iq.lbi.caravela.dao.ContigStatisticByTiiDAO;
+import br.usp.iq.lbi.caravela.dao.TaxonOnContigDAO;
 import br.usp.iq.lbi.caravela.intervalTree.IntervalTree;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
+import br.usp.iq.lbi.caravela.model.ClassifiedReadByContex;
 import br.usp.iq.lbi.caravela.model.Contig;
+import br.usp.iq.lbi.caravela.model.ContigStatisticByTii;
 import br.usp.iq.lbi.caravela.model.Read;
-import br.usp.iq.lbi.caravela.model.ReportClassifiedReadByContex;
-import br.usp.iq.lbi.caravela.model.ReportContig;
-import br.usp.iq.lbi.caravela.model.ReportSample;
-import br.usp.iq.lbi.caravela.model.ReportTaxonOnContig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
+import br.usp.iq.lbi.caravela.model.TaxonOnContig;
 
 @RequestScoped
 public class SampleReporterImpl implements SampleReporter {
@@ -38,21 +36,18 @@ public class SampleReporterImpl implements SampleReporter {
 	@Inject private ReadWrapper readWrapper;
 	@Inject private ConsensusBuilding consensusBuilding;
 	@Inject private SegmentsCalculator segmentsCalculator;
-	@Inject private ReportContigDAO reportContigDAO;
-	@Inject private ReportTaxonContigDAO reportTaxonContigDAO;
+	@Inject private ContigStatisticByTiiDAO contigStatisticByTiiDAO;
+	@Inject private TaxonOnContigDAO taxonOnContigDAO;
 	@Inject private Paginator paginator;
 	@Inject private ContigControllerHelper contigControllerHelper;
-	@Inject private ReportClassifiedReadByContextDAO reportClassifiedReadByContextDAO;
-	@Inject private ReportSampleDAO reportSampleDAO;
+	@Inject private ClassifiedReadByContextDAO classifiedReadByContextDAO;
+	
 	
 	
 
 	public void reportChimericPotentialFromContig(Sample sample, Double tii, String rank) {
 
 		
-		
-		ReportSample reportSample = new ReportSample(sample, tii, rank);
-		reportSampleDAO.save(reportSample);
 		
 		Long totalNumberOfContig = contigDAO.CountByContigBySampleAndTiiGreatherThan(sample, tii);
 		
@@ -66,7 +61,7 @@ public class SampleReporterImpl implements SampleReporter {
 			Integer start = intervalPage.getStart();
 			System.out.println("START: " + start + " MAX RESULT: " + MAX_RECORD_PER_PAGE);
 			List<Contig> contigs = contigDAO.FindByContigBySampleAndTiiGreatherThan(sample, tii, start, MAX_RECORD_PER_PAGE.intValue());
-			report(reportSample, rank, contigs);
+			report(sample, rank, contigs);
 			
 		}
 		
@@ -76,7 +71,7 @@ public class SampleReporterImpl implements SampleReporter {
 				
 				
 		
-	private void report(ReportSample reportSample, String rank, List<Contig> contigs) {
+	private void report(Sample sample, String rank, List<Contig> contigs) {
 		for (Contig contig : contigs) {
 //			System.out.println("################################################################################################");
 //			System.out.print("contig: " + contig.getId());
@@ -170,9 +165,9 @@ public class SampleReporterImpl implements SampleReporter {
 
 			}
 
-			ReportContig reportContig = new ReportContig(reportSample, contig, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
+			ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
 
-			reportContigDAO.save(reportContig);
+			contigStatisticByTiiDAO.save(reportContig);
 
 //			System.out.println(" tii: "
 //					+ contig.getTaxonomicIdentificationIndex()
@@ -187,8 +182,8 @@ public class SampleReporterImpl implements SampleReporter {
 			Set<Taxon> keySet = taxonCovarageMap.keySet();
 			int numberOfTaxonOnContig = keySet.size();
 			for (Taxon taxon : keySet) {
-				ReportTaxonOnContig reportTaxonOnContig = new ReportTaxonOnContig(reportSample, contig, taxon, taxonCovarageMap.get(taxon));
-				reportTaxonContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
+				TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, taxon, taxonCovarageMap.get(taxon));
+				taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
 //				System.out.println(taxon.getScientificName() + " : "+ taxonCovarageMap.get(taxon));
 			}
 			
@@ -198,8 +193,8 @@ public class SampleReporterImpl implements SampleReporter {
 			for (Taxon taxon : taxons) {
 				List<Read> list = unclassifiedReadThatCouldBeClassified.get(taxon);
 				for (Read read : list) {
-					ReportClassifiedReadByContex reportClassifiedReadByContex = new ReportClassifiedReadByContex(reportSample, contig, read, taxon);
-					reportClassifiedReadByContextDAO.addBatch(reportClassifiedReadByContex, size);
+					ClassifiedReadByContex reportClassifiedReadByContex = new ClassifiedReadByContex(sample, contig, read, taxon);
+					classifiedReadByContextDAO.addBatch(reportClassifiedReadByContex, size);
 				}
 			}
 			
