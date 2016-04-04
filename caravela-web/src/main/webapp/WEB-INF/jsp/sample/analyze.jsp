@@ -9,75 +9,106 @@
 		<div class="page-header">
 			<h1>Analyze - ${sample.name} </h1>
 		</div>
-
 	<div class="jumbotron">
-		<div class="row">
-		  <div class="col-sm-12">
-		    <div class="row">
-		      <div class="col-xs-8 col-sm-5">
-		        <h4>Search by taxon</h4>
-					<div class="form-group">
-						<form action="<c:url value="/taxonomy/search/fragment"/>" class="form-inline" role="form" method="post">
+	        <h3>Search by taxon on contig</h3>
+					<form action="<c:url value="/taxonomy/search/fragment"/>" class="form-horizontal" role="form" method="post">
+						<input type="hidden" name="sampleId" value="${sample.id}">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Scientific name</label>
+							<div class="col-sm-6">
+								<input class="form-control" size="25" type="text" placeholder="Bacillus amyloliquefaciens" name="scientificName">
+							</div>
+							<span class="col-sm-4"></span>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-12 center-block">
+								<button type="submit" class="btn btn-success center-block">Find</button>
+							</div>
+						</div>	
+					</form>
+	  </div>
+	     
+	<hr>
+	      
+	      <div class="jumbotron">
+		      	<h3>Search by function on contig</h3>
+		        		
+		        		<form action="<c:url value="/gene/search/by/productName"/>" class="form-horizontal" role="form" method="post">
 							<input type="hidden" name="sampleId" value="${sample.id}">
-							<label>Scientific name</label>
-							<input class="form-control" size="25" type="text" placeholder="Bacillus amyloliquefaciens" name="scientificName">
-							<button type="submit" class="btn btn-default">Find</button>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Name</label>
+								<div class="col-sm-6">
+									<input class="form-control" size="30" placeholder="Topoisomerase IA" type="text" name="productName">
+								</div>
+								<div class="col-sm-4">
+									<button type="submit" class="btn btn-success">Find</button>
+								</div>
+							</div>
 						</form>
-					</div>
-		      </div>
-		      <div class="col-xs-4 col-sm-7">
-		        <h4>Search by function</h4>
-		        <div class="form-group">
-		        		<form action="<c:url value="/gene/search/by/productName"/>" class="form-inline" role="form" method="post">
+					
+						<form action="<c:url value="/gene/search/by/producSource"/>" class="form-horizontal" role="form" method="post">
 							<input type="hidden" name="sampleId" value="${sample.id}">
-							<label>Name</label>
-							<input class="form-control" size="30" placeholder="Topoisomerase IA" type="text" name="productName">
-							<button type="submit" class="btn btn-default">Find</button>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Source</label>
+								<div class="col-sm-6">
+									<input class="form-control" size="10" placeholder="COG0550" type="text" name="productSource">
+								</div>	
+								<div class="col-sm-4">
+									<button type="submit" class="btn btn-success">Find</button>
+								</div>	
+							</div>
 						</form>
-							or
-						<form action="<c:url value="/gene/search/by/producSource"/>" class="form-inline" role="form" method="post">
-							<input type="hidden" name="sampleId" value="${sample.id}">
-							<label>Source</label>
-							<input class="form-control" size="10" placeholder="COG0550" type="text" name="productSource">
-							<button type="submit" class="btn btn-default">Find</button>
-						</form>
-				</div>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-	</div>
+	      </div>
+	        
 	<hr>
 
 	<div class="jumbotron">
 		<h3>Filter By:</h3>
 		<div class="form-group">
-			<form action="<c:url value="/sample/analyze/by"/>" class="form-inline" role="form" method="post">
+			<form action="<c:url value="/sample/analyze/by"/>" class="form-horizontal" role="form" method="post">
 				<input type="hidden" name="sampleId" value="${sample.id}">
-				<div class="col-md-*">
-					<label> TII (between 0.0 and 1) - greater or equals</label>
-					<input class="form-control" value="${tiiGreaterOrEqualsThan}" size="3" maxlength="3"  type="text" name="tiiGreaterOrEqualsThan">
+				<div class="form-group">
+					<label for="tiiGreaterOrEqualsThan" class="col-sm-4 control-label"> TII (between 0.0 and 1) - greater or equals</label>
+					<div class="col-sm-2">
+						<input class="form-control" value="${tiiGreaterOrEqualsThan}" size="3" maxlength="3"  type="text" id="tiiGreaterOrEqualsThan" name="tiiGreaterOrEqualsThan">
+					</div>
+					<span class="col-sm-6"></span>
 				</div>
 				
-				<div class="col-md-*">
-					<label> Number of features (CDSs) - Greater or equals</label>
-					<input class="form-control" value="${numberOfFeaturesGreaterOrEqualsThan}" size="4" maxlength="4" min=0 type="number" name="numberOfFeaturesGreaterOrEqualsThan">
+				<div class="form-group">
+						<label class="col-sm-4 control-label" for="numberOfFeaturesGreaterOrEqualsThan"> Number of features (CDSs) - Greater or equals</label>
+					<div class="col-sm-2">
+						<input class="form-control" value="${numberOfFeaturesGreaterOrEqualsThan}" size="4" maxlength="4" min=0 type="number" id="numberOfFeaturesGreaterOrEqualsThan" name="numberOfFeaturesGreaterOrEqualsThan">
+					</div>
+					<span class="col-sm-6"></span>
 				</div>
 				
-				<div class="col-md-*">
-					<label> Number of boundaries - Less or equals</label>
-					<input class="form-control" value="${numberOfBoundariesLessOrEqualsThan}" size="4" maxlength="2" min=0 type="number" name="numberOfBoundariesLessOrEqualsThan">
+				<div class="form-group">
+						<label for="numberOfBoundariesLessOrEqualsThan" class="col-sm-4 control-label"> Number of boundaries - Less or equals</label>
+					<div class="col-sm-2">
+						<input class="form-control" value="${numberOfBoundariesLessOrEqualsThan}" size="4" maxlength="2" min=0 type="number" id="numberOfBoundariesLessOrEqualsThan" name="numberOfBoundariesLessOrEqualsThan">
+					</div>
+					<span class="col-sm-6"></span>
 				</div>
 				
-				<div class="col-md-*">
-					<label> Percent of contig is unclassified - (between 0 and 100) - Less or equals </label>
-					<input class="form-control" value="${unclassifiedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" name="unclassifiedLessOrEqualsThan">
+				<div class="form-group">
+						<label for="unclassifiedLessOrEqualsThan" class="col-sm-4 control-label"> Percent of contig is unclassified - (between 0 and 100) - Less or equals </label>
+					<div class="col-sm-2">
+						<input class="form-control" value="${unclassifiedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" id="unclassifiedLessOrEqualsThan" name="unclassifiedLessOrEqualsThan">
+					</div>
+						<label for="undefinedLessOrEqualsThan" class="col-sm-4 control-label"> Percent of contig is undefined - (between 0 and 100) - Less or equals </label>
+					<div class="col-sm-2">
+						<input class="form-control" value="${undefinedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" id="undefinedLessOrEqualsThan" name="undefinedLessOrEqualsThan">
+					</div>
 				</div>
-				<div class="col-md-*">
-					<label> Percent of contig is undefined - (between 0 and 100) - Less or equals </label>
-					<input class="form-control" value="${undefinedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" name="undefinedLessOrEqualsThan">
+				
+				<div class="form-group">
+					<div class="col-sm-12 center-block">
+						<button type="submit" class="btn btn-success center-block">Filter</button>
+					</div>
 				</div>
-				<button type="submit" class="btn btn-default">Filter</button>
+				
+				
 			</form>
 		</div>
 	</div>
