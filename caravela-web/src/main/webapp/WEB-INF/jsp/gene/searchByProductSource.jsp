@@ -31,7 +31,7 @@
 								<td>${taxonCounterTO.taxon.rank}</td>
 								<td>
 									<span  class="glyphicon-class">${taxonCounterTO.taxon.scientificName}</span>
-										<a href="<c:url value="/taxonomy/search/${sample.id}/${taxonCounterTO.taxon.scientificName}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+										<a href="<c:url value="/taxonomy/search/${sample.id}/${taxonCounterTO.taxon.id}/${taxonCoverage}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
 									
 									
 								</td>

@@ -23,12 +23,5 @@ public class ReadDAOImpl extends DAOImpl<Read> implements ReadDAO {
 		return query.getResultList();
 	}
 	
-	public List<Read> findReadsBySampleAndScientificName(Sample sample, String scientificName) {
-		Query query = entityManager.createQuery("from Read r where r.sample=:sample and r.taxonomicAssignment.taxon.scientificName=:scientificName GROUP BY r.contig ORDER BY  length(r.contig.sequence) DESC, r.contig.taxonomicIdentificationIndex DESC", Read.class);
-		query.setParameter("sample", sample);
-		query.setParameter("scientificName", scientificName);
-		return query.getResultList();
-	}
-	
 
 }

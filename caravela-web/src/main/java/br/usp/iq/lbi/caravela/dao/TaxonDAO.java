@@ -8,7 +8,7 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 
 public interface TaxonDAO extends DAO<Taxon> {
 	
-	List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName);
+	List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName, Double taxonCovarage);
 	Long count(Sample sample, String scientificName);
 	Long count();
 	void truncateTaxonTable();

@@ -24,6 +24,7 @@ import br.usp.iq.lbi.caravela.model.Sample;
 @Controller
 public class GeneController {
 	
+	private static final Integer DEFAULT_TAXON_COVERAGE = 50;
 	private final Result result;
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
@@ -58,6 +59,7 @@ public class GeneController {
 		Collections.sort(taxonCounterTOList);
 		
 
+		result.include("taxonCoverage", DEFAULT_TAXON_COVERAGE);
 		result.include("numberOfContigFound", contigList.size());
 		result.include("numberOfTaxonFound", 0);
 		result.include("taxonCounterTOList", taxonCounterTOList);
