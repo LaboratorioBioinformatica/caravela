@@ -38,6 +38,14 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		return contigList;
 	}
 	
+	public List<Contig> findContigBySampleAndTaxonomyIdAndTaxonCovarageOrderByTaxonCovarageDesc(Sample sample, Long taxonomyId, Double taxonCovarage) {
+		Query query = entityManager.createQuery(" SELECT toc.contig FROM TaxonOnContig toc JOIN toc.taxon t WHERE toc.sample=:sample and t.id =:taxonomyId and toc.covarage >=:taxonCovarage ORDER BY toc.covarage DESC", Contig.class);
+		query.setParameter("sample", sample);
+		query.setParameter("taxonCovarage", taxonCovarage);
+		query.setParameter("taxonomyId", taxonomyId);
+		return query.getResultList();
+	}
+	
 	
 	public List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer maxResult) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample AND c.taxonomicIdentificationIndex >:tii ORDER by length(c.sequence) DESC,  c.taxonomicIdentificationIndex DESC", Contig.class);

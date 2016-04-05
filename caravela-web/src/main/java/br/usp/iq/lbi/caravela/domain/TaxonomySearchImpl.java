@@ -13,6 +13,7 @@ import br.usp.iq.lbi.caravela.dto.GeneProductTO;
 import br.usp.iq.lbi.caravela.dto.search.GeneProductCounterTO;
 import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
 import br.usp.iq.lbi.caravela.dto.search.TaxonomomySearchTO;
+import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
 import br.usp.iq.lbi.caravela.dao.TaxonDAO;
 import br.usp.iq.lbi.caravela.model.Contig;
@@ -25,11 +26,12 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 	
 	@Inject private ReadDAO readDAO;
 	@Inject private TaxonDAO taxonDAO;
+	@Inject private ContigDAO contigDao;
 	
 	
 	public TaxonomomySearchTO searchTaxonomicSearchTOBySampleAndScientificName(Sample sample, String scientificName){
-		List<Read> readsFromSampleAndScientificName = readDAO.findReadsBySampleAndScientificName(sample, scientificName);
 		
+		List<Read> readsFromSampleAndScientificName = readDAO.findReadsBySampleAndScientificName(sample, scientificName);
 		
 		Long totalNumberOfTaxonFound = taxonDAO.count(sample, scientificName);
 		
@@ -52,8 +54,13 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 		
 	}
 	
-	public List<TaxonCounterTO> searchTaxonCounterTOBySampleAndScientificName(Sample sample, String scientificName) {
-		List<TaxonCounterTO> taxonCounterTO = taxonDAO.findTaxonsBySampleAndScientificName(sample, scientificName);
+	public List<Contig> SearchContigBySampleTaxonomyIdAndTaxonCovarage(Sample sample, Long taxonomyId, Double taxonCovarage){
+		return contigDao.findContigBySampleAndTaxonomyIdAndTaxonCovarageOrderByTaxonCovarageDesc(sample, taxonomyId, taxonCovarage);
+	}
+	
+	
+	public List<TaxonCounterTO> searchTaxonCounterTOBySampleAndScientificName(Sample sample, String scientificName, Double taxonCovarage) {
+		List<TaxonCounterTO> taxonCounterTO = taxonDAO.findTaxonsBySampleAndScientificName(sample, scientificName, taxonCovarage);
 		return taxonCounterTO;
 	}
 

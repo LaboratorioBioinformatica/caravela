@@ -38,8 +38,8 @@
 	  					<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/species/${viewingMode}"/>">Species</a></button>
 	  					<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/genus/${viewingMode}"/>">Genus</a></button>
 							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/family/${viewingMode}"/>">Family</a></button>
-							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">phylum</a></button>
 							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/order/${viewingMode}"/>">Order</a></button>
+							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">phylum</a></button>
 
 	  					<div class="btn-group" role="group">
 		    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

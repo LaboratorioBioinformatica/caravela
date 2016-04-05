@@ -21,6 +21,14 @@
 							<span class="col-sm-4"></span>
 						</div>
 						<div class="form-group">
+							<label for="taxonCoverage" class="col-sm-2 control-label"> Taxon covarage - (between 0 and 100) - Less or equals </label>
+							<div class="col-sm-6">
+								<input class="form-control" value="50" size="3" maxlength="3" min=0 max=100 type="number" id="taxonCoverage" name="taxonCoverage">
+							</div>
+							<span class="col-sm-4"></span>
+						</div>
+						
+						<div class="form-group">
 							<div class="col-sm-12 center-block">
 								<button type="submit" class="btn btn-success center-block">Find</button>
 							</div>

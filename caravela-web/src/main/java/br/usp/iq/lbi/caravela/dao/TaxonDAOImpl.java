@@ -22,13 +22,15 @@ public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 	}
 
 	
-	
-	public List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName) {
-		Query query = entityManager.createQuery(" SELECT NEW br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO(t, COUNT(t.id)) FROM Read r JOIN r.taxonomicAssignment.taxon t WHERE r.sample=:sample and t.scientificName LIKE:scientificName GROUP BY t.scientificName ORDER BY COUNT(t.id) DESC", TaxonCounterTO.class);
+	public List<TaxonCounterTO> findTaxonsBySampleAndScientificName(Sample sample, String scientificName, Double taxonCovarage) {
+		Query query = entityManager.createQuery(" SELECT NEW br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO(t, COUNT(toc.contig.id)) FROM TaxonOnContig toc JOIN toc.taxon t WHERE toc.sample=:sample and t.scientificName LIKE:scientificName and toc.covarage >=:taxonCovarage GROUP BY t.id ORDER BY COUNT(toc.contig.id) DESC", TaxonCounterTO.class);
 		query.setParameter("sample", sample);
+		query.setParameter("taxonCovarage", taxonCovarage);
 		query.setParameter("scientificName", "%"+scientificName+"%");
 		return query.getResultList();
 	}
+	
+	
 	
 	//TODO essa contagem deve ser feita nos reads junto com taxon. 
 	public Long count(Sample sample, String scientificName) {
