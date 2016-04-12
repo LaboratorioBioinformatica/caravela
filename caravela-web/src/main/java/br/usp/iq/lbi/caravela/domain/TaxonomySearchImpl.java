@@ -14,6 +14,7 @@ import br.usp.iq.lbi.caravela.model.Sample;
 @RequestScoped
 public class TaxonomySearchImpl implements TaxonomySearch {
 	
+	
 	@Inject private TaxonDAO taxonDAO;
 	@Inject private ContigDAO contigDao;
 	
@@ -26,5 +27,6 @@ public class TaxonomySearchImpl implements TaxonomySearch {
 		List<TaxonCounterTO> taxonCounterTO = taxonDAO.findTaxonsBySampleAndScientificName(sample, scientificName, taxonCovarage);
 		return taxonCounterTO;
 	}
+
 
 }

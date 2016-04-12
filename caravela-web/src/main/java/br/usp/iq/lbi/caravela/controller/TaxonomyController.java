@@ -51,7 +51,7 @@ public class TaxonomyController {
 		this.taxonDAO = taxonDAO;
 	}
 	
-		
+
 	@Path("/taxonomy/search/{sampleId}/{taxonomyId}/{taxonCoverage}")
 	public void search(Long sampleId, Long taxonomyId, Double taxonCoverage) {
 		Sample sample = sampleDAO.load(sampleId);
