@@ -58,7 +58,7 @@ public class ContigConverter {
 	private PhiloDistTO createPhiloDistTo(Feature feature) {
 		//this version no has Philo dist on CONTIG ENTITY!
 		return null;
-	}ystem.out.println(contig.getReference());
+	}
 
 	private GeneProductTO createGeneProduct(Feature feature) {
 		String productName = feature.getProductName();

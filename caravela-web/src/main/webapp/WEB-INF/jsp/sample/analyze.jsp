@@ -78,7 +78,9 @@
 				<div class="form-group">
 					<label for="tiiGreaterOrEqualsThan" class="col-sm-4 control-label"> TII (between 0.0 and 1) - greater or equals</label>
 					<div class="col-sm-2">
-						<input class="form-control" value="${tiiGreaterOrEqualsThan}" size="3" maxlength="3"  type="text" id="tiiGreaterOrEqualsThan" name="tiiGreaterOrEqualsThan">
+						<fmt:formatNumber type="number" maxIntegerDigits="3" value="${tiiGreaterOrEqualsThan}" var="tiiGreaterOrEqualsThanFormated" />
+						<input class="form-control" value="${tiiGreaterOrEqualsThanFormated}" size="3" maxlength="3"  type="text" id="tiiGreaterOrEqualsThan" name="tiiGreaterOrEqualsThan">
+						
 					</div>
 					<span class="col-sm-6"></span>
 				</div>
@@ -102,11 +104,13 @@
 				<div class="form-group">
 						<label for="unclassifiedLessOrEqualsThan" class="col-sm-4 control-label"> Percent of contig is unclassified - (between 0 and 100) - Less or equals </label>
 					<div class="col-sm-2">
-						<input class="form-control" value="${unclassifiedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" id="unclassifiedLessOrEqualsThan" name="unclassifiedLessOrEqualsThan">
+						<fmt:formatNumber type="number" maxIntegerDigits="3" value="${unclassifiedLessOrEqualsThan}" var="unclassifiedLessOrEqualsThanFormated" />
+						<input class="form-control" value="${unclassifiedLessOrEqualsThanFormated}" size="3" maxlength="3" min=0 max=100 type="number" id="unclassifiedLessOrEqualsThan" name="unclassifiedLessOrEqualsThan">
 					</div>
 						<label for="undefinedLessOrEqualsThan" class="col-sm-4 control-label"> Percent of contig is undefined - (between 0 and 100) - Less or equals </label>
 					<div class="col-sm-2">
-						<input class="form-control" value="${undefinedLessOrEqualsThan}" size="3" maxlength="3" min=0 max=100 type="number" id="undefinedLessOrEqualsThan" name="undefinedLessOrEqualsThan">
+						<fmt:formatNumber type="number" maxIntegerDigits="3" value="${undefinedLessOrEqualsThan}" var="undefinedLessOrEqualsThanFormated" />
+						<input class="form-control" value="${undefinedLessOrEqualsThanFormated}" size="3" maxlength="3" min=0 max=100 type="number" id="undefinedLessOrEqualsThan" name="undefinedLessOrEqualsThan">
 					</div>
 				</div>
 				
