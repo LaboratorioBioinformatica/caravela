@@ -44,7 +44,7 @@ public class ContigConverter {
 		}
 		
 		return new ReadOnContigTO(read.getReference(), read.getSequence(), 
-				read.getStartAlignment(),  read.getEndAlignment(), read.getFlagAlignment(), read.getPair(), taxonTO);
+				read.getStartAlignment(),  read.getEndAlignment(), read.getCigar(), read.getFlagAlignment(), read.getPair(), taxonTO);
 	}
 
 	private FeatureTO createFeatureTO(Feature feature) {
@@ -58,7 +58,7 @@ public class ContigConverter {
 	private PhiloDistTO createPhiloDistTo(Feature feature) {
 		//this version no has Philo dist on CONTIG ENTITY!
 		return null;
-	}
+	}ystem.out.println(contig.getReference());
 
 	private GeneProductTO createGeneProduct(Feature feature) {
 		String productName = feature.getProductName();

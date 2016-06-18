@@ -14,17 +14,19 @@ public class Mapping implements Serializable {
 	private Integer start;
 	@Column(name="end_alignment")
 	private Integer end;
+	private String cigar;
 	@Column(name="flag_alignment")
 	private Integer flag;
 
 	
 	public Mapping() {
-		this(null,null,null);
+		this(null,null,null, null);
 	}
 	
-	public Mapping(Integer start, Integer end, Integer flag) {
+	public Mapping(Integer start, Integer end, String cigar, Integer flag) {
 		this.start = start;
 		this.end = end;
+		this.cigar = cigar;
 		this.flag = flag; 
 	}
 	
@@ -42,6 +44,10 @@ public class Mapping implements Serializable {
 
 	public Integer getEnd() {
 		return end;
+	}
+
+	public String getCigar() {
+		return cigar;
 	}
 
 	public Integer getFlag() {

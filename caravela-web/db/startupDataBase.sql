@@ -75,6 +75,7 @@ create table sequence (
 	sequence TEXT NOT null,
 	start_alignment INT NOT NULL,
 	end_alignment INT NOT NULL,
+	cigar VARCHAR(50) NOT NULL,
 	flag_alignment INT NOT NULL,
 	PRIMARY KEY(id),
 	INDEX (contig_id), INDEX (taxon_id)
@@ -224,3 +225,9 @@ select id from sample where name = "ZC4-day-99" into @sampleId;
 insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/caravela/zc4-day-99.json");
 
 
+-- sample from deyvid
+select id from treatment where name = "ZC4" into @treatmentId;
+insert into sample values(id, @treatmentId, "ZC4-day-01-deyvid", "CREATED", "Compostagem ZC4 day 01 - from deyvid");
+
+select id from sample where name = "ZC4-day-01-deyvid" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/pier/zc4-day-01-deyvid-caravela.json");

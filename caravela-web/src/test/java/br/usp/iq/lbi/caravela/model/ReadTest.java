@@ -23,7 +23,8 @@ public class ReadTest {
 	public void testWhenReferenceSampleAndPairAreSameShouldBeEquals() throws Exception {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
-		Mapping mapping = new Mapping(1, 100, 111);
+		
+		Mapping mapping = createMapping();
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Long taxonomyId = 1289127l;
@@ -57,11 +58,12 @@ public class ReadTest {
 		
 	}
 	
+
 	@Test
 	public void testWhenOnlyPairIsDiferentSameShouldNotBeEquals() throws Exception {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
-		Mapping mapping = new Mapping(1, 100, 111);
+		Mapping mapping = createMapping();
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Long taxonomyId = 1289127l;
@@ -98,7 +100,7 @@ public class ReadTest {
 	public void testWhenOnlySampleIsDiferentSameShouldNotBeEquals() throws Exception {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
-		Mapping mapping = new Mapping(1, 100, 111);
+		Mapping mapping = createMapping();
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-30", "description zc3b-day-30");
@@ -136,7 +138,7 @@ public class ReadTest {
 	public void testWhenOnlyReferenceIsDiferentSameShouldNotBeEquals() throws Exception {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
-		Mapping mapping = new Mapping(1, 100, 111);
+		Mapping mapping = createMapping();
 		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		
@@ -165,6 +167,11 @@ public class ReadTest {
 
 		Assert.assertFalse(read.equals(readEq));
 		
+	}
+	
+	private Mapping createMapping() {
+		Mapping mapping = new Mapping(1, 100,"10M", 111);
+		return mapping;
 	}
 
 }

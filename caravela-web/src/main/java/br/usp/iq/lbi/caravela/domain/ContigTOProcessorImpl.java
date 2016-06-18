@@ -70,7 +70,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 //			Map<Long, Taxon> allTaxon = ncbiTaxonManager.SearchAllTaxon();
 			
 			for (ReadOnContigTO readOnContigTO : readsOnCotig) {
-				Mapping mapping = new Mapping(readOnContigTO.getStartAlignment(), readOnContigTO.getEndAlignment(), readOnContigTO.getFlag());
+				Mapping mapping = new Mapping(readOnContigTO.getStartAlignment(), readOnContigTO.getEndAlignment(), readOnContigTO.getCigar(), readOnContigTO.getFlag());
 				Read read = new Read(readOnContigTO.getReference(), sample, contig, readOnContigTO.getSequence(), readOnContigTO.getPair(), mapping);
 				reads.add(read);
 				
@@ -82,7 +82,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 					Taxon taxon = ncbiTaxonManager.searchByTaxonomicId(taxonomyId);
 					
 					if(taxon != null){
-						TaxonomicAssignment taxonomicAssignment = new TaxonomicAssignment(taxon, new Double(taxonTO.getScore()));
+						TaxonomicAssignment taxonomicAssignment = new TaxonomicAssignment(taxon, taxonTO.getScore());
 						read.toAssigTaxon(taxonomicAssignment);
 						
 					} else {

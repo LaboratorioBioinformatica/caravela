@@ -84,6 +84,10 @@ public class Read implements Serializable {
 		return mapping.getFlag();
 	}
 	
+	public String getCigar(){
+		return mapping.getCigar();
+	}
+	
 	public Contig getContig(){
 		return this.contig;
 	}

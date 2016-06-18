@@ -11,15 +11,17 @@ public class ReadOnContigTO {
 	private final Integer startAlignment;
 	@SerializedName("end")
 	private final Integer endAlignment;
+	private final String cigar;
 	private final Integer flag;
 	private final Integer pair;
 	private final TaxonTO taxon;
 	
-	public ReadOnContigTO(String reference, String sequence, Integer startAlignment, Integer endAlignment, Integer flag, Integer pair, TaxonTO taxon) {
+	public ReadOnContigTO(String reference, String sequence, Integer startAlignment, Integer endAlignment, String cigar, Integer flag, Integer pair, TaxonTO taxon) {
 		this.reference = reference;
 		this.sequence = sequence;
 		this.startAlignment = startAlignment;
 		this.endAlignment = endAlignment;
+		this.cigar = cigar;
 		this.flag = flag;
 		this.pair = pair;
 		this.taxon = taxon;	
@@ -44,6 +46,10 @@ public class ReadOnContigTO {
 
 	public Integer getStartAlignment() {
 		return startAlignment;
+	}
+
+	public String getCigar() {
+		return cigar;
 	}
 
 	public Integer getEndAlignment() {

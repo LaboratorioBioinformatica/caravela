@@ -17,6 +17,7 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigTOProcessor;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
+import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 
@@ -63,7 +64,8 @@ public class UploadController {
 		
 		while (parser.hasNext()) {
 			ContigTO contigTO = gson.fromJson(parser.next(), ContigTO.class);
-			contigTOProcessor.convert(sample, contigTO);
+			Contig contig = contigTOProcessor.convert(sample, contigTO);
+			
 		}
 		
 		sampleReporter.reportChimericPotentialFromContig(sample, DEFAULT_TII_VALUE, DEFAULT_RANK_TO_REPORT);
