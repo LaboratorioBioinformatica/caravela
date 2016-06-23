@@ -1,5 +1,6 @@
 package br.usp.iq.lbi.caravela.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,6 +45,12 @@ public class SampleController {
 	}
 	
 	public void view(){
+		List<Treatment> treatmentList = treatmentDAO.findAll();
+		result.include("treatmentList", treatmentList);
+	}
+	
+	@Path("/sample/new")
+	public void newSample(){
 		List<Treatment> treatmentList = treatmentDAO.findAll();
 		result.include("treatmentList", treatmentList);
 	}
@@ -102,6 +109,18 @@ public class SampleController {
 		result.include("sample", sample);
 	}
 	
+	@Post
+	@Path("/sample/analyze/by/contigName")
+	public void analyze(Long sampleId, String contigName){
+		Sample sample = sampleDAO.load(sampleId);
+		 Contig contig = contigDAO.findContigBySampleAndContigReference(sample, contigName);
+		List<Contig> contigList = new ArrayList<Contig>();
+		contigList.add(contig);
+
+		result.include("contigList", contigList);
+		result.include("sample", sample);
+	}
+	
 	@Get
 	@Path("/sample/report/{sampleId}/{tiiValue}/{rank}")
 	public void reportChimericPotential(Long sampleId, String tiiValue, String rank){
@@ -110,7 +129,6 @@ public class SampleController {
 		sampleReporter.reportChimericPotentialFromContig(sample, tii, rank);
 		
 	}
-	
 	
 	
 	@Post

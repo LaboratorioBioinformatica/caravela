@@ -125,6 +125,23 @@
 		</div>
 	</div>
 	<hr>
+		      <div class="jumbotron">
+		      	<h3>Search by contig name</h3>
+		      										
+		        		<form action="<c:url value="/sample/analyze/by/contigName"/>" class="form-horizontal" role="form" method="post">
+							<input type="hidden" name="sampleId" value="${sample.id}">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Contig Name</label>
+								<div class="col-sm-6">
+									<input class="form-control" size="30" placeholder="contig reference" type="text" name="contigName">
+								</div>
+								<div class="col-sm-4">
+									<button type="submit" class="btn btn-success">Find</button>
+								</div>
+							</div>
+						</form>
+	      </div>
+	<hr>
 
 
 	<c:if test="${not empty contigList}">

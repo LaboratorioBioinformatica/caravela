@@ -47,11 +47,7 @@ public class SampleReporterImpl implements SampleReporter {
 
 	public void reportChimericPotentialFromContig(Sample sample, Double tii, String rank) {
 
-		
-		
 		Long totalNumberOfContig = contigDAO.CountByContigBySampleAndTiiGreatherThan(sample, tii);
-		
-		
 		
 		List<IntervalPage> pages = paginator.getPages(totalNumberOfContig, MAX_RECORD_PER_PAGE);
 		

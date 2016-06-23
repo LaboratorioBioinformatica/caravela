@@ -77,7 +77,7 @@ public class DAOImpl<T> implements DAO<T> {
 			entityManager.flush();
 			entityManager.clear();
 			numberOfTrasaction = 0L;
-			System.out.println("Reset number of transaction. Batch number: " + numberOfBatch);
+//			System.out.println("Reset number of transaction. Batch number: " + numberOfBatch);
 			numberOfBatch++;
 		} else {
 			numberOfTrasaction++;

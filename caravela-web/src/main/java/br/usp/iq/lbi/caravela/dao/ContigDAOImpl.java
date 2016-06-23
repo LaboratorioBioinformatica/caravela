@@ -46,6 +46,13 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		return query.getResultList();
 	}
 	
+	public Contig findContigBySampleAndContigReference(Sample sample, String contigReference) {
+		Query query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample AND c.reference=:contigReference", Contig.class);
+		query.setParameter("sample", sample);
+		query.setParameter("contigReference", contigReference);
+		return (Contig) query.getSingleResult();
+	}
+	
 	
 	public List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer maxResult) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample AND c.taxonomicIdentificationIndex >:tii ORDER by length(c.sequence) DESC,  c.taxonomicIdentificationIndex DESC", Contig.class);

@@ -231,3 +231,19 @@ insert into sample values(id, @treatmentId, "ZC4-day-01-deyvid", "CREATED", "Com
 
 select id from sample where name = "ZC4-day-01-deyvid" into @sampleId;
 insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/pier/zc4-day-01-deyvid-caravela.json");
+
+-- sample to taxonomer and mira
+
+select id from treatment where name = "ZC4" into @treatmentId;
+insert into sample values(id, @treatmentId, "ZC4-day-01-taxonomer-deyvid", "CREATED", "Compostagem ZC4 day 01 - taxonomer - from deyvid");
+
+select id from sample where name = "ZC4-day-01-taxonomer-deyvid" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/pier/zc4-day-01-deyvid-taxonomer-caravela.json");
+
+-- sample to taxonomer and soap 
+
+select id from treatment where name = "ZC4" into @treatmentId;
+insert into sample values(id, @treatmentId, "ZC4-day-01-taxonomer-soap", "CREATED", "Compostagem ZC4 day 01 - taxonomer - from soap");
+
+select id from sample where name = "ZC4-day-01-taxonomer-soap" into @sampleId;
+insert into sample_file values(id, @sampleId, "ALL_JSON", "UPLOADED", "/data/pier/zc4-day-01-soap-taxonomer-caravela.json");

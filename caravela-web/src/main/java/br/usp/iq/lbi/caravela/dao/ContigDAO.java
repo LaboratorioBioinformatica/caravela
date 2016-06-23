@@ -11,5 +11,6 @@ public interface ContigDAO extends DAO<Contig> {
 	List<Contig> FindByContigBySample(Sample sample, Double tii, Integer numberOfFeatures, Integer numberOfBoundaries, Double unclassified, Double undefined, Integer firstResult, Integer maxResult);
 	List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer maxResult);
 	List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer startPosition, Integer maxResult);
+	Contig findContigBySampleAndContigReference(Sample sample, String contigReference);
 
 }
