@@ -46,7 +46,11 @@ public class DAOImpl<T> implements DAO<T> {
 	}
 	
 	public T load(Long id) {
-		return entityManager.find(entityClass, id);
+		if(id != null){
+			return entityManager.find(entityClass, id);
+		} else {
+			return null;
+		}
 	}
 	
 	public void save(T entity) {
