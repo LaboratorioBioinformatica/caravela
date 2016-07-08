@@ -92,6 +92,12 @@ public class Sample {
 			this.sampleStatus = SampleStatus.PROCCESSED;
 		} 
 	}
+	
+	public void toUploaded(){
+		if(isCreated()){
+			this.sampleStatus = SampleStatus.UPLOADED;
+		} 
+	}
 
 	public void setSampleFiles(List<SampleFile> sampleFiles){
 		this.sampleFiles = sampleFiles;

@@ -11,8 +11,7 @@
 		<c:if test="${not empty treatmentList}">
 		
 			<div class="form-group">
-				<form action="<c:url value="/sample/list"/>"
-							name="form-sample-treatment" class="form-inline" role="form"
+				<form action="<c:url value="/sample/list"/>" name="form-sample-treatment" class="form-inline" role="form"
 							method="post">
 					<label>Choose a treatment: </label>
 					<select id="select-treatment-id" name="treatmentId"
@@ -23,7 +22,12 @@
 										value="${treatment.id}">${treatment.name}</option>
 						</c:forEach>
 					</select>
-					<button type="submit" class="btn btn-default">Submit</button> 
+					<button type="submit" class="btn btn-default">Search samples</button>
+					<a href="${linkTo[SampleController].form}" class="btn btn-success"  role="button">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+						<span class="glyphicon-class">new sample</span>
+					</a>
+		
 				</form>
 			</div>
 		</c:if>
@@ -41,8 +45,7 @@
 					</thead>
 					<tbody>
 						<c:forEach var="sample" items="${sampleList}">
-							<c:set var="sampleStatus" scope="request"
-										value="${sample.sampleStatus}" />
+							<c:set var="sampleStatus" scope="request" value="${sample.sampleStatus}" />
 							<tr>
 								<td>${sample.name}</td>
 								<td>${sample.description}</td>
@@ -51,20 +54,20 @@
 									
 										<c:choose>
 											<c:when test="${sampleStatus == 'CREATED'}">
-												<button type="button" class="btn btn-default"
-														aria-label="Left Align">
-													<span class="glyphicon glyphicon-upload" aria-hidden="true"> Upload</span>
-												</button>
+											<div>
+												<a href="${linkTo[SampleController].uploadSampleFileForm}?sampleId=${sample.id}" class="btn btn-default"  role="button">
+													<span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+													<span class="glyphicon-class">Upload</span>
+												</a>
+											</div>	
+	
 											</c:when>
 											<c:when test="${sampleStatus == 'UPLOADED'}">
-												<form action="<c:url value="/sample/process"/>"
-														name="form-sample-process" class="form-inline" role="form"
-														method="post">
+												<form action="<c:url value="/sample/process"/>" name="form-sample-process" class="form-inline" role="form" method="post">
 													<input type="hidden" name="sampleId" value="${sample.id}">
-													<button type="submit" class="btn btn-warning"
-															aria-label="Left Align">
-														<span class="glyphicon glyphicon-play-circle"
-																aria-hidden="true"> Process</span>
+													<button type="submit" class="btn btn-warning" aria-label="Left Align"> 
+														<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>
+														<span class="glyphicon-class">To process</span>
 													</button>
 												</form>		
 											</c:when>

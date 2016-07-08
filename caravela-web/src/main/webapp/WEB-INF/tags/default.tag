@@ -69,6 +69,7 @@
 	            <ul class="nav navbar-nav">
 	              <li><a href="${linkTo[HomeController].home}">Home</a></li>
 	              <li><a href="${linkTo[SampleController].view}">Samples</a></li>
+	              <li><a href="${linkTo[AdminController].view}">Admin</a></li>
 	              <li><a href="${linkTo[LoginController].logout}">Logout</a></li>
 	              <!--li><a href="#contact">Contact</a></li -->
 	            </ul>
@@ -76,6 +77,19 @@
 	          <div>${userLoggedIn.name}</div>
 	        </div>
 	      </nav>
+	    <div>
+			 <c:forEach items="${vmessages.success}" var="msg">
+				<div class="alert alert-success" role="alert">${msg.message}</div>	
+			</c:forEach>
+		
+			<c:forEach items="${vmessages.info}" var="info">
+				<div class="alert alert-info" role="alert">${info.message}</div>	
+			</c:forEach>
+			
+			<c:forEach items="${vmessages.warnings}" var="warn">
+		 			<div class="alert alert-warning" role="alert">${warn.message}</div>
+			</c:forEach>
+		</div>  
 	      
     <jsp:doBody/>
     

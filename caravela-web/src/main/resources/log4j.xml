@@ -9,7 +9,7 @@
 	</appender>
 
 
-	<appender name="FileAppender" class="org.apache.log4j.FileAppender">
+	<appender name="caravela" class="org.apache.log4j.FileAppender">
 		<param name="File" value="/opt/tomcat/logs/caravela.log" />
 		<param name="Append" value="false" />
 		<layout class="org.apache.log4j.PatternLayout">
@@ -18,13 +18,14 @@
 	</appender>
 
 
+	<category name="br.usp.iq.lbi.caravela">
+		<priority value="INFO" />
+		<appender-ref ref="caravela" />
+	</category>
+
 	<category name="br.com.caelum.vraptor">
 		<priority value="INFO" />
 		<appender-ref ref="stdout" />
 	</category>
 	
-	<!-- category name="br.com.caelum.vraptor">
-		<priority value="INFO" />
-		<appender-ref ref="FileAppender" />
-	</category-->
 </log4j:configuration>

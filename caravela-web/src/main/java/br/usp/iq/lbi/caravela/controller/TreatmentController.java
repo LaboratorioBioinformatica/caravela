@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
+
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -22,6 +24,7 @@ import br.usp.iq.lbi.caravela.model.Treatment;
 public class TreatmentController {
 
 	
+	private static final int TREATMENT_NAME_MIN_SIZE = 3;
 	private final Result result;
 	private final TreatmentDAO treatmentDAO;
 	private final SampleDAO sampleDAO;
@@ -49,7 +52,7 @@ public class TreatmentController {
 	public void list() {
 		List<Treatment> treatments = treatmentDAO.listAll();
 		if (treatments.isEmpty()) {
-			validator.add(new SimpleMessage("treatment.list", "no treatment found", Severity.WARN));
+			validator.add(new SimpleMessage("treatment.list", "There is no treatment to show", Severity.WARN));
 		}
 		result.include("treatments", treatments);
 	}
@@ -69,10 +72,12 @@ public class TreatmentController {
 
 	@Post
 	public void add(Treatment treatment) {
-		System.out.println(treatment.getName());
-		System.out.println(treatment.getDescription());
+			validator.addIf(treatment.getName() == null || treatment.getName().length() < TREATMENT_NAME_MIN_SIZE, 
+					new SimpleMessage("treatment.name", "can not be null or less than " + TREATMENT_NAME_MIN_SIZE, Severity.ERROR));
 		result.include("treatment", treatment);
-		result.redirectTo(TreatmentController.class).form();
+		validator.onErrorForwardTo(this).form();
+		treatmentDAO.save(treatment);
+		result.redirectTo(TreatmentController.class).list();
 	}
 
 }
