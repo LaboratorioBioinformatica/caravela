@@ -18,6 +18,7 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.observer.upload.UploadSizeLimit;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.validator.Validator;
@@ -48,13 +49,14 @@ public class UploadController {
 	private final ContigTOProcessor contigTOProcessor;
 	private final SampleReporter sampleReporter;
 	private final Validator validator;
+	private final Environment environment;
 	
 	public UploadController() {
-		this(null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 	
 	@Inject
-	public UploadController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigTOProcessor contigTOProcessor, SampleReporter sampleReporter, Validator validator, SampleFileDAO sampleFileDAO) {
+	public UploadController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigTOProcessor contigTOProcessor, SampleReporter sampleReporter, Validator validator, SampleFileDAO sampleFileDAO, Environment environment) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
@@ -62,6 +64,7 @@ public class UploadController {
 		this.sampleReporter = sampleReporter;
 		this.validator = validator;
 		this.sampleFileDAO = sampleFileDAO;
+		this.environment = environment;
 	}
 	
 	public void view(){
@@ -75,7 +78,7 @@ public class UploadController {
 		
 		Sample sample = sampleDAO.load(sampleId);
 		
-		File fileToSaveUniqueFileName = File.createTempFile("sampleFile_", ".json", new File("/tmp"));
+		File fileToSaveUniqueFileName = File.createTempFile("sampleFile_", ".json", new File(environment.get("directory.upload")));
 		file.writeTo(fileToSaveUniqueFileName);
 		
 		SampleFile sampleFile = new SampleFile(sample, FileType.ALL_JSON, FileStatus.UPLOADED, "pier", fileToSaveUniqueFileName.getAbsolutePath());

@@ -63,7 +63,7 @@
 	
 											</c:when>
 											<c:when test="${sampleStatus == 'UPLOADED'}">
-												<form action="<c:url value="/sample/process"/>" name="form-sample-process" class="form-inline" role="form" method="post">
+												<form action="${linkTo[SampleController].process}" name="form-sample-process" class="form-inline" role="form" method="post">
 													<input type="hidden" name="sampleId" value="${sample.id}">
 													<button type="submit" class="btn btn-warning" aria-label="Left Align"> 
 														<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>

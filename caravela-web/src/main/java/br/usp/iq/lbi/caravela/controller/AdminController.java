@@ -1,7 +1,6 @@
 package br.usp.iq.lbi.caravela.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import javax.inject.Inject;
 
@@ -11,35 +10,48 @@ import org.slf4j.LoggerFactory;
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.validator.Severity;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
-import br.usp.iq.lbi.caravela.domain.ContigTOProcessorImpl;
 import br.usp.iq.lbi.caravela.domain.NCBITaxonManager;
 
 @Controller
 public class AdminController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ContigTOProcessorImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	
 	private final Result result;
 	private final NCBITaxonManager ncbiTaxonManager;
 	private final Validator validator;
+	private final Environment environment;
 	
 	protected AdminController() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 	
 	@Inject
-	public AdminController(Result result, NCBITaxonManager ncbiTaxonManager, Validator validator){
+	public AdminController(Result result, NCBITaxonManager ncbiTaxonManager, Validator validator, Environment environment){
 		this.result = result;
 		this.ncbiTaxonManager =  ncbiTaxonManager;
 		this.validator = validator;
+		this.environment = environment;
 	}
 	
 	
 	public void view(){
+		
+		environment.get("ncbi.file.path.taxonomy.name");
+		environment.get("ncbi.file.path.taxonomy.node");
+		
 		Long numberOfTaxon = ncbiTaxonManager.countNumberOfTaxon();
+		
+		result.include("ncbiFilePathTaxonomyName", environment.get("ncbi.file.path.taxonomy.name"));
+		result.include("ncbiFilePathTaxonomyNode", environment.get("ncbi.file.path.taxonomy.node"));
+		result.include("directoryUpload", environment.get("directory.upload"));
+		result.include("directoryBase", environment.get("directory.base"));
+		result.include("directoryConfig", environment.get("directory.config"));
+		
 		result.include("numberOfTaxon", numberOfTaxon);
 		
 	}
@@ -62,19 +74,6 @@ public class AdminController {
 		
 		validator.onErrorForwardTo(this).view();
 		result.forwardTo(this).view();
-	}
-	
-	public void register(){
-		ncbiTaxonManager.clear();
-		File fileNCBIScientificNames = new File("/data/caravela/config/ncbiScientificNames.txt");
-		File fileNCBINodes = new File("/data/caravela/config/ncbiNodes.txt");
-		try {
-			ncbiTaxonManager.register(fileNCBIScientificNames, fileNCBINodes);
-		} catch (FileNotFoundException e) {
-			logger.error("NCBI files: Scientific names and Nodes NOT FOUND!", e);
-		}
-		result.forwardTo(this).view();
-		
 	}
 
 }

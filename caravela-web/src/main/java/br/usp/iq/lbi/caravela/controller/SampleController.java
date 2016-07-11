@@ -18,6 +18,7 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
+import br.usp.iq.lbi.caravela.domain.SampleLoader;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
@@ -36,13 +37,14 @@ public class SampleController {
 	private final ContigDAO contigDAO;
 	private final SampleReporter sampleReporter;
 	private final Validator validator;
+	private final SampleLoader sampleLoader;
 	
 	protected SampleController(){
-		this(null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 	
 	@Inject
-	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator){
+	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader){
 		this.result = result;
 		this.webUser = webUser;
 		this.treatmentDAO = treatmentDAO;
@@ -50,6 +52,7 @@ public class SampleController {
 		this.contigDAO = contigDAO;
 		this.sampleReporter = sampleReporter;
 		this.validator = validator;
+		this.sampleLoader = sampleLoader;
 	}
 	
 	public void view(){
@@ -96,6 +99,12 @@ public class SampleController {
 	@Path("/sample/list/by/treatment/{treatmentId}")
 	public void listByTreatment(Long treatmentId){
 		list(treatmentId);
+	}
+	
+	@Post
+	public void process(Long sampleId){
+		Sample sample = sampleDAO.load(sampleId);
+		sampleLoader.loadFromFileToDatabase(sample);
 	}
 	
 	@Post
