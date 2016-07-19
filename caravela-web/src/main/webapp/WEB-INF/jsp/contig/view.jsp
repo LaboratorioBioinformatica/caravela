@@ -8,57 +8,43 @@
 	</jsp:attribute>
     <jsp:body>
     <div class="container-fluid">
-		<div class="page-header">
-			<h1>Contig analyze - ${sample.name} - ${contig.reference} (${rank}) </h1>
-		</div>
-
-			<div class="panel-heading">Contig</div>
-		 	<table class="table">
-			    <thead>
-			    	<tr>
-				    	<th>Size</th>
-				    	<th>Total number of reads</th>
-				    	<th>Total number of reads classified</th>
-				    	<th>Total number of features</th>
-				    </tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>${contig.size}</td>
-						<td>${contig.numberOfreads}</td>
-						<td>${contig.numberOfReadsClassified}</td>
-						<td>${contig.numberOfFeatures}</td>
-					</tr>
-				</tbody>
-		 	</table>
-
-	 		<div>
-	 			<div class="col-md-10 col-md-offset-1" style="height:800px;vertical-align:top;margin-top:15px;" id="contigViewer">
-					<div class="btn-group" role="group" aria-label="...">
-	  					<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/species/${viewingMode}"/>">Species</a></button>
-	  					<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/genus/${viewingMode}"/>">Genus</a></button>
-							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/family/${viewingMode}"/>">Family</a></button>
-							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/order/${viewingMode}"/>">Order</a></button>
-							<button type="button" class="btn btn-default"><a href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">phylum</a></button>
-
+    <div class="panel panel-default">
+				<div class="panel-heading">
+					<strong>Contig Information</strong>
+				</div>
+				<div class="panel-body">
+					<p><strong>Sample:</strong> ${sample.name}</p>
+					<p><strong>Contig:</strong> ${contig.reference}</p>
+					<p><strong>Contig size</strong>:  ${contig.size} | Reads: ${contig.numberOfreads} | Reads classifieds ${contig.numberOfReadsClassified} | Features: ${contig.numberOfFeatures}</p>
+					
+					<div id="feature-detail"></div>
+					
+				</div>	
+	</div>
+ 		<div class="col-md-10 col-md-offset-1" style="height:1000px;vertical-align:top;margin-top:10px;" id="contigViewer">
+			<div class="btn-group" role="group" aria-label="">
+	  					<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/species/${viewingMode}"/>">Species</a>
+	  					<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/genus/${viewingMode}"/>">Genus</a>
+						<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/family/${viewingMode}"/>">Family</a>
+						<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/order/${viewingMode}"/>">Order</a>
+						<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/class/${viewingMode}"/>">Class</a>
+						<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">phylum</a>
 	  					<div class="btn-group" role="group">
 		    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		      			Contig Viewing Mode
-		      			<span class="caret"></span>
+		    					Contig Viewing Mode
+		      					<span class="caret"></span>
 		    				</button>
 		    				<ul class="dropdown-menu">
-		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/readsOnContig"/>">reads</a></li>
-		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/consensusReadsOnContig"/>">consensus reads</a></li>
-		    			</ul>
-	  				</div>
-					</div>
-	 			</div>
-	 		</div>
+			      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/readsOnContig"/>">reads</a></li>
+			      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/consensusReadsOnContig"/>">consensus reads</a></li>
+		    				</ul>
+	  					</div>
+			</div>			
+ 		</div>
 	 </div>
 
+
 	<script type="text/javascript">
-	var contigSize = ${contig.size};
-	var features = ${features};
 	var FeatureViewer = require("feature-viewer");
 	var ft = new FeatureViewer('${contig.sequence}',
 	    "#contigViewer", {
@@ -69,32 +55,25 @@
 	    bubbleHelp:true,
 	    zoomMax:10
 	});
-
-	//Add some features
-    ft.addFeature({
-        data: [{x:1,y:contigSize}],
-        name: "contig",
-        className: "contigClass",
-        color: "#b0133b",
-        type: "rect"
-    });
-
-	//Add some features
-    ft.addFeature({
-        data: features,
-        name: "Features",
-        className: "features",
-        color: "#fd8d3c",
-        type: "rect"
-    });
 	
     ft.onFeatureSelected(function (d) {
     	
+    	console.log(d);
+    	
+    	 $.ajax({url: '<c:url value="/feature/philodist/"/>' + d.detail.id, success: function(result){
+             $("#feature-detail").empty().append("<p>" + result.lineage + "</p>");
+         }});
+    	
+    	
         console.log(d.detail);
+        console.log(d.detail.id);
+        
     });
 
 $(document).ready(function(){
 
+	var urlFeaturesOnContig = '<c:url value="/contig/featureOnContig/${contig.id}"/>';
+	var urlContigViewer = '<c:url value="/contig/viewer/${contig.id}"/>';
 	var urlReadsOnCOntig = '<c:url value="/contig/${viewingMode}/${contig.id}/${rank}"/>';
 	var urlOverlapTaxonOnCOntig = '<c:url value="/contig/overlapTaxaOnContig/${contig.id}/${rank}"/>';
 	var urlUndefinedRegionsOnCOntig = '<c:url value="/contig/undefinedRegionsOnContig/${contig.id}/${rank}"/>';
@@ -103,6 +82,10 @@ $(document).ready(function(){
 	
 	
 	var queueName = 'featureQueue';
+	
+	
+	addCallFeatureViewerToQueue(queueName, "#fd8d3c", 'rect', urlFeaturesOnContig);
+	addCallFeatureViewerToQueue(queueName, "#b0133b", 'rect', urlContigViewer);
 	
 	addCallFeatureViewerToQueue(queueName, randColor(), 'multipleRect', urlReadsOnCOntig);
 	addCallFeatureViewerToQueue(queueName, "#FF0000", 'path', urlOverlapTaxonOnCOntig);
@@ -113,8 +96,6 @@ $(document).ready(function(){
 	
 	$(document).dequeue(queueName);
 	
-
-
 });
 
 function randColor(){

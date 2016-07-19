@@ -1,15 +1,9 @@
 package br.usp.iq.lbi.caravela.dto;
 
 public class PhiloDistTO {
-	//homolog Gene OID
 	private Long geneOID;
-	
-	//homolog Taxon OID
 	private Long taxonOID;
-	
-	//percent of Identity
 	private Double identity;
-	
 	private String lineage;
 	
 	public PhiloDistTO(Long geneOID, Long taxonOID, Double identity, String lineage) {
@@ -17,6 +11,22 @@ public class PhiloDistTO {
 		this.taxonOID = taxonOID;
 		this.identity = identity;
 		this.lineage = lineage;
+	}
+
+	public Long getGeneOID() {
+		return geneOID;
+	}
+
+	public Long getTaxonOID() {
+		return taxonOID;
+	}
+
+	public Double getIdentity() {
+		return identity;
+	}
+
+	public String getLineage() {
+		return lineage;
 	}
 
 }

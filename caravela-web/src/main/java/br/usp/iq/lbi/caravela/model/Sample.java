@@ -113,5 +113,25 @@ public class Sample {
 		return sampleFile;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Sample)){
+			return false;
+			
+		}
+		
+		if(obj == this){
+			return true;
+		}
+		
+		Sample sample = (Sample) obj;
+		
+		return this.name.equals(sample.getName()) && 
+				this.description.equals(sample.getDescription()) && 
+				this.treatment.equals(sample.getTreatment()) && 
+				this.sampleStatus.equals(sample.getSampleStatus()); 
+		
+	}
+	
 	
 }

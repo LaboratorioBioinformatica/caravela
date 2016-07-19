@@ -24,6 +24,9 @@ import br.usp.iq.lbi.caravela.domain.SegmentsCalculator;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.intervalTree.IntervalTree;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
+import br.usp.iq.lbi.caravela.model.Feature;
+import br.usp.iq.lbi.caravela.model.FeatureAnnotation;
+import br.usp.iq.lbi.caravela.model.GeneProduct;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Taxon;
 
@@ -35,6 +38,7 @@ public class ContigControllerHelper {
 	private static final String UNDEFINED_REGION_KEY = "Undefined";
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	private static final String TAXA = "Taxa";
+	private static final String FEATURE = "Feature";
 	
 
 	private ReadWrapper readWrapper; 
@@ -51,6 +55,52 @@ public class ContigControllerHelper {
 		this.consensusBuilding = consensusBuilding;
 		this.colorPicker = colorPicker;
 		this.segmentsCalculator = segmentsCalculator;
+	}
+	
+	
+	
+	public Map<String, List<FeatureViewerDataTO>> createFeatureViwerByFeatures(List<Feature> features){
+		
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<String, List<FeatureViewerDataTO>>();
+		List<FeatureViewerDataTO> featureViewerToFeatureDataTOList = new ArrayList<>();
+		
+		for (Feature feature : features) {
+			
+			List<FeatureAnnotation> featureAnnotations = feature.getFeatureAnnotations();
+			if(featureAnnotations != null && ! featureAnnotations.isEmpty()){
+				for (FeatureAnnotation fa : featureAnnotations) {
+					FeatureViewerDataTO featureViewerDataTO = new FeatureViewerDataTO(feature.getStart() + (fa.getQueryStart() -1), feature.getStart() + (fa.getQueryEnd() -1), fa.getName(), String.valueOf(fa.getId()));
+					
+					List<FeatureViewerDataTO> featureViewerToFeatureAnnotationDataTO = featureViewerDataMap.get(fa.getType().toString());
+					if(featureViewerToFeatureAnnotationDataTO != null){
+						featureViewerToFeatureAnnotationDataTO.add(featureViewerDataTO);
+					} else {
+						List<FeatureViewerDataTO> newfeatureViewerToFeatureAnnotationDataTO = new ArrayList<>();
+						newfeatureViewerToFeatureAnnotationDataTO.add(featureViewerDataTO);
+						featureViewerDataMap.put(fa.getType().toString(), newfeatureViewerToFeatureAnnotationDataTO);
+					}
+					
+				}
+			}
+			
+			featureViewerToFeatureDataTOList.add(new FeatureViewerDataTO(feature.getStart(), feature.getEnd(), createFeatureViewerToFeature(feature), String.valueOf(feature.getId())));
+		}
+		
+		
+		featureViewerDataMap.put(FEATURE, featureViewerToFeatureDataTOList);
+		
+		return featureViewerDataMap;
+	}
+
+	private String createFeatureViewerToFeature(Feature feature) {
+		StringBuilder descriptionBuilder = new StringBuilder();
+		descriptionBuilder.append("feature: ");
+		descriptionBuilder.append(feature.getType());
+		GeneProduct geneProduct = feature.getGeneProduct();
+		if(geneProduct != null){
+			descriptionBuilder.append(" - ").append(geneProduct.getProduct());
+		}
+		return descriptionBuilder.toString();
 	}
 
 	public Map<String, List<FeatureViewerDataTO>> createReadsFeatureViwer(List<Read> readsOnContig, String rank){

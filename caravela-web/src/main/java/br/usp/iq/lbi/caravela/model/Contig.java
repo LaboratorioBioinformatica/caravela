@@ -166,5 +166,22 @@ public class Contig implements Serializable {
 		return taxonCounterTOhashMap;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Contig)){
+			return false;
+		}
+		if(obj == this){
+			return true;
+		}
+		
+		Contig contig = (Contig) obj;
+		
+		return this.reference.equals(contig.getReference()) &&
+		this.sample.equals(contig.getSample()) &&
+		this.size.equals(contig.getSize());
+		
+	}
+	
 
 }

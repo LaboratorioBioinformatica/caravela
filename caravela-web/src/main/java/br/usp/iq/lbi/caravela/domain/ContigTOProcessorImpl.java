@@ -10,11 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
-import br.usp.iq.lbi.caravela.dao.FeatureDAO;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
-import br.usp.iq.lbi.caravela.dto.FeatureTO;
-import br.usp.iq.lbi.caravela.dto.GeneProductTO;
 import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
 import br.usp.iq.lbi.caravela.dto.TaxonTO;
 import br.usp.iq.lbi.caravela.model.Contig;
@@ -31,9 +28,10 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(ContigTOProcessorImpl.class);
 	
 	@Inject private ContigDAO contigDAO;
-	@Inject private FeatureDAO featureDAO;
 	@Inject private ReadDAO readDAO;
 	@Inject private NCBITaxonManager ncbiTaxonManager;
+	@Inject private FeatureCreator featureCreator;
+	@Inject private NCBITaxonFinder ncbiTaxonFinder;
 	
 
 	public Contig convert(Sample sample, ContigTO contigTO) {
@@ -44,15 +42,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 		
 		contigDAO.save(contig);
 		
-		List<Feature> features = createFeatures(contig, contigTO.getFeatures());
-		
-		if( ! features.isEmpty()){
-			Integer batchSize = features.size();
-			System.out.println("number of features:" + batchSize);
-			for (Feature feature : features) {
-				featureDAO.addBatch(feature, batchSize );
-			}
-		}
+		featureCreator.createList(contig, contigTO.getFeatures());
 		
 		List<ReadOnContigTO> readsOnCotig = contigTO.getReadsOnCotig();
 		createAndSaveReadsAndTaxons(sample, contig, readsOnCotig);
@@ -79,7 +69,8 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 					Long taxonomyId = taxonTO.getTaxonomyId(); 
 					
 					//TODO ISTO DEVERIA ESTAR EM MEMÓRIA!
-					Taxon taxon = ncbiTaxonManager.searchByTaxonomicId(taxonomyId);
+//					Taxon taxon = ncbiTaxonManager.searchByTaxonomicId(taxonomyId);
+					Taxon taxon = ncbiTaxonFinder.searchTaxonByNCBITaxonomyId(taxonomyId);
 					
 					if(taxon != null){
 						TaxonomicAssignment taxonomicAssignment = new TaxonomicAssignment(taxon, taxonTO.getScore());
@@ -102,31 +93,6 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 			}
 		}
 		
-	}
-
-	public List<Feature> createFeatures(Contig contig, List<FeatureTO> featureTOList) {
-		
-		List<Feature> featureList = new ArrayList<Feature>();
-		
-		if(featureTOList != null && ! featureTOList.isEmpty()) {
-			
-			for (FeatureTO featureTO : featureTOList) {
-				String productName = null;
-				String productSource = null;
-				
-				if(featureTO.hasGeneProduct()){
-					 GeneProductTO geneProduct = featureTO.getGeneProduct();
-					 productName = geneProduct.getProduct();
-					 productSource = geneProduct.getSource();
-				}
-				
-				Feature feature = new Feature(contig, featureTO.getSource(), featureTO.getType(), featureTO.getStart(), 
-						featureTO.getEnd(), featureTO.getStrand(), productName, productSource);
-				featureList.add(feature);
-			}
-		}
-		
-		return featureList;
 	}
 
 }

@@ -4,6 +4,6 @@ import br.usp.iq.lbi.caravela.model.Sample;
 
 public interface SampleLoader {
 	
-	void loadFromFileToDatabase(Sample sample);
+	void loadFromFileToDatabase(Sample sample) throws Exception;
 
 }

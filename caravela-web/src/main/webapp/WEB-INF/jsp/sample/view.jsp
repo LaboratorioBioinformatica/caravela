@@ -72,10 +72,9 @@
 												</form>		
 											</c:when>
 											<c:when test="${sampleStatus == 'PROCCESSED'}">
-												<a class="btn btn-success glyphicon glyphicon-eye-open"
-														href="<c:url value="/sample/analyze/${sample.id}"/>"
-														role="button">
-													<span>Analyze</span>
+												<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button">
+												<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+												<span class="glyphicon-class">Analyze</span>
 												</a>
 											</c:when>
 										</c:choose>

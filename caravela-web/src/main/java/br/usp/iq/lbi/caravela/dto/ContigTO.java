@@ -102,4 +102,22 @@ public class ContigTO {
 		}
 		return totalNumberOfReadsClassified;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof ContigTO)){
+			return false;
+		}
+		
+		if(obj == this){
+			return true;
+		}
+		
+		ContigTO contigTO = (ContigTO) obj;
+		return this.reference.equals(contigTO.getReference()) &&
+				this.numberOfFeatures.equals(contigTO.getNumberOfFeatures()) && 
+				this.numberOfreads.equals(contigTO.getNumberOfreads()) &&
+				this.getNumberOfReadsClassified().equals(contigTO.getNumberOfReadsClassified()) &&
+				this.size.equals(contigTO.getSize());
+	}
 }

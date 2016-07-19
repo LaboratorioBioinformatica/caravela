@@ -2,11 +2,15 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
 
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
@@ -18,16 +22,13 @@ import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
-import br.usp.iq.lbi.caravela.dto.FeatureTO;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.model.Contig;
+import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Taxon;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 
 @Controller
 public class ContigController {
@@ -100,8 +101,6 @@ public class ContigController {
 	}
 	
 	
-	
-	
 	@Get
 	@Path("/contig/overlapTaxaOnContig/{contigId}/{rank}")
 	public void overlapTaxaOnContig(Long contigId, String rank) {
@@ -119,6 +118,24 @@ public class ContigController {
 		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.createReadsFeatureViwer(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
 	}
+	
+	@Get
+	@Path("/contig/featureOnContig/{contigId}")
+	public void featureOnContig(Long contigId) {
+		Contig contig = contigDAO.load(contigId);
+		List<Feature> features = contig.getFeatures();
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = contigControllerHelper.createFeatureViwerByFeatures(features);
+		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
+	}
+	
+	@Get
+	@Path("/contig/viewer/{contigId}")
+	public void ContigViewer(Long contigId) {
+		Contig contig = contigDAO.load(contigId);
+		Map<String, List<FeatureViewerDataTO>> featureViewerDataMap = new HashMap<>();
+		featureViewerDataMap.put("Contig", Arrays.asList(new FeatureViewerDataTO(1, contig.getSize(), "Contig: "+ contig.getReference(), String.valueOf(contig.getId()))));
+		result.use(Results.json()).withoutRoot().from(featureViewerDataMap).serialize();
+	}
 
 
 	@Path("/contig/view/{contigId}/{rank}/{viewingMode}")
@@ -127,36 +144,16 @@ public class ContigController {
 		ContigTO contigTO = contigManager.searchContigById(contigId);
 
 		Sample sample = contig.getSample();
-
-		List<String> features = new ArrayList<String>();
-		List<FeatureTO> featuresTO = contigTO.getFeatures();
-		for (FeatureTO featureTO : featuresTO) {
-
-			StringBuffer featureString = new StringBuffer().append("{x:").append(featureTO.getStart().toString())
-					.append(",").append("y:").append(featureTO.getEnd().toString()).append(",")
-					.append("description: \"").append(featureTO.getType()).append(" - ")
-					.append(getFeatureName(featureTO)).append("\"}");
-			features.add(featureString.toString());
-		}
-
+		
 		if(viewingMode == null){
 			viewingMode = "readsOnContig";
 		}
 		result.include("rank", rank);
 		result.include("viewingMode", viewingMode);
 		result.include("sample", sample);
-		result.include("features", features);
 		result.include("contig", contigTO);
 	}
 
-	private String getFeatureName(FeatureTO featureTO) {
-		if (featureTO.getGeneProduct() != null) {
-			return featureTO.getGeneProduct().getProduct();
-		} else {
-			return "";
-		}
-
-	}
 
 	public void viewJson() throws FileNotFoundException {
 		Sample sample = sampleDAO.load(1l);

@@ -87,12 +87,13 @@ create table contig (
 	sample_id INT NOT NULL,
 	reference VARCHAR(250) NOT NULL,
 	sequence TEXT NOT null,
+	size INT NOT NULL,
 	number_of_reads_classified INT NOT null,
 	number_of_reads INT NOT null,
 	number_of_features INT NOT null,
 	tii DOUBLE NOT NULL,
 	PRIMARY KEY(id), 
-	INDEX (sample_id), INDEX (size), INDEX (tii)
+	INDEX (sample_id), INDEX(reference), INDEX (tii)
 );
 
 
@@ -136,16 +137,52 @@ create table classified_read_by_context (
 create table feature (
 	id INT NOT NULL AUTO_INCREMENT,
 	contig_id INT NOT NULL,
-	source VARCHAR(50) NULL,
 	feature_type  VARCHAR(20) NOT NULL,
+	taxon_id INT NULL,
 	start_alignment INT NOT NULL,
 	end_alignment INT NOT NULL,
 	strand INT NOT NULL,
-	product_name VARCHAR(200) NULL,
-	product_source VARCHAR(30) NULL,
 	PRIMARY KEY(id),
-	INDEX (contig_id), INDEX (product_name), INDEX (product_source) 
+	INDEX (contig_id) 
 );
+
+create table gene_product (
+	id INT NOT NULL AUTO_INCREMENT,
+	feature_id INT NOT NULL,
+	product VARCHAR(300) NOT NULL,
+	source  VARCHAR(100) NOT NULL,
+	PRIMARY KEY(id),
+	INDEX (feature_id), INDEX (product) 
+);
+
+create table philodist (
+	id INT NOT NULL AUTO_INCREMENT,
+	feature_id INT NOT NULL,
+	gene_oid BIGINT NOT NULL,
+	taxon_oid BIGINT NOT NULL,
+	identity DOUBLE NOT NULL,
+	lineage VARCHAR(300) NOT NULL,
+	PRIMARY KEY(id),
+	INDEX (feature_id) 
+);
+
+create table feature_annotation (
+	id INT NOT NULL AUTO_INCREMENT,
+	feature_id INT NOT NULL,
+	feature_annotation_type VARCHAR(10) NOT NULL,
+	name VARCHAR(50) NOT NULL,
+	identity DOUBLE NOT NULL,
+	align_length INT NULL, 
+	query_start INT NOT NULL,
+	query_end INT NOT NULL,
+	subject_start INT NOT NULL,
+	subject_end INT NOT NULL,
+	evalue DOUBLE NOT NULL,
+	bit_core DOUBLE NULL,
+	PRIMARY KEY(id),
+	INDEX (feature_id), INDEX (name)  
+);
+
 
 
 

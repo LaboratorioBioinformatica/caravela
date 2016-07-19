@@ -104,7 +104,12 @@ public class SampleController {
 	@Post
 	public void process(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
-		sampleLoader.loadFromFileToDatabase(sample);
+		try {
+			sampleLoader.loadFromFileToDatabase(sample);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Post

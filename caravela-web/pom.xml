@@ -44,6 +44,12 @@
 			<artifactId>mockito-core</artifactId>
 			<version>2.0.43-beta</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.samtools</groupId>
+			<artifactId>htsjdk</artifactId>
+			<version>2.1.1</version>
+		</dependency>
 
 		<!-- VRAPTOR dependency START -->
 		<dependency>

@@ -98,9 +98,9 @@ public class TaxonomyController {
 	
 	private void createGeneProductCounterTOHashMap(List<Feature> features, Hashtable<String,GeneProductCounterTO> geneProductCounterTOHashTable) {
 		for (Feature feature : features) {
-			String productSource = feature.getProductSource();
+			String productSource = feature.getGeneProduct().getSource();
 			if(productSource != null){
-				GeneProductTO geneProduct = new GeneProductTO(feature.getProductName(), productSource);
+				GeneProductTO geneProduct = new GeneProductTO(feature.getGeneProduct().getProduct(), productSource);
 				GeneProductCounterTO geneProductCounterTO = geneProductCounterTOHashTable.get(productSource);
 				
 				if(geneProductCounterTO == null){

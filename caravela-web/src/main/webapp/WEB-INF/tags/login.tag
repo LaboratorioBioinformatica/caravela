@@ -1,4 +1,5 @@
 <%@tag description="Simple Wrapper Tag" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@attribute name="headImport" fragment="true" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,20 +19,21 @@
     <title>${pageTitle}</title>
 
     <!-- Bootstrap -->
-    <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
     
         <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    
+    <link href="<c:url value="../bootstrap/css/bootstrap.min.css"/>" rel="stylesheet">
     <!-- Bootstrap theme -->
-    <link href="../css/bootstrap/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="<c:url value="../bootstrap/css/bootstrap-theme.min.css"/>" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src=<c:url value="../bootstrap/js/bootstrap.min.js"/>></script>
+    
     <!-- Custom styles for this template -->
-    <!-- link href="../css/theme.css" rel="stylesheet"-->
+    <link href=<c:url value="../css/theme.css"/> rel="stylesheet">
 
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../js/bootstrap/ie-emulation-modes-warning.js"></script>
+
     
     <!-- others CSS import -->
     <jsp:invoke fragment="headImport"/>
@@ -45,14 +47,6 @@
   <body>
  
   	<jsp:doBody/>
-    
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../js/bootstrap/bootstrap.min.js"></script>
-    <!-- script src="js/bootstrap/docs.min.js"></script-->
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../js/bootstrap/ie10-viewport-bug-workaround.js"></script>
     
   </body>
 </html>

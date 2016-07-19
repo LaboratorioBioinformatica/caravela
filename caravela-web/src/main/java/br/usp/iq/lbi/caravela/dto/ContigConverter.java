@@ -5,6 +5,9 @@ import java.util.List;
 
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
+import br.usp.iq.lbi.caravela.model.FeatureAnnotation;
+import br.usp.iq.lbi.caravela.model.GeneProduct;
+import br.usp.iq.lbi.caravela.model.Philodist;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Taxon;
 
@@ -48,27 +51,59 @@ public class ContigConverter {
 	}
 
 	private FeatureTO createFeatureTO(Feature feature) {
-		GeneProductTO geneProduct = createGeneProduct(feature);
-		PhiloDistTO philoDistTO = createPhiloDistTo(feature);
 		
-		return new FeatureTO(feature.getSource(), feature.getType(), 
-				feature.getStart(), feature.getEnd(), feature.getStrand(), geneProduct, philoDistTO);
+		return new FeatureTO(feature.getId(), feature.getType(), feature.getStart(), feature.getEnd(), feature.getStrand(), createTaxonTo(feature), createAnnotationTO(feature), createGeneProduct(feature), createPhiloDistTo(feature));
+	}
+	
+	
+	
+	private List<FeatureAnnotationTO> createAnnotationTO(Feature feature) {
+		List<FeatureAnnotationTO> list = new ArrayList<>();
+		List<FeatureAnnotation> featureAnnotations = feature.getFeatureAnnotations();
+		
+		if(featureAnnotations != null && ! featureAnnotations.isEmpty()){
+			for (FeatureAnnotation fa : featureAnnotations) {
+				
+				FeatureAnnotationTO faTO = new FeatureAnnotationTO( FeatureAnnotationTypeTO.valueOf(fa.getType().toString()), fa.getName(),
+						fa.getIdentity(), fa.getAlignLength(), fa.getQueryStart(), fa.getQueryEnd(), fa.getSubjectStart(), 
+						fa.getSubjectEnd(), fa.getEvalue(), fa.getBitScore());
+				list.add(faTO);
+			}
+		}
+		
+		return list;
+	}
+
+	private TaxonTO createTaxonTo(Feature feature) {
+		Taxon taxon = feature.getTaxon();
+		TaxonTO taxonTO = null;
+		if(taxon != null){
+			taxonTO = new TaxonTO.Builder().setTaxonomyId(taxon.getTaxonomyId())
+					.setScientificName(taxon.getScientificName())
+					.setHank(taxon.getRank())
+					.build();
+		}
+		return taxonTO;
 	}
 
 	private PhiloDistTO createPhiloDistTo(Feature feature) {
-		//this version no has Philo dist on CONTIG ENTITY!
-		return null;
+		Philodist philodist = feature.getPhilodist();
+		PhiloDistTO philoDistTO = null;
+		if(philodist != null){
+			philoDistTO =  new PhiloDistTO(philodist.getGeneOID(), philodist.getTaxonOID(), philodist.getIdentity(), philodist.getLineage());
+		}
+		return philoDistTO;
 	}
 
 	private GeneProductTO createGeneProduct(Feature feature) {
-		String productName = feature.getProductName();
-		String productSource = feature.getProductSource();
-		
-		if(productName != null && productSource != null) {
-			return new GeneProductTO(productName, productSource);
-		} else {
-			return null;
+		GeneProduct geneProduct = feature.getGeneProduct();
+		GeneProductTO geneProductTO = null;
+		if(geneProduct != null) {
+			geneProductTO = new GeneProductTO(geneProduct.getProduct(), geneProduct.getSource());
 		}
+		
+		return geneProductTO;
+		
 	}
 
 }

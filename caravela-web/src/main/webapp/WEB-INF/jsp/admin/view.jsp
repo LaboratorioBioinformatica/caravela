@@ -68,12 +68,7 @@
 		<div class="page-header">
 			<h3>Change System properties</h3>
 		</div>	
-		<div class="alert alert-info" role="alert">
-		  		<p><strong>How to change system properties on CARAVELA?</strong></p>
-		  		  
-		  		
-		</div>
-		<div class="panel panel-default">
+			<div class="panel panel-default">
 			<div class="panel-heading"><strong>How to change system properties on CARAVELA?</strong></div>
 		  	<div class="panel-body">
 		  		<p>First, we need identify where Apache Tomcat is hosted on our system: <strong>TOMCAT_HOME</strong></p>
