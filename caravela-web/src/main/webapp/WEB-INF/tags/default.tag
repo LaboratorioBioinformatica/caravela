@@ -25,6 +25,10 @@
     <link href="<c:url value="/bootstrap/css/bootstrap.min.css"/>" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="<c:url value="/bootstrap/css/bootstrap-theme.min.css"/>" rel="stylesheet">
+    
+    <!-- feature-viewer theme -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/calipho-sib/feature-viewer/v0.1.44/dist/feature-viewer.min.css">
+    <script src="https://cdn.rawgit.com/calipho-sib/feature-viewer/v0.1.44/dist/feature-viewer.bundle.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     

@@ -399,11 +399,16 @@ public class ContigControllerHelper {
 	private List<FeatureViewerDataTO> createFeatureViewerDataTO(Entry<Taxon, List<Read>> readsGrouped, String scientificName, String color) {
 		List<FeatureViewerDataTO> list = new ArrayList<FeatureViewerDataTO>();
 		List<Read> reads = readsGrouped.getValue();
-		
+		 
 		for (Read read : reads) {
-			list.add(new FeatureViewerDataTO(read.getStartAlignment(), read.getEndAlignment(), scientificName, read.getId().toString(), color));
+			list.add(new FeatureViewerDataTO(read.getStartAlignment(), read.getEndAlignment(), createReadDescriptionTOViewer(scientificName), read.getId().toString(), color));
 		}
 		return list;
+	}
+
+	private String createReadDescriptionTOViewer(String scientificName) {
+		// read on description is usage to viewer..
+		return "read: " + scientificName;
 	}
 	
 	
