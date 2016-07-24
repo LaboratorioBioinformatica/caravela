@@ -25,7 +25,7 @@ create table taxon (
 create table treatment (
 	id INT NOT NULL AUTO_INCREMENT,
 	name VARCHAR(100) NOT NULL,
-	description VARCHAR(500) NOT NULL,
+	description VARCHAR(500) NULL,
 	PRIMARY KEY(id)
 );
 
@@ -35,7 +35,7 @@ create table sample (
 	treatment_id INT NOT NULL,
 	name VARCHAR(100) NOT NULL,
 	sample_status VARCHAR(50) NOT NULL,
-	description VARCHAR(500) NOT NULL,
+	description VARCHAR(500) NULL,
 	PRIMARY KEY(id),
 	INDEX (treatment_id) 
 );
