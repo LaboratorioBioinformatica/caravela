@@ -50,10 +50,10 @@ public class Contig implements Serializable {
 	@Column(name="tii")
 	private Double taxonomicIdentificationIndex; 
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig", orphanRemoval=true)
 	private List<Feature> features;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig", orphanRemoval=true)
 	private List<Read> reads;
 	
 	public Contig() {}
@@ -91,6 +91,10 @@ public class Contig implements Serializable {
 	
 	public Double getTaxonomicIdentificationIndex(){
 		return taxonomicIdentificationIndex;
+	}
+	
+	public void addReads(List<Read> reads){
+		reads = reads;
 	}
 	
 	public Long getId(){

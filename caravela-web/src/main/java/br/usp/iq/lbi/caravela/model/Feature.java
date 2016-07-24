@@ -40,7 +40,7 @@ public class Feature implements Serializable {
 	@OneToOne(fetch=FetchType.EAGER, mappedBy="feature", cascade=CascadeType.ALL)
 	private Philodist philodist;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="feature", cascade=CascadeType.ALL)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="feature", cascade=CascadeType.ALL, orphanRemoval=true)
 	private List<FeatureAnnotation> featureAnnotations;
 	
 	public Feature() {}

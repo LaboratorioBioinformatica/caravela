@@ -57,6 +57,10 @@ public class DAOImpl<T> implements DAO<T> {
 		entityManager.persist(entity);
 	}
 	
+	public void refresh(T entity){
+		entityManager.refresh(entity);
+	}
+	
 	
 	public void delete(T entity){
 	  entityManager.remove(entity);

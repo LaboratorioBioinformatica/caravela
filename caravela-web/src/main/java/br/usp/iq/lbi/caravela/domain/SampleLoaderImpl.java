@@ -14,7 +14,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import br.usp.iq.lbi.caravela.dao.SampleDAO;
+import br.usp.iq.lbi.caravela.dao.SampleFileDAO;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
+import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 
@@ -22,8 +25,11 @@ import br.usp.iq.lbi.caravela.model.SampleFile;
 public class SampleLoaderImpl implements SampleLoader {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SampleLoaderImpl.class);
-	@Inject private  ContigTOProcessor contigTOProcessor;
 	
+	@Inject private  ContigTOProcessor contigTOProcessor;
+	@Inject private SampleDAO sampleDAO;
+	@Inject private SampleFileDAO sampleFileDAO;
+	@Inject private SampleReporter sampleReporter;
 	
 	public SampleLoaderImpl() {}
 	
@@ -43,15 +49,40 @@ public class SampleLoaderImpl implements SampleLoader {
 			
 			Long totalNumberOfContigToBeLoad = getTotalNumberOfFileLines(path);
 			logger.info("number of contig to load: " + totalNumberOfContigToBeLoad);
+			
+			long startTime = System.currentTimeMillis();
 	
 			Gson gson = new Gson();
 			Stream<String> stream = Files.lines(path);
 
-			stream.forEach(c-> {
-				contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
+			stream.parallel().forEach(c-> {
+				Contig contig = contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
 			});
 			
 			stream.close();
+			long endTime = System.currentTimeMillis();
+			
+			logger.info("Total time to load: " + (endTime - startTime));
+			
+			logger.info("Strat report: ");
+			
+			long startTimeToReport = System.currentTimeMillis();
+			
+			sampleReporter.reportChimericPotentialFromContig(sample, 0d, "genus");
+			
+			long endTimeToReport = System.currentTimeMillis();
+			logger.info("Total time to Report: " + (endTimeToReport - startTimeToReport));
+			
+			
+			sample.toProccessed();
+			
+			SampleFile sampleFileWithAllInformation = sample.getFileWithAllInformation();
+			sampleFileWithAllInformation.toLoaded();
+	
+			sampleFileDAO.update(sampleFileWithAllInformation);
+			sampleDAO.update(sample);
+			
+			
 			
 		} catch (Exception e) {
 			logger.error("Error to load sample file", e);

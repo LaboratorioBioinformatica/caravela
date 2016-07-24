@@ -6,6 +6,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.SequenceGenerator;
 
+import org.jboss.logging.annotations.Pos;
+
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -95,6 +97,16 @@ public class SampleController {
 		result.forwardTo(this).list(treatmentId);
 	}
 	
+	@Post
+	public void deleteSample(Long sampleId){
+		Sample sample = sampleDAO.load(sampleId);
+		System.out.println("delete sample: " + sample.getName());
+		sampleDAO.delete(sample);
+		result.forwardTo(this).list(sample.getTreatment().getId());
+		
+		
+	}
+	
 	@Get
 	@Path("/sample/list/by/treatment/{treatmentId}")
 	public void listByTreatment(Long treatmentId){
@@ -106,10 +118,13 @@ public class SampleController {
 		Sample sample = sampleDAO.load(sampleId);
 		try {
 			sampleLoader.loadFromFileToDatabase(sample);
+			validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		result.forwardTo(this).list(sampleId);
 	}
 	
 	@Post

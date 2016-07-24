@@ -15,7 +15,6 @@ import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
 import br.usp.iq.lbi.caravela.dto.TaxonTO;
 import br.usp.iq.lbi.caravela.model.Contig;
-import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Mapping;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
@@ -51,7 +50,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 
 	}
 
-	public void  createAndSaveReadsAndTaxons(Sample sample, Contig contig, List<ReadOnContigTO> readsOnCotig ){
+	public void createAndSaveReadsAndTaxons(Sample sample, Contig contig, List<ReadOnContigTO> readsOnCotig ){
 
 		List<Read> reads = new ArrayList<Read>();
 		
@@ -91,6 +90,8 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 			for (Read read : reads) {
 				readDAO.addBatch(read, numberOfReadsToSave);
 			}
+			
+			
 		}
 		
 	}

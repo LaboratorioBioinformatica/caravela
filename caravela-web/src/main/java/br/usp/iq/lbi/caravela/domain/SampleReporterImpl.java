@@ -43,7 +43,6 @@ public class SampleReporterImpl implements SampleReporter {
 	@Inject private ClassifiedReadByContextDAO classifiedReadByContextDAO;
 	
 	
-	
 
 	public void reportChimericPotentialFromContig(Sample sample, Double tii, String rank) {
 
@@ -52,7 +51,7 @@ public class SampleReporterImpl implements SampleReporter {
 		List<IntervalPage> pages = paginator.getPages(totalNumberOfContig, MAX_RECORD_PER_PAGE);
 		
 		System.out.println("TOTAL NUMBER OF CONTIGS: " + totalNumberOfContig);
-		
+		long startTime = System.currentTimeMillis();
 		for (IntervalPage intervalPage : pages) {
 			Integer start = intervalPage.getStart();
 			System.out.println("START: " + start + " MAX RESULT: " + MAX_RECORD_PER_PAGE);
@@ -60,8 +59,10 @@ public class SampleReporterImpl implements SampleReporter {
 			report(sample, rank, contigs);
 			
 		}
+		long endTime = System.currentTimeMillis();
 		
 		System.out.println("END OF REPORT");
+		System.out.println("Total time to report: " + (endTime - startTime));
 		
 	}
 				
@@ -71,99 +72,106 @@ public class SampleReporterImpl implements SampleReporter {
 		for (Contig contig : contigs) {
 //			System.out.println("################################################################################################");
 //			System.out.print("contig: " + contig.getId());
+			createReportByContig(sample, rank, contig);
 
-			List<Read> readsOnContig = contig.getReads();
+		}
+	}
 
-			IntervalTree<Taxon> intervalTree = new IntervalTree<Taxon>();
-			List<Segment<Taxon>> segmentsCandidatesToBeBoundaries = new ArrayList<Segment<Taxon>>();
 
-			Map<Taxon, List<Read>> readsGroupedByTaxonMap = readWrapper.groupBy(readsOnContig, rank);
-			Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readsGroupedByTaxonMap.entrySet();
 
-			Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
+	public void createReportByContig(Sample sample, String rank, Contig contig) {
+		List<Read> readsOnContig = contig.getReads();
 
-			Map<Taxon, Double> taxonCovarageMap = new HashMap<Taxon, Double>();
-			for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
-				Double numberOfBaseOfPairAssignedToTaxon = 0d;
-				Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
-				List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
-				List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
+		IntervalTree<Taxon> intervalTree = new IntervalTree<Taxon>();
+		List<Segment<Taxon>> segmentsCandidatesToBeBoundaries = new ArrayList<Segment<Taxon>>();
 
-				if (!taxonKey.equals(Taxon.getNOTaxon())) {
+		Map<Taxon, List<Read>> readsGroupedByTaxonMap = readWrapper.groupBy(readsOnContig, rank);
+		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readsGroupedByTaxonMap.entrySet();
 
-					for (Segment<Taxon> segment : taxonSegmentsConsensus) {
-						Integer x = segment.getX();
-						Integer y = segment.getY();
-						numberOfBaseOfPairAssignedToTaxon = (y - x) + numberOfBaseOfPairAssignedToTaxon;
-						intervalTree.addInterval(x, y, taxonKey);
-					}
+		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
 
-					Double taxonCovarage = (numberOfBaseOfPairAssignedToTaxon * _100) / contig.getSize();
-					taxonCovarageMap.put(taxonKey, taxonCovarage);
+		Map<Taxon, Double> taxonCovarageMap = new HashMap<Taxon, Double>();
+		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
+			Double numberOfBaseOfPairAssignedToTaxon = 0d;
+			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
+			List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
+			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
 
+			if (!taxonKey.equals(Taxon.getNOTaxon())) {
+
+				for (Segment<Taxon> segment : taxonSegmentsConsensus) {
+					Integer x = segment.getX();
+					Integer y = segment.getY();
+					numberOfBaseOfPairAssignedToTaxon = (y - x) + numberOfBaseOfPairAssignedToTaxon;
+					intervalTree.addInterval(x, y, taxonKey);
 				}
 
-				segmentsConsensusMap.put(taxonKey, taxonSegmentsConsensus);
-			}
-
-			// No taxon should not participate of undefine segments building.
-			segmentsConsensusMap.remove(Taxon.getNOTaxon());
-
-			List<Segment<Taxon>> undfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(segmentsConsensusMap);
-			List<Segment<Taxon>> undfinedSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(undfinedSegmentsByTaxon);
-
-			Double numberOfBasePairAssignedToUndefined = new Double(0);
-			for (Segment<Taxon> segment : undfinedSegmentsConsensus) {
-				numberOfBasePairAssignedToUndefined = (segment.getY() - segment.getX()) + numberOfBasePairAssignedToUndefined;
-			}
-
-			Double percentageOfContingAssignedToUndefined = (numberOfBasePairAssignedToUndefined * 100) / contig.getSize();
-
-			segmentsCandidatesToBeBoundaries.addAll(undfinedSegmentsConsensus);
-
-			List<Read> noTaxonReadList = readsGroupedByTaxonMap.remove(Taxon.getNOTaxon());
-
-			Collection<List<Read>> AllTaxonsCollections = readsGroupedByTaxonMap.values();
-			List<Read> allTaxonReadList = new ArrayList<Read>();
-			for (List<Read> list : AllTaxonsCollections) {
-				allTaxonReadList.addAll(list);
-			}
-
-			List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxonReadList, rank);
-			List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(noTaxonReadList, rank);
-			List<Segment<Taxon>> unclassifiedRegions = segmentsCalculator.subtract(noTaxonSegmentsConsensus,
-							allTaxonSegmentsConsensus);
-
-			Double numberOfBasePairAssignedToUnclassified = new Double(0);
-			for (Segment<Taxon> segment : unclassifiedRegions) {
-				numberOfBasePairAssignedToUnclassified = (segment.getY() - segment.getX()) + numberOfBasePairAssignedToUnclassified;
-			}
-
-			Double percentageOfContingAssignedToUnclassified = (numberOfBasePairAssignedToUnclassified * 100) / contig.getSize();
-
-			segmentsCandidatesToBeBoundaries.addAll(unclassifiedRegions);
-
-			List<Segment<Taxon>> boundariesSegments = new ArrayList<Segment<Taxon>>();
-
-			for (Segment<Taxon> segmentCandidatesToBeBoundary : segmentsCandidatesToBeBoundaries) {
-				int coordinateStartToQuery = segmentCandidatesToBeBoundary.getX() - 1;
-				int coordinateEndToQuery = segmentCandidatesToBeBoundary.getY() + 1;
-				List<Taxon> intervalsOnLeftOfSegment = intervalTree.get(coordinateStartToQuery);
-				List<Taxon> intervalsOnRightOfSegment = intervalTree.get(coordinateEndToQuery);
-
-				if (intervalsOnLeftOfSegment.isEmpty() || intervalsOnRightOfSegment.isEmpty()) {
-					continue;
-				}
-
-				if (!intervalsOnLeftOfSegment.equals(intervalsOnRightOfSegment)) {
-					boundariesSegments.add(segmentCandidatesToBeBoundary);
-				}
+				Double taxonCovarage = (numberOfBaseOfPairAssignedToTaxon * _100) / contig.getSize();
+				taxonCovarageMap.put(taxonKey, taxonCovarage);
 
 			}
 
-			ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
+			segmentsConsensusMap.put(taxonKey, taxonSegmentsConsensus);
+		}
 
-			contigStatisticByTiiDAO.save(reportContig);
+		// No taxon should not participate of undefine segments building.
+		segmentsConsensusMap.remove(Taxon.getNOTaxon());
+
+		List<Segment<Taxon>> undfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(segmentsConsensusMap);
+		List<Segment<Taxon>> undfinedSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(undfinedSegmentsByTaxon);
+
+		Double numberOfBasePairAssignedToUndefined = new Double(0);
+		for (Segment<Taxon> segment : undfinedSegmentsConsensus) {
+			numberOfBasePairAssignedToUndefined = (segment.getY() - segment.getX()) + numberOfBasePairAssignedToUndefined;
+		}
+
+		Double percentageOfContingAssignedToUndefined = (numberOfBasePairAssignedToUndefined * 100) / contig.getSize();
+
+		segmentsCandidatesToBeBoundaries.addAll(undfinedSegmentsConsensus);
+
+		List<Read> noTaxonReadList = readsGroupedByTaxonMap.remove(Taxon.getNOTaxon());
+
+		Collection<List<Read>> AllTaxonsCollections = readsGroupedByTaxonMap.values();
+		List<Read> allTaxonReadList = new ArrayList<Read>();
+		for (List<Read> list : AllTaxonsCollections) {
+			allTaxonReadList.addAll(list);
+		}
+
+		List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxonReadList, rank);
+		List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(noTaxonReadList, rank);
+		List<Segment<Taxon>> unclassifiedRegions = segmentsCalculator.subtract(noTaxonSegmentsConsensus,
+						allTaxonSegmentsConsensus);
+
+		Double numberOfBasePairAssignedToUnclassified = new Double(0);
+		for (Segment<Taxon> segment : unclassifiedRegions) {
+			numberOfBasePairAssignedToUnclassified = (segment.getY() - segment.getX()) + numberOfBasePairAssignedToUnclassified;
+		}
+
+		Double percentageOfContingAssignedToUnclassified = (numberOfBasePairAssignedToUnclassified * 100) / contig.getSize();
+
+		segmentsCandidatesToBeBoundaries.addAll(unclassifiedRegions);
+
+		List<Segment<Taxon>> boundariesSegments = new ArrayList<Segment<Taxon>>();
+
+		for (Segment<Taxon> segmentCandidatesToBeBoundary : segmentsCandidatesToBeBoundaries) {
+			int coordinateStartToQuery = segmentCandidatesToBeBoundary.getX() - 1;
+			int coordinateEndToQuery = segmentCandidatesToBeBoundary.getY() + 1;
+			List<Taxon> intervalsOnLeftOfSegment = intervalTree.get(coordinateStartToQuery);
+			List<Taxon> intervalsOnRightOfSegment = intervalTree.get(coordinateEndToQuery);
+
+			if (intervalsOnLeftOfSegment.isEmpty() || intervalsOnRightOfSegment.isEmpty()) {
+				continue;
+			}
+
+			if (!intervalsOnLeftOfSegment.equals(intervalsOnRightOfSegment)) {
+				boundariesSegments.add(segmentCandidatesToBeBoundary);
+			}
+
+		}
+
+		ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
+
+		contigStatisticByTiiDAO.save(reportContig);
 
 //			System.out.println(" tii: "
 //					+ contig.getTaxonomicIdentificationIndex()
@@ -175,26 +183,23 @@ public class SampleReporterImpl implements SampleReporter {
 //
 //			);
 
-			Set<Taxon> keySet = taxonCovarageMap.keySet();
-			int numberOfTaxonOnContig = keySet.size();
-			for (Taxon taxon : keySet) {
-				TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, taxon, taxonCovarageMap.get(taxon));
-				taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
+		Set<Taxon> keySet = taxonCovarageMap.keySet();
+		int numberOfTaxonOnContig = keySet.size();
+		for (Taxon taxon : keySet) {
+			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, taxon, taxonCovarageMap.get(taxon));
+			taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
 //				System.out.println(taxon.getScientificName() + " : "+ taxonCovarageMap.get(taxon));
+		}
+		
+		Map<Taxon, List<Read>> unclassifiedReadThatCouldBeClassified = contigControllerHelper.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
+		Set<Taxon> taxons = unclassifiedReadThatCouldBeClassified.keySet();
+		int size = unclassifiedReadThatCouldBeClassified.values().size();
+		for (Taxon taxon : taxons) {
+			List<Read> list = unclassifiedReadThatCouldBeClassified.get(taxon);
+			for (Read read : list) {
+				ClassifiedReadByContex reportClassifiedReadByContex = new ClassifiedReadByContex(sample, contig, read, taxon);
+				classifiedReadByContextDAO.addBatch(reportClassifiedReadByContex, size);
 			}
-			
-			Map<Taxon, List<Read>> unclassifiedReadThatCouldBeClassified = contigControllerHelper.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
-			Set<Taxon> taxons = unclassifiedReadThatCouldBeClassified.keySet();
-			int size = unclassifiedReadThatCouldBeClassified.values().size();
-			for (Taxon taxon : taxons) {
-				List<Read> list = unclassifiedReadThatCouldBeClassified.get(taxon);
-				for (Read read : list) {
-					ClassifiedReadByContex reportClassifiedReadByContex = new ClassifiedReadByContex(sample, contig, read, taxon);
-					classifiedReadByContextDAO.addBatch(reportClassifiedReadByContex, size);
-				}
-			}
-			
-
 		}
 	}
 

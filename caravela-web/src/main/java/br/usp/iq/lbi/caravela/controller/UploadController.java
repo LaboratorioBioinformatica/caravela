@@ -95,40 +95,11 @@ public class UploadController {
 	@Path("/upload/save/sample/{sampleId}")
 	public void save(Long sampleId) throws FileNotFoundException{
 		Sample sample = sampleDAO.load(sampleId);
-		SampleFile fileWithAllInformation = sample.getFileWithAllInformation();
-		String filePath = fileWithAllInformation.getFilePath();
-		Gson gson = new Gson();
-		
-		FileReader reader = new FileReader(filePath);
-		JsonStreamParser parser = new JsonStreamParser(reader);
-		
-		Double totalNumberOfContigLoaded = 0d;
-		Double totalNumberOfContigToBeLoading = getTotalNumberOfFileLines(filePath);
-		
-		System.out.println("Total Number Of contig to be loading: " + totalNumberOfContigToBeLoading);
-		while (parser.hasNext()) {
-			ContigTO contigTO = gson.fromJson(parser.next(), ContigTO.class);
-			contigTOProcessor.convert(sample, contigTO);
-			totalNumberOfContigLoaded++;
-			System.out.println(totalNumberOfContigLoaded/totalNumberOfContigToBeLoading);
-		}
-		System.out.println("Contig loaded");
 		
 		sampleReporter.reportChimericPotentialFromContig(sample, DEFAULT_TII_VALUE, DEFAULT_RANK_TO_REPORT);
-		
 		
 		result.include("sample", sample);
 	}
 	
-	private Double getTotalNumberOfFileLines(String fileName){
-		Long totalLines = 0l;
-		try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-			totalLines = stream.count();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return (double) totalLines;
-	}
 
 }

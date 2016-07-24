@@ -78,6 +78,16 @@
 												</a>
 											</c:when>
 										</c:choose>
+										<div>
+											<form action="${linkTo[SampleController].deleteSample}" name="form-sample-delete" class="form-inline" role="form" method="post">
+													<input type="hidden" name="sampleId" value="${sample.id}">
+													<button type="submit" class="btn btn-danger" aria-label="Left Align"> 
+														<span class="glyphicon glyphicon-trash"aria-hidden="true"></span>
+														<span class="glyphicon-class">Delete</span>
+													</button>
+											</form>		
+										</div>
+										
 		
 								</td>
 							</tr> 

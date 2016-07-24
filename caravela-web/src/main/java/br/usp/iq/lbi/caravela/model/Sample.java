@@ -2,6 +2,7 @@ package br.usp.iq.lbi.caravela.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,8 +32,12 @@ public class Sample {
 	private String name;
 	private String description;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="sample")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="sample", orphanRemoval=true)
 	private List<SampleFile> sampleFiles;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="sample", orphanRemoval=true)
+	private List<Contig> contigs;
+	
 	
 	public Sample() {}
 	
@@ -98,6 +103,7 @@ public class Sample {
 			this.sampleStatus = SampleStatus.UPLOADED;
 		} 
 	}
+	
 
 	public void setSampleFiles(List<SampleFile> sampleFiles){
 		this.sampleFiles = sampleFiles;

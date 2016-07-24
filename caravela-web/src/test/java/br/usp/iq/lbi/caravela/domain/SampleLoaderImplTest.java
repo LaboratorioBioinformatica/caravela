@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -23,14 +24,13 @@ import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.SampleStatus;
 import br.usp.iq.lbi.caravela.model.Treatment;
-import htsjdk.samtools.util.StringUtil;
 
 public class SampleLoaderImplTest {
 	
 	@Rule
 	public TemporaryFolder tmpFolder = new TemporaryFolder();
 	
-	
+	@Ignore
 	@Test
 	public void test() throws Exception {
 		
