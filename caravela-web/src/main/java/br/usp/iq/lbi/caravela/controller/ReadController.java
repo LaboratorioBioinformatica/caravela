@@ -3,8 +3,6 @@ package br.usp.iq.lbi.caravela.controller;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
-import com.sun.org.glassfish.external.arc.Taxonomy;
-
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -12,10 +10,10 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ReadDAO;
-import br.usp.iq.lbi.caravela.model.Read;
-import br.usp.iq.lbi.caravela.model.Taxon;
 import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
 import br.usp.iq.lbi.caravela.dto.TaxonTO;
+import br.usp.iq.lbi.caravela.model.Read;
+import br.usp.iq.lbi.caravela.model.Taxon;
 
 @Controller
 public class ReadController {

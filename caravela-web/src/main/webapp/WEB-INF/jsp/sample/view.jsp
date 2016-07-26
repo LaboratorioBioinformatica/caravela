@@ -51,7 +51,7 @@
 								<td>${sample.description}</td>
 								
 								<td>
-									
+									<div class="btn-group" role="group">
 										<c:choose>
 											<c:when test="${sampleStatus == 'CREATED'}">
 											<div>
@@ -63,20 +63,25 @@
 	
 											</c:when>
 											<c:when test="${sampleStatus == 'UPLOADED'}">
-												<form action="${linkTo[SampleController].process}" name="form-sample-process" class="form-inline" role="form" method="post">
-													<input type="hidden" name="sampleId" value="${sample.id}">
-													<button type="submit" class="btn btn-warning" aria-label="Left Align"> 
-														<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>
-														<span class="glyphicon-class">To process</span>
-													</button>
-												</form>		
+												<div>
+													<form action="${linkTo[SampleController].process}" name="form-sample-process" class="form-inline" role="form" method="post">
+														<input type="hidden" name="sampleId" value="${sample.id}">
+														<button type="submit" class="btn btn-warning" aria-label="Left Align"> 
+															<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>
+															<span class="glyphicon-class">To process</span>
+														</button>
+													</form>
+												</div>			
 											</c:when>
 											<c:when test="${sampleStatus == 'PROCCESSED'}">
-												<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button">
-												<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-												<span class="glyphicon-class">Analyze</span>
-												</a>
+												<div>
+													<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button">
+													<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+													<span class="glyphicon-class">Analyze</span>
+													</a>
+												</div>	
 											</c:when>
+											
 										</c:choose>
 										<div>
 											<form action="${linkTo[SampleController].deleteSample}" name="form-sample-delete" class="form-inline" role="form" method="post">
@@ -87,6 +92,7 @@
 													</button>
 											</form>		
 										</div>
+									</div>	
 										
 		
 								</td>

@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.SampleFileDAO;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
-import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 
@@ -54,9 +53,9 @@ public class SampleLoaderImpl implements SampleLoader {
 	
 			Gson gson = new Gson();
 			Stream<String> stream = Files.lines(path);
-
-			stream.parallel().forEach(c-> {
-				Contig contig = contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
+			
+			stream.forEach(c-> {
+				contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
 			});
 			
 			stream.close();

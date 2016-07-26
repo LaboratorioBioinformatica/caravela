@@ -155,17 +155,20 @@ $(document).ready(function(){
 	var urlBoundariesRegionsOnContig = '<c:url value="/contig/boundariesRegionsOnContig/${contig.id}/${rank}"/>';
 	
 	
-	var queueName = 'featureQueue';
+	var queueName = 'featureQueue',
+	defaultHeight = 12,
+	contigHeight = 16;
 	
 	
-	addCallFeatureViewerToQueue(ft, queueName, "#fd8d3c", 'rect', urlFeaturesOnContig);
-	addCallFeatureViewerToQueue(ft, queueName, "#b0133b", 'rect', urlContigViewer);
 	
-	addCallFeatureViewerToQueue(ft, queueName, randColor(), 'multipleRect', urlReadsOnCOntig);
-	addCallFeatureViewerToQueue(ft, queueName, "#FF0000", 'path', urlOverlapTaxonOnCOntig);
-	addCallFeatureViewerToQueue(ft, queueName, "#FF0000", 'multipleRect', urlUndefinedRegionsOnCOntig);
-	addCallFeatureViewerToQueue(ft, queueName, "#A0A0A0", 'multipleRect', urlUnknowRegionsOnContig);
-	addCallFeatureViewerToQueue(ft, queueName, "#000000", 'multipleRect', urlBoundariesRegionsOnContig);
+	addCallFeatureViewerToQueue(ft, queueName, "#fd8d3c", 'rect', urlFeaturesOnContig, defaultHeight);
+	addCallFeatureViewerToQueue(ft, queueName, "#b0133b", 'rect', urlContigViewer, contigHeight);
+	
+	addCallFeatureViewerToQueue(ft, queueName, randColor(), 'multipleRect', urlReadsOnCOntig, defaultHeight);
+	addCallFeatureViewerToQueue(ft, queueName, "#FF0000", 'path', urlOverlapTaxonOnCOntig, defaultHeight);
+	addCallFeatureViewerToQueue(ft, queueName, "#FF0000", 'multipleRect', urlUndefinedRegionsOnCOntig, defaultHeight);
+	addCallFeatureViewerToQueue(ft, queueName, "#A0A0A0", 'multipleRect', urlUnknowRegionsOnContig, defaultHeight);
+	addCallFeatureViewerToQueue(ft, queueName, "#000000", 'multipleRect', urlBoundariesRegionsOnContig, defaultHeight);
 	
 	
 	$(document).dequeue(queueName);
@@ -178,7 +181,7 @@ function randColor(){
 	return '#'+Math.floor(Math.random()*16777215).toString(16);
 }
 
-function addCallFeatureViewerToQueue(ft, qName, color, fvType, apiURL) {
+function addCallFeatureViewerToQueue(ft, qName, color, fvType, apiURL, height) {
 	
     $(document).queue(qName, function() {
     	$.ajax({url:apiURL, success: function(result){
@@ -190,6 +193,7 @@ function addCallFeatureViewerToQueue(ft, qName, color, fvType, apiURL) {
     				ft.addFeature({
         		        data: v,
         		        name: k,
+        		        height: height,
         		        className: "reads_"+k.substring(0,3),
         		        color: color,
         		        type: fvType

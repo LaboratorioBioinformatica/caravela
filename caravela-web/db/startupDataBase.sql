@@ -86,7 +86,7 @@ create table contig (
 	id INT NOT NULL AUTO_INCREMENT,
 	sample_id INT NOT NULL,
 	reference VARCHAR(250) NOT NULL,
-	sequence TEXT NOT null,
+	sequence MEDIUMTEXT NOT null,
 	size INT NOT NULL,
 	number_of_reads_classified INT NOT null,
 	number_of_reads INT NOT null,
@@ -149,7 +149,7 @@ create table feature (
 create table gene_product (
 	id INT NOT NULL AUTO_INCREMENT,
 	feature_id INT NOT NULL,
-	product VARCHAR(300) NOT NULL,
+	product VARCHAR(500) NOT NULL,
 	source  VARCHAR(100) NOT NULL,
 	PRIMARY KEY(id),
 	INDEX (feature_id), INDEX (product) 
@@ -178,7 +178,7 @@ create table feature_annotation (
 	subject_start INT NOT NULL,
 	subject_end INT NOT NULL,
 	evalue DOUBLE NOT NULL,
-	bit_core DOUBLE NULL,
+	bit_score DOUBLE NULL,
 	PRIMARY KEY(id),
 	INDEX (feature_id), INDEX (name)  
 );

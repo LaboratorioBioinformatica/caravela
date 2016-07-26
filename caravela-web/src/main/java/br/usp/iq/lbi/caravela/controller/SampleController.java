@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.persistence.SequenceGenerator;
-
-import org.jboss.logging.annotations.Pos;
 
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
@@ -17,8 +14,11 @@ import br.com.caelum.vraptor.validator.Severity;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
+import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
+import br.usp.iq.lbi.caravela.dao.ContigStatisticByTiiDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
+import br.usp.iq.lbi.caravela.dao.TaxonOnContigDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
 import br.usp.iq.lbi.caravela.domain.SampleLoader;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
@@ -40,13 +40,18 @@ public class SampleController {
 	private final SampleReporter sampleReporter;
 	private final Validator validator;
 	private final SampleLoader sampleLoader;
+	private final TaxonOnContigDAO taxonOnContigDAO;
+	private final ClassifiedReadByContextDAO classifiedReadByContextDAO;
+	private final ContigStatisticByTiiDAO contigStatisticByTiiDAO;
 	
 	protected SampleController(){
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null, null, null);
 	}
 	
 	@Inject
-	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader){
+	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, 
+			ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader,
+			TaxonOnContigDAO taxonOnContigDAO, ClassifiedReadByContextDAO classifiedReadByContextDAO, ContigStatisticByTiiDAO contigStatisticByTiiDAO){
 		this.result = result;
 		this.webUser = webUser;
 		this.treatmentDAO = treatmentDAO;
@@ -55,6 +60,9 @@ public class SampleController {
 		this.sampleReporter = sampleReporter;
 		this.validator = validator;
 		this.sampleLoader = sampleLoader;
+		this.taxonOnContigDAO = taxonOnContigDAO;
+		this.classifiedReadByContextDAO = classifiedReadByContextDAO;
+		this.contigStatisticByTiiDAO = contigStatisticByTiiDAO;
 	}
 	
 	public void view(){
@@ -102,6 +110,10 @@ public class SampleController {
 		Sample sample = sampleDAO.load(sampleId);
 		System.out.println("delete sample: " + sample.getName());
 		sampleDAO.delete(sample);
+		taxonOnContigDAO.removeBySample(sampleId);
+		classifiedReadByContextDAO.removeBySample(sampleId);
+		contigStatisticByTiiDAO.removeBySample(sampleId);
+		
 		result.forwardTo(this).list(sample.getTreatment().getId());
 		
 		
@@ -116,6 +128,7 @@ public class SampleController {
 	@Post
 	public void process(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
+		
 		try {
 			sampleLoader.loadFromFileToDatabase(sample);
 			validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
