@@ -32,6 +32,11 @@ private static final long serialVersionUID = 6552981806740144131L;
 		return data;
 	}
 	
+	public Integer getSize(){
+		return this.y - this.x;
+	}
+	
+	
 	public boolean contains(int time) {
 		return time <= y && time >= x;
 	}

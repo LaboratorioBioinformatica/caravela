@@ -9,9 +9,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
-
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -29,6 +26,9 @@ import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Taxon;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
 
 @Controller
 public class ContigController {
@@ -142,16 +142,49 @@ public class ContigController {
 	public void view(Long contigId, String rank, String viewingMode) {
 		Contig contig = contigDAO.load(contigId);
 		ContigTO contigTO = contigManager.searchContigById(contigId);
+		
+		List<Read> readsOnContig = contig.getReads();
+		Double INT = contigControllerHelper.calculateIndexOfNOTaxon(contig, readsOnContig, rank);
+		Double IConfT = contigControllerHelper.calculateIndexOfConfusionTaxonomic(contig, readsOnContig, rank);
+		Double IVCT = contigControllerHelper.calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank);
+		Double IConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(readsOnContig, rank);
+		
+		Double IGConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(contig, readsOnContig, rank);
+		
+		Double IGGConsT = calculateIGGConsT(contig, readsOnContig);
+		
 
 		Sample sample = contig.getSample();
 		
 		if(viewingMode == null){
 			viewingMode = "readsOnContig";
 		}
+		
+		
 		result.include("rank", rank);
 		result.include("viewingMode", viewingMode);
 		result.include("sample", sample);
 		result.include("contig", contigTO);
+		result.include("INT", INT);
+		result.include("IConfT", IConfT);
+		result.include("IVCT", IVCT);
+		result.include("IConsT", IConsT);
+		result.include("IGConsT", IGConsT);
+		result.include("IGGConsT", IGGConsT);
+		
+	}
+	
+	private Double calculateIGGConsT(Contig contig, List<Read> readsOnContig){
+		
+		List<String> rankList = Arrays.asList("species", "genus", "family", "order", "class", "phylum", "superkingdom");
+		Double IGGConsT = 0d;
+	
+		for (String rank : rankList) {
+			IGGConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(contig, readsOnContig, rank) + IGGConsT;
+		}
+		
+		
+		return (IGGConsT / rankList.size());
 	}
 
 

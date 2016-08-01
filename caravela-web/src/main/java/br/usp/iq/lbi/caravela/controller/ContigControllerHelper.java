@@ -24,6 +24,7 @@ import br.usp.iq.lbi.caravela.domain.SegmentsCalculator;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.intervalTree.IntervalTree;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
+import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.FeatureAnnotation;
 import br.usp.iq.lbi.caravela.model.GeneProduct;
@@ -39,6 +40,7 @@ public class ContigControllerHelper {
 	private static final String OVERLAP_TAXA_KEY = "Overlap taxa";
 	private static final String TAXA = "Taxa";
 	private static final String FEATURE = "Feature";
+	private static final double ZERO = 0;
 	
 
 	private ReadWrapper readWrapper; 
@@ -213,6 +215,78 @@ public class ContigControllerHelper {
 	private boolean noIntersectUndefinedAndUnknowSegments(IntervalTree<String> undefinedIntervalTree, IntervalTree<String> unknowIntervalTree, Integer startAlignment, Integer endAlignment) {
 		return undefinedIntervalTree.get(startAlignment, endAlignment).isEmpty() && unknowIntervalTree.get(startAlignment, endAlignment).isEmpty();
 	}
+	
+	public Double calculateIndexOfVerticalConsistencyTaxonomic(Contig contig, List<Read> readsOnContig, String rank){
+		return 1 - (calculateIndexOfNOTaxon(contig, readsOnContig, rank) + calculateIndexOfConfusionTaxonomic(contig, readsOnContig, rank));
+	}
+	
+	public Double calculateIndexOfConfusionTaxonomic(Contig contig, List<Read> readsOnContig, String rank){
+		List<Segment<Taxon>> undefinedSegments  = searchOverlap(readsOnContig, rank);
+		List<Segment<Taxon>> undefinedSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(undefinedSegments);
+		
+		double confusionTaxonomySize = 0d;
+		for (Segment<Taxon> segment : undefinedSegmentsConsensus) {
+			confusionTaxonomySize = (segment.getSize() + confusionTaxonomySize);
+		}
+		
+		Double confusionTaxonomyIndex = confusionTaxonomySize / contig.getSize();
+		
+		return confusionTaxonomyIndex;
+	}
+	
+	public Double calculateIndexOfConsistencyTaxonomic(Contig contig, List<Read> readsOnContig, String rank) {
+		return (calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank) * calculateIndexOfConsistencyTaxonomic(readsOnContig, rank)) ;
+	}
+	
+	public Double calculateIndexOfConsistencyTaxonomic(List<Read> readsOnContig, String rank){
+		double totalReadsOnContig = readsOnContig.size();
+		double greaterNumberOfHitByTaxon = ZERO;
+		
+		Map<Taxon, List<Read>> readsOnContigMap = readWrapper.groupBy(readsOnContig, rank);
+		Set<Taxon> keySet = readsOnContigMap.keySet();
+		
+		for (Taxon taxon : keySet) {
+			if( ! Taxon.getNOTaxon().equals(taxon)){
+				double numberOfHitsCurrentTaxon = readsOnContigMap.get(taxon).size();
+				if(numberOfHitsCurrentTaxon > greaterNumberOfHitByTaxon){
+					greaterNumberOfHitByTaxon = numberOfHitsCurrentTaxon;
+				}
+				
+			}
+		}
+		System.out.println("total of reads on contig: " + totalReadsOnContig);
+		System.out.println("greater number of hit by taxon: " + greaterNumberOfHitByTaxon);
+		
+		return (greaterNumberOfHitByTaxon / totalReadsOnContig);
+		
+		
+	}
+	
+
+	public Double calculateIndexOfNOTaxon(Contig contig, List<Read> readsOnContig, String rank){
+		Map<Taxon, List<Read>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank);
+		
+		List<Read> noTaxonReadList = readsGroupedByTaxon.remove(Taxon.getNOTaxon());
+		
+		Collection<List<Read>> AllTaxonsCollections = readsGroupedByTaxon.values();
+		List<Read> allTaxonReadList = new ArrayList<Read>();
+		for (List<Read> list : AllTaxonsCollections) {
+			allTaxonReadList.addAll(list);
+		}
+		
+		List<Segment<Taxon>> allTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(allTaxonReadList, rank);
+		List<Segment<Taxon>> noTaxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(noTaxonReadList, rank);
+		List<Segment<Taxon>> justOnlyNoTaxonSegmentConsensus = segmentsCalculator.subtract(noTaxonSegmentsConsensus, allTaxonSegmentsConsensus);
+		
+		double noTaxonSize = 0d;
+		for (Segment<Taxon> segment : justOnlyNoTaxonSegmentConsensus) {
+			noTaxonSize = (segment.getSize() + noTaxonSize);
+		}
+		Double noTaxonIndex = noTaxonSize / contig.getSize();
+		
+		return noTaxonIndex;
+	}
+	
 	
 	
 	

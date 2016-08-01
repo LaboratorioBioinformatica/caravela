@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <t:default>
@@ -45,7 +46,16 @@
   				</div>
   					
 		</div>
-		<h3><span class="label label-default pull-right"> ${rank} </span></h3>
+		<h3><span class="label label-default pull-right"> ${rank} </span> 
+			<small>
+				INT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" />
+				Index of Confusion Taxonomic: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" />
+				IVCT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IVCT}" />
+				Index of Consistency Taxonomic: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConsT}" />
+				IGCT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IGConsT}" />
+			</small>
+			IGGCT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IGGConsT}" />
+		</h3>
 		<div id="contigViewer">
 		</div>
 		
