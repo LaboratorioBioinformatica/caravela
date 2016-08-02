@@ -29,10 +29,15 @@ public class ReadWrapperImpl implements ReadWrapper {
 					HashMap<String, Taxon> lineagem = readManager.loadLineagem(read);
 					read.setLineagem(lineagem);
 					
+					
 					Taxon taxon = read.getTaxonByRank(taxonomicRank);
 					if(taxon == null){
-						taxon = read.getTaxon();
+						//taxon = read.getTaxon(); // get any taxon assigned!!!!
+						List<Read> noTaxonList = readsGroupedByTaxon.get(Taxon.getNOTaxon());
+						readsGroupedByTaxon.put(Taxon.getNOTaxon(), addReadInNoTaxonList(read, noTaxonList));
+						continue;
 					}
+					
 					List<Read> taxonList = readsGroupedByTaxon.get(taxon);
 					if(taxonList != null){
 						taxonList.add(read);
@@ -44,18 +49,22 @@ public class ReadWrapperImpl implements ReadWrapper {
 					
 				} else {
 					List<Read> noTaxonList = readsGroupedByTaxon.get(Taxon.getNOTaxon());
-					if(noTaxonList != null){
-						noTaxonList.add(read);
-					} else {
-						noTaxonList = new ArrayList<Read>();
-						noTaxonList.add(read);
-						readsGroupedByTaxon.put(Taxon.getNOTaxon(), noTaxonList);
-					}
+					readsGroupedByTaxon.put(Taxon.getNOTaxon(), addReadInNoTaxonList(read, noTaxonList));
 				}
 			}
 			
 		}
 		return readsGroupedByTaxon;
+	}
+
+	private List<Read> addReadInNoTaxonList(Read read, List<Read> noTaxonList) {
+		if(noTaxonList != null){
+			noTaxonList.add(read);
+		} else {
+			noTaxonList = new ArrayList<Read>();
+			noTaxonList.add(read);
+		}
+		return noTaxonList;
 	}
 
 }
