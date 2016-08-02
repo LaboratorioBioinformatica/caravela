@@ -151,7 +151,7 @@ public class ContigController {
 		
 		Double IGConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(contig, readsOnContig, rank);
 		
-		Double IGGConsT = calculateIGGConsT(contig, readsOnContig);
+		Double CTSC = calculateConsistencyTaxonomicScoreOfContig(contig, readsOnContig);
 		
 
 		Sample sample = contig.getSample();
@@ -170,11 +170,11 @@ public class ContigController {
 		result.include("IVCT", IVCT);
 		result.include("IConsT", IConsT);
 		result.include("IGConsT", IGConsT);
-		result.include("IGGConsT", IGGConsT);
+		result.include("CTSC", CTSC);
 		
 	}
 	
-	private Double calculateIGGConsT(Contig contig, List<Read> readsOnContig){
+	private Double calculateConsistencyTaxonomicScoreOfContig(Contig contig, List<Read> readsOnContig){
 		
 		List<String> rankList = Arrays.asList("species", "genus", "family", "order", "class", "phylum", "superkingdom");
 		Double IGGConsT = 0d;

@@ -26,7 +26,19 @@
 					  <div class="col-md-2"><strong>Features:</strong> ${contig.numberOfFeatures}</div>
 					</div>
 	  			</div>
-			</div> 
+		</div> 
+		<div class="panel panel-default">
+				<div class="panel-heading"> <strong> ${rank} </strong></div>
+	  			<div class="panel-body text-center">
+	  				<div class="row">
+					  <div class="col-md-2"><strong> No Taxon: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" /></div>
+					  <div class="col-md-2"><strong> T. Confusion: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" /></div>
+					  <div class="col-md-3"><strong> T. Consistency Vertical: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IVCT}" /></div>
+					  <div class="col-md-3"><strong> T. Consistency by NOfR: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConsT}" /></div>
+					  <div class="col-md-2"><strong> T. Consistency: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IGConsT}" /></div>
+					</div>
+	  			</div>
+		</div> 
    		<div class="btn-group" role="group" aria-label="">
  					<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/species/${viewingMode}"/>">Species</a>
  					<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/genus/${viewingMode}"/>">Genus</a>
@@ -46,16 +58,7 @@
   				</div>
   					
 		</div>
-		<h3><span class="label label-default pull-right"> ${rank} </span> 
-			<small>
-				INT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" />
-				Index of Confusion Taxonomic: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" />
-				IVCT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IVCT}" />
-				Index of Consistency Taxonomic: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConsT}" />
-				IGCT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IGConsT}" />
-			</small>
-			IGGCT: <fmt:formatNumber type="number" maxFractionDigits="3" value="${IGGConsT}" />
-		</h3>
+		<h4><span class="pull-right"> Consistency Score: <strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${CTSC}" /></strong> </span> </h4>
 		<div id="contigViewer">
 		</div>
 		
@@ -239,7 +242,7 @@ function showReadDetail(readId){
 	        });
 	        
 	        if(readOnContigResult.taxon){
-	        	taxonReadDetail.empty().append("<p> <strong> Scientific Name: </strong>" + readOnContigResult.taxon.scientificName + "<strong> Hank: </strong>"  + readOnContigResult.taxon.hank + "</p>");
+	        	taxonReadDetail.empty().append("<p> <strong> Scientific Name: </strong>" + readOnContigResult.taxon.scientificName + "<strong> Rank: </strong>"  + readOnContigResult.taxon.hank + "</p>");
 	        } else {
 	        	taxonReadDetail.empty().append("<p> <strong> No Taxon</strong> </p>");
 	        }
