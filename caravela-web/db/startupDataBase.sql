@@ -134,6 +134,7 @@ create table classified_read_by_context (
 );
 
 
+
 create table feature (
 	id INT NOT NULL AUTO_INCREMENT,
 	contig_id INT NOT NULL,
@@ -154,6 +155,15 @@ create table gene_product (
 	PRIMARY KEY(id),
 	INDEX (feature_id), INDEX (product) 
 );
+
+create table system_user (
+	id INT NOT NULL AUTO_INCREMENT,
+	user_name VARCHAR(300) NOT NULL,
+	name VARCHAR(300) NOT NULL,
+	password  VARCHAR(100) NOT NULL,
+	PRIMARY KEY(id) 
+);
+
 
 create table philodist (
 	id INT NOT NULL AUTO_INCREMENT,
@@ -185,6 +195,7 @@ create table feature_annotation (
 
 
 
+insert into system_user values (id, "gianlucamajor@gmail.com", "Gianluca", "gianluca1010");
 
 insert into treatment values (id, "ZC3b", "Compostagem ZC3b");
 insert into treatment values (id, "ZC4", "Compostagem ZC4");
