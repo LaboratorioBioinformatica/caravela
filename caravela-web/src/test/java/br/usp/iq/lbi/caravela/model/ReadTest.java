@@ -25,7 +25,7 @@ public class ReadTest {
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;
@@ -51,8 +51,8 @@ public class ReadTest {
 		Double tii = new Double(0.5);
 		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
-		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_02, firstPair, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, sequence_01.length(), firstPair, mapping);
+		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_02, sequence_02.length(), firstPair, mapping);
 
 		Assert.assertTrue(read.equals(readEq));
 		
@@ -64,7 +64,7 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;
@@ -89,8 +89,8 @@ public class ReadTest {
 		Double tii = new Double(0.5);
 		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
-		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_01, secPair, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, sequence_01.length(), firstPair, mapping);
+		Read readEq = new Read(reference, sampleZC3bDay01, contig, sequence_01, sequence_01.length(), secPair, mapping);
 
 		Assert.assertFalse(read.equals(readEq));
 		
@@ -101,9 +101,9 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
-		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-30", "description zc3b-day-30");
+		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-30", "description zc3b-day-30");
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;
@@ -127,8 +127,8 @@ public class ReadTest {
 		Double tii = new Double(0.5);
 		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
-		Read readEq = new Read(reference, sampleZC3bDay30, contig, sequence_01, firstPair, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, sequence_01.length(), firstPair, mapping);
+		Read readEq = new Read(reference, sampleZC3bDay30, contig, sequence_01, sequence_01.length(), firstPair, mapping);
 
 		Assert.assertFalse(read.equals(readEq));
 		
@@ -139,7 +139,7 @@ public class ReadTest {
 		
 		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		
 		Long taxonomyId = 1289127l;
@@ -162,8 +162,8 @@ public class ReadTest {
 		Double tii = new Double(0.5);
 		Contig contig = new Contig(sampleZC3bDay01, contigReference, contigSequence, contigSequence.length(), numberOfReads, numberOfReadsClassified, numberOfFeatures, tii);
 		
-		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
-		Read readEq = new Read(otherReference, sampleZC3bDay01, contig, sequence_01, firstPair, mapping);
+		Read read = new Read(reference, sampleZC3bDay01, contig, sequence_01, sequence_01.length(), firstPair, mapping);
+		Read readEq = new Read(otherReference, sampleZC3bDay01, contig, sequence_01, sequence_01.length(), firstPair, mapping);
 
 		Assert.assertFalse(read.equals(readEq));
 		

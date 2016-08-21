@@ -38,57 +38,56 @@ public class SampleLoaderImpl implements SampleLoader {
 	
 
 	@Override
-	public void loadFromFileToDatabase(Sample sample) throws Exception {
+	public void loadFromFileToDatabase(Sample sample) {
 		
-		try {
-			SampleFile sampleFile = sample.getFileWithAllInformation();
-			logger.info("Loading Sample File: " + sample.getName());
-			Path path = Paths.get(sampleFile.getFilePath());
-			
-			
-			Long totalNumberOfContigToBeLoad = getTotalNumberOfFileLines(path);
-			logger.info("number of contig to load: " + totalNumberOfContigToBeLoad);
-			
-			long startTime = System.currentTimeMillis();
-	
-			Gson gson = new Gson();
-			Stream<String> stream = Files.lines(path);
-			
-			stream.forEach(c-> {
-				contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
-			});
-			
-			stream.close();
-			long endTime = System.currentTimeMillis();
-			
-			logger.info("Total time to load: " + (endTime - startTime));
-			
-			logger.info("Strat report: ");
-			
-			long startTimeToReport = System.currentTimeMillis();
-			
-			sampleReporter.reportChimericPotentialFromContig(sample, 0d, "genus");
-			
-			long endTimeToReport = System.currentTimeMillis();
-			logger.info("Total time to Report: " + (endTimeToReport - startTimeToReport));
-			
-			
-			sample.toProccessed();
-			
-			SampleFile sampleFileWithAllInformation = sample.getFileWithAllInformation();
-			sampleFileWithAllInformation.toLoaded();
-	
-			sampleFileDAO.update(sampleFileWithAllInformation);
+		sample.toProcessing();
+		sampleDAO.update(sample);
+		
+			try {
+				SampleFile sampleFile = sample.getFileWithAllInformation();
+				logger.info("Loading Sample File: " + sample.getName());
+				Path path = Paths.get(sampleFile.getFilePath());
+				
+				Long totalNumberOfContigToBeLoad = getTotalNumberOfFileLines(path);
+				logger.info("number of contig to load: " + totalNumberOfContigToBeLoad);
+				
+				long startTime = System.currentTimeMillis();
+		
+				Gson gson = new Gson();
+				Stream<String> stream = Files.lines(path);
+				
+				stream.forEach(c-> {
+					contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
+				});
+				
+				stream.close();
+				long endTime = System.currentTimeMillis();
+				
+				logger.info("Total time to load: " + (endTime - startTime));
+				
+				logger.info("Strat report: ");
+				
+				long startTimeToReport = System.currentTimeMillis();
+				
+				sampleReporter.reportChimericPotentialFromContig(sample, 0d, "genus");
+				
+				long endTimeToReport = System.currentTimeMillis();
+				logger.info("Total time to Report: " + (endTimeToReport - startTimeToReport));
+				
+				SampleFile sampleFileWithAllInformation = sample.getFileWithAllInformation();
+				sampleFileWithAllInformation.toLoaded();
+		
+				sampleFileDAO.update(sampleFileWithAllInformation);
+				
+				
+			} catch (Exception e) {
+				sample.toErrorToProcess();
+				sampleDAO.update(sample);
+				logger.error("Error to load sample file", e);
+			}
+			sample.toProcessed();
 			sampleDAO.update(sample);
 			
-			
-			
-		} catch (Exception e) {
-			logger.error("Error to load sample file", e);
-			throw e;
-		}
-		
-		
 	}
 	
 	private Long getTotalNumberOfFileLines(Path path) throws IOException{

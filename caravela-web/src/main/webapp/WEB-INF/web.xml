@@ -15,7 +15,7 @@
 		<param-name>br.com.caelum.vraptor.environment</param-name>
     	<param-value>production</param-value>
     </context-param>
-
+    
 	<context-param>
 		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
 		<param-value>messages</param-value>

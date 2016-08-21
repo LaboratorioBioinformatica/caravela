@@ -39,7 +39,11 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 				contigTO.getNumberOfreads(), contigTO.getNumberOfReadsClassified(), contigTO.getNumberOfFeatures(), 
 				contigTO.getTaxonomicIdentificationIndex());
 		
+		logger.info("Contig created: " + contig.getReference());
+		
 		contigDAO.save(contig);
+		
+		logger.info("Contig saved: " + contig.getReference());
 		
 		featureCreator.createList(contig, contigTO.getFeatures());
 		
@@ -60,7 +64,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 			
 			for (ReadOnContigTO readOnContigTO : readsOnCotig) {
 				Mapping mapping = new Mapping(readOnContigTO.getStartAlignment(), readOnContigTO.getEndAlignment(), readOnContigTO.getCigar(), readOnContigTO.getFlag());
-				Read read = new Read(readOnContigTO.getReference(), sample, contig, readOnContigTO.getSequence(), readOnContigTO.getPair(), mapping);
+				Read read = new Read(readOnContigTO.getReference(), sample, contig, readOnContigTO.getSequence(), readOnContigTO.getSequenceLenth(), readOnContigTO.getPair(), mapping);
 				reads.add(read);
 				
 				TaxonTO taxonTO = readOnContigTO.getTaxon();

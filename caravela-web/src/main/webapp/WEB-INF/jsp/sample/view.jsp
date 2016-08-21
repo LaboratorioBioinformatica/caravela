@@ -8,6 +8,14 @@
 	    <div class="page-header">
 			<h1>Samples</h1>
 		</div>
+		<c:if test="${empty treatmentList}">
+			<h3> Before creating a sample you need register a Treatment.</h3>  
+			<a href="${linkTo[TreatmentController].form}" class="btn btn-success"  role="button">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+						<span class="glyphicon-class">new treatment</span>
+			</a> 
+		</c:if>
+		
 		<c:if test="${not empty treatmentList}">
 		
 			<div class="form-group">
@@ -63,17 +71,26 @@
 	
 											</c:when>
 											<c:when test="${sampleStatus == 'UPLOADED'}">
-												<div>
+												<div id="sampleToBeProcess">
+													<button type="button" id="bnt-process" class="btn btn-primary" value="${sample.id}" data-loading-text="Loading..." aria-label="Left Align"> 
+														<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>
+														<span class="glyphicon-class">Process</span>
+													</button>	
+													<input type="hidden" name="sampleId" value="${sample.id}">
+													
 													<form action="${linkTo[SampleController].process}" name="form-sample-process" class="form-inline" role="form" method="post">
-														<input type="hidden" name="sampleId" value="${sample.id}">
-														<button type="submit" class="btn btn-warning" aria-label="Left Align"> 
-															<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>
-															<span class="glyphicon-class">To process</span>
-														</button>
 													</form>
+													
 												</div>			
 											</c:when>
-											<c:when test="${sampleStatus == 'PROCCESSED'}">
+											
+											<c:when test="${sampleStatus == 'PROCESSING'}">
+												<div>
+													<button type="button" class="btn btn-warning disabled">Processing ...</button>
+												</div>	
+											</c:when>
+											
+											<c:when test="${sampleStatus == 'PROCESSED'}">
 												<div>
 													<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button">
 													<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
@@ -103,6 +120,24 @@
 			</div>
 		</c:if>
 	</div>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+	
+	$('#bnt-process').on('click', function(){
+		var $btn = $(this).button('loading');
+		var sampleIdToBeProcess = $(this).prop("value");
+		$.post('${linkTo[SampleController].process}', {sampleId: sampleIdToBeProcess}, 
+			function(){
+				window.location.href = "${linkTo[SampleController].listByTreatment}${treatmentSelected}";
+			});
+		
+	});
+	
+});
+
+</script>
    </jsp:body>
 </t:default>
 

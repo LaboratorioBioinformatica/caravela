@@ -32,6 +32,7 @@ public class Read implements Serializable {
 	private String reference;
 	@Basic(fetch=FetchType.LAZY)
 	private String sequence;
+	private Integer lenth;
 	private Integer pair;
 	
 	@Embedded
@@ -42,11 +43,12 @@ public class Read implements Serializable {
 	
 	public Read() {}
 	
-	public Read(String reference, Sample sample, Contig contig, String sequence, Integer pair, Mapping mapping) {
+	public Read(String reference, Sample sample, Contig contig, String sequence, Integer lenth, Integer pair, Mapping mapping) {
 		this.reference = reference;
 		this.sample = sample;
 		this.contig = contig;
 		this.sequence = sequence;
+		this.lenth = lenth;
 		this.pair = pair;
 		this.mapping = mapping;
 	}
@@ -94,6 +96,10 @@ public class Read implements Serializable {
 	
 	public boolean isMapping(){
 		return mapping.isMapping();
+	}
+	
+	public Integer getLenth(){
+		return lenth;
 	}
 	
 	public boolean hasTaxon(){

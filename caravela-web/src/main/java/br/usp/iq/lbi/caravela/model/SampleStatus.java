@@ -3,6 +3,8 @@ package br.usp.iq.lbi.caravela.model;
 public enum SampleStatus {
 	CREATED,
 	UPLOADED,
-	PROCCESSED;
+	PROCESSING,
+	PROCESSED,
+	ERRO_TO_PROCESS;
 
 }

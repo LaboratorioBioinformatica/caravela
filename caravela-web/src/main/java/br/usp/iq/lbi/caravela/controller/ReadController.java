@@ -47,7 +47,7 @@ public class ReadController {
 				taxonTO = new TaxonTO.Builder().setScientificName(taxon.getScientificName()).setTaxonomyId(taxon.getTaxonomyId()).setHank(taxon.getRank()).build();
 			}
 			
-			ReadOnContigTO readOnContigTO = new ReadOnContigTO(read.getReference(), read.getSequence(), read.getStartAlignment(), read.getEndAlignment(), read.getCigar(), read.getFlagAlignment(), read.getPair(), taxonTO);
+			ReadOnContigTO readOnContigTO = new ReadOnContigTO(read.getReference(), read.getSequence(), read.getLenth(), read.getStartAlignment(), read.getEndAlignment(), read.getCigar(), read.getFlagAlignment(), read.getPair(), taxonTO);
 			result.use(Results.json()).withoutRoot().from(readOnContigTO).include("taxon").serialize();
 			
 		} catch (NoResultException nre) {

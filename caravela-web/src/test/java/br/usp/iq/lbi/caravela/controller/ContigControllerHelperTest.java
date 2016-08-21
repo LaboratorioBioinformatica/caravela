@@ -53,7 +53,7 @@ public class ContigControllerHelperTest {
 		
 		Treatment treatment = new Treatment("ZC4","Zoo Composting 4");
 		Contig contig = new Contig();
-		Sample sample = new Sample(treatment, SampleStatus.PROCCESSED, "zc4 day 01","day 01 from zc4");
+		Sample sample = new Sample(treatment, SampleStatus.PROCESSED, "zc4 day 01","day 01 from zc4");
 		
 		
 		
@@ -249,7 +249,7 @@ public class ContigControllerHelperTest {
 	}
 
 	private Read createRead(String reference, Sample sample, Contig contig, String sequence, Integer pair, Mapping mapping, TaxonomicAssignment taxonomicAssignment) {
-		 Read read = new Read(reference, sample, contig, sequence, pair, mapping);
+		 Read read = new Read(reference, sample, contig, sequence, sequence.length(), pair, mapping);
 		 read.toAssigTaxon(taxonomicAssignment);
 		 return read;
 	}

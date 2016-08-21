@@ -43,7 +43,7 @@
 			  </div>
 			  <button type="submit" class="btn btn-primary pull-right">
 			  	<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-			  	<span  class="glyphicon-class">To load</span>
+			  	<span  class="glyphicon-class">Load</span>
 			  </button>
 			</form>
 		</div>

@@ -128,15 +128,8 @@ public class SampleController {
 	@Post
 	public void process(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
-		
-		try {
-			sampleLoader.loadFromFileToDatabase(sample);
-			validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		sampleLoader.loadFromFileToDatabase(sample);
+		validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
 		result.forwardTo(this).list(sampleId);
 	}
 	

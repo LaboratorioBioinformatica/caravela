@@ -2,7 +2,6 @@ package br.usp.iq.lbi.caravela.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -76,8 +75,12 @@ public class Sample {
 		return SampleStatus.UPLOADED.equals(this.sampleStatus);
 	}
 	
+	public boolean isProcessing(){
+		return SampleStatus.PROCESSING.equals(this.sampleStatus);
+	}
+	
 	public boolean isProcessed(){
-		return SampleStatus.PROCCESSED.equals(this.sampleStatus);
+		return SampleStatus.PROCESSED.equals(this.sampleStatus);
 	}
 	
 	public List<SampleFile> getSampleFiles(){
@@ -92,10 +95,23 @@ public class Sample {
 		return extractSampleFileByFileType(FileType.READ_WITH_TAXON_JSON);
 	}
 	
-	public void toProccessed(){
-		if(isUploaded()){
-			this.sampleStatus = SampleStatus.PROCCESSED;
+	public void toProcessed(){
+		if(isProcessing()){
+			this.sampleStatus = SampleStatus.PROCESSED;
 		} 
+	}
+	
+	public void toErrorToProcess(){
+		if(isProcessing()){
+			this.sampleStatus = SampleStatus.ERRO_TO_PROCESS;
+		} 
+	}
+	
+	public void toProcessing(){
+		if(isUploaded()){
+			this.sampleStatus = SampleStatus.PROCESSING;
+		} 
+		
 	}
 	
 	public void toUploaded(){

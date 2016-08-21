@@ -46,7 +46,7 @@ public class ContigConverter {
 							.setTaxonomyId(taxon.getTaxonomyId()).setScore(read.getTaxonScore()).build();
 		}
 		
-		return new ReadOnContigTO(read.getReference(), read.getSequence(), 
+		return new ReadOnContigTO(read.getReference(), read.getSequence(), read.getLenth(), 
 				read.getStartAlignment(),  read.getEndAlignment(), read.getCigar(), read.getFlagAlignment(), read.getPair(), taxonTO);
 	}
 

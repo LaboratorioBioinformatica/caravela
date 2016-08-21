@@ -51,17 +51,6 @@ create table sample_file (
 	INDEX (sample_id) 
 );
 
--- TO BE DELETE? 
--- create table taxonomic_assignment
--- original taxon id = taxon id provide by taxonomy file
--- taxon id = taxon id in databasse, NCBI taxonomy for example. 
--- both ids, original and assigned, are provided by NCBI taxonomic by default.  
-create table taxonomic_assignment (
-	id INT NOT NULL AUTO_INCREMENT, 
-	
-	PRIMARY KEY(id),
-	INDEX (taxon_id), INDEX (read_id) 
-);
 
 -- create table sequence from sequence (shoud be named read but it name is reserved in mysql)
 create table sequence (
@@ -72,7 +61,8 @@ create table sequence (
 	taxon_id INT NULL,
 	taxon_score DOUBLE NULL,
 	pair INT NOT NULL,
-	sequence TEXT NOT null,
+	sequence TEXT null,
+	lenth INT NOT null,
 	start_alignment INT NOT NULL,
 	end_alignment INT NOT NULL,
 	cigar VARCHAR(50) NOT NULL,

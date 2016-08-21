@@ -2,7 +2,6 @@ package br.usp.iq.lbi.caravela.model;
 
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -14,23 +13,9 @@ public class TaxonTest {
 	private static final String NO_TAXON_SCIENTIFIC_NAME = "no taxon";
 	private static final String NO_TAXON_RANK = "no taxon";
 	
-	private String reference;
-	private Sample sample;
-	private Contig contig;
-	private String sequence;
-	private Integer pair;
-	private Mapping mapping;
-
-	
-	@Before
-	public void setup() {
-		
-	}
-	
 
 	@Test
 	public void testEquals() throws Exception {
-		new Read(reference, sample , contig , sequence, pair, mapping);
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;

@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 public class ReadOnContigTO {
 	private final String reference;
 	private final String sequence;
+	private final Integer sequenceLenth;
 	@SerializedName("start")
 	private final Integer startAlignment;
 	@SerializedName("end")
@@ -16,9 +17,10 @@ public class ReadOnContigTO {
 	private final Integer pair;
 	private final TaxonTO taxon;
 	
-	public ReadOnContigTO(String reference, String sequence, Integer startAlignment, Integer endAlignment, String cigar, Integer flag, Integer pair, TaxonTO taxon) {
+	public ReadOnContigTO(String reference, String sequence, Integer sequenceLenth, Integer startAlignment, Integer endAlignment, String cigar, Integer flag, Integer pair, TaxonTO taxon) {
 		this.reference = reference;
 		this.sequence = sequence;
+		this.sequenceLenth = sequenceLenth;
 		this.startAlignment = startAlignment;
 		this.endAlignment = endAlignment;
 		this.cigar = cigar;
@@ -70,6 +72,10 @@ public class ReadOnContigTO {
 
 	public TaxonTO getTaxon() {
 		return taxon;
+	}
+	
+	public Integer getSequenceLenth(){
+		return sequenceLenth;
 	}
 	
 
