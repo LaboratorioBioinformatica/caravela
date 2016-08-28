@@ -11,6 +11,7 @@ public interface DAO<T> {
 	Long count();
 	void delete(T entity);
 	void refresh(T entity);
+	void flush();
 	void save(T entity);
 	void addBatch(T entity);
 	void addBatch(T entity, Integer batchSize);

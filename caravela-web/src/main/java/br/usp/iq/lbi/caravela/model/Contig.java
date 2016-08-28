@@ -56,6 +56,9 @@ public class Contig implements Serializable {
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig", orphanRemoval=true)
 	private List<Read> reads;
 	
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig", orphanRemoval=true)
+	private List<ContigStatisticByTii> indexes;
+	
 	public Contig() {}
 	
 	public Contig(Sample sample, String reference, String sequence, Integer size, Integer nOfR, Integer nOfRC, Integer nOfF, Double taxonomicIdentificationIndex) {
@@ -94,7 +97,41 @@ public class Contig implements Serializable {
 	}
 	
 	public void addReads(List<Read> reads){
-		reads = reads;
+		if(this.reads == null){
+			this.reads = reads;
+		} else {
+			reads.addAll(reads);
+		}
+	}
+	
+	public Double getIndexOfConsistencyTaxonomicByCountReads(TaxonomicRank rank){
+		Double ictcr = null;
+		for (ContigStatisticByTii index : indexes) {
+			if(rank.equals(index.getRank())){
+				ictcr = index.getIndexOfConsistencyTaxonomicByCountReads(); 
+			}
+		}
+		return ictcr;
+	}
+	
+	public Double getIndexOfVerticalConsistencyTaxonomic(TaxonomicRank rank){
+		Double ivct = null;
+		for (ContigStatisticByTii index : indexes) {
+			if(rank.equals(index.getRank())){
+				ivct = index.getIndexOfVerticalConsistencyTaxonomic(); 
+			}
+		}
+		return ivct;
+	}
+	
+	public Integer getNumberOfBorders(TaxonomicRank rank){
+		Integer borders = null;
+		for (ContigStatisticByTii index : indexes) {
+			if(rank.equals(index.getRank())){
+				borders = index.getBoundary(); 
+			}
+		}
+		return borders;
 	}
 	
 	public Long getId(){
@@ -129,6 +166,7 @@ public class Contig implements Serializable {
 		}
 		return taxons;
 	}
+	
 	
 	public List<TaxonCounterTO> getTaxonCounterTOList(){
 		

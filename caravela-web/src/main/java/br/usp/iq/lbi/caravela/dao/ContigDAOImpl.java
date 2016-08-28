@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
+import br.usp.iq.lbi.caravela.model.TaxonomicRank;
 
 
 public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
@@ -19,22 +20,40 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		super(entityManager);
 	}
 	
-	public List<Contig> FindByContigBySample(Sample sample, Double tii, Integer numberOfFeatures, Integer numberOfBoundaries, Double unclassified, Double undefined, Integer firstResult, Integer maxResult) {
-		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM  ContigStatisticByTii cs INNER JOIN cs.contig c  WHERE c.sample = :sample "
+	public List<Contig> FindByContigBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic, Integer firstResult, Integer maxResult) {
+		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM  ContigStatisticByTii cs INNER JOIN cs.contig c  WHERE c.sample = :sample and cs.rank = :taxonomicRank "
 				+ "AND c.taxonomicIdentificationIndex >= :tii "
 				+ "AND c.numberOfFeatures >= :NOF "
 				+ "AND cs.boundary <= :NOB "
-				+ "AND cs.unclassified <= :unclassified "
-				+ "AND cs.undefined <= :undefined "
+				+ "AND cs.indexOfConsistencyTaxonomicByCountReads >= :ictcr "
+				+ "AND cs.indexOfVerticalConsistencyTaxonomic >= :ivct "
 				+ "ORDER by c.size DESC", Contig.class);
 		List<Contig> contigList = query.setParameter("sample", sample)
 				.setParameter("tii", tii)
+				.setParameter("taxonomicRank", taxonomicRank)
 				.setParameter("NOF", numberOfFeatures)
 				.setParameter("NOB", numberOfBoundaries)
-				.setParameter("unclassified", unclassified)
-				.setParameter("undefined", undefined)
+				.setParameter("ictcr", indexOfConsistencyTaxonomicByCountReads)
+				.setParameter("ivct", indexOfVerticalConsistencyTaxonomic)
 				.setFirstResult(firstResult)
 				.setMaxResults(maxResult).getResultList();
+		return contigList;
+	}
+	public List<Contig> FindByContigBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic) {
+		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM  ContigStatisticByTii cs INNER JOIN cs.contig c  WHERE c.sample = :sample and cs.rank = :taxonomicRank "
+				+ "AND c.taxonomicIdentificationIndex >= :tii "
+				+ "AND c.numberOfFeatures >= :NOF "
+				+ "AND cs.boundary <= :NOB "
+				+ "AND cs.indexOfConsistencyTaxonomicByCountReads >= :ictcr "
+				+ "AND cs.indexOfVerticalConsistencyTaxonomic >= :ivct "
+				+ "ORDER by c.size DESC", Contig.class);
+		List<Contig> contigList = query.setParameter("sample", sample)
+				.setParameter("tii", tii)
+				.setParameter("taxonomicRank", taxonomicRank)
+				.setParameter("NOF", numberOfFeatures)
+				.setParameter("NOB", numberOfBoundaries)
+				.setParameter("ictcr", indexOfConsistencyTaxonomicByCountReads)
+				.setParameter("ivct", indexOfVerticalConsistencyTaxonomic).getResultList();
 		return contigList;
 	}
 	

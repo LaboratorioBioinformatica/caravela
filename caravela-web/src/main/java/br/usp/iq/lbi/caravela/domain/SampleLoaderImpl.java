@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.SampleFileDAO;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
+import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 
@@ -38,12 +39,15 @@ public class SampleLoaderImpl implements SampleLoader {
 	
 
 	@Override
-	public void loadFromFileToDatabase(Sample sample) {
+	public void loadFromFileToDatabase(Long sampleId) throws Exception {
 		
-		sample.toProcessing();
-		sampleDAO.update(sample);
 		
 			try {
+				Sample sample = sampleDAO.load(sampleId);
+				sample.toProcessing();
+				sampleDAO.update(sample);
+				sampleDAO.flush();
+				
 				SampleFile sampleFile = sample.getFileWithAllInformation();
 				logger.info("Loading Sample File: " + sample.getName());
 				Path path = Paths.get(sampleFile.getFilePath());
@@ -57,36 +61,40 @@ public class SampleLoaderImpl implements SampleLoader {
 				Stream<String> stream = Files.lines(path);
 				
 				stream.forEach(c-> {
-					contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
+					Contig contig = contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
+					String genusRank = "genus";
+					String specieRank = "species";
+					String familyRank = "family";
+					
+					sampleReporter.createReportByContig(sample, specieRank, contig);
+					sampleReporter.createReportByContig(sample, genusRank, contig);
+					sampleReporter.createReportByContig(sample, familyRank, contig);
+					
+					sampleReporter.classifiedReadsByContex(sample, genusRank, contig);
+					
 				});
 				
 				stream.close();
+				
+				
+				
+				SampleFile sampleFileWithAllInformation = sample.getFileWithAllInformation();
+				sampleFileWithAllInformation.toLoaded();
+				sampleFileDAO.update(sampleFileWithAllInformation);
+				
+				sample.toProcessed();
+				sampleDAO.update(sample);
+				
 				long endTime = System.currentTimeMillis();
 				
 				logger.info("Total time to load: " + (endTime - startTime));
 				
-				logger.info("Strat report: ");
-				
-				long startTimeToReport = System.currentTimeMillis();
-				
-				sampleReporter.reportChimericPotentialFromContig(sample, 0d, "genus");
-				
-				long endTimeToReport = System.currentTimeMillis();
-				logger.info("Total time to Report: " + (endTimeToReport - startTimeToReport));
-				
-				SampleFile sampleFileWithAllInformation = sample.getFileWithAllInformation();
-				sampleFileWithAllInformation.toLoaded();
-		
-				sampleFileDAO.update(sampleFileWithAllInformation);
-				
 				
 			} catch (Exception e) {
-				sample.toErrorToProcess();
-				sampleDAO.update(sample);
 				logger.error("Error to load sample file", e);
+				throw e;
 			}
-			sample.toProcessed();
-			sampleDAO.update(sample);
+			
 			
 	}
 	

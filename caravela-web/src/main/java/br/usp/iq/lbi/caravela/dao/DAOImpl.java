@@ -69,6 +69,10 @@ public class DAOImpl<T> implements DAO<T> {
 	public T update(T entity){
 		return entityManager.merge(entity);
 	}
+	
+	public void flush(){
+		entityManager.flush();
+	}
 
 	public T load(T entity) {
 		Long idValue = 0L;

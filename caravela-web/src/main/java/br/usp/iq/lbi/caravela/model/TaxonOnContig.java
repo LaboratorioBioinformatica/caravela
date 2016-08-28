@@ -1,6 +1,8 @@
 package br.usp.iq.lbi.caravela.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -20,6 +22,9 @@ public class TaxonOnContig {
 	@ManyToOne
 	private Contig contig;
 	
+	@Enumerated(EnumType.STRING)
+	private TaxonomicRank rank;
+	
 	@ManyToOne
 	private Taxon taxon;
 	
@@ -29,9 +34,10 @@ public class TaxonOnContig {
 		
 	}
 	
-	public TaxonOnContig(Sample sample, Contig contig, Taxon taxon, Double covarage) {
+	public TaxonOnContig(Sample sample, Contig contig, TaxonomicRank rank, Taxon taxon, Double covarage) {
 		this.contig = contig;
 		this.taxon = taxon;
+		this.rank = rank;
 		this.covarage = covarage;
 		this.sample = sample;
 	}
@@ -40,6 +46,9 @@ public class TaxonOnContig {
 		return id;
 	}
 
+	public TaxonomicRank getRank(){
+		return rank;
+	}
 
 	public Taxon getTaxon() {
 		return taxon;

@@ -9,6 +9,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
+
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -26,9 +29,6 @@ import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Taxon;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 
 @Controller
 public class ContigController {
@@ -147,7 +147,8 @@ public class ContigController {
 		Double INT = contigControllerHelper.calculateIndexOfNOTaxon(contig, readsOnContig, rank);
 		Double IConfT = contigControllerHelper.calculateIndexOfConfusionTaxonomic(contig, readsOnContig, rank);
 		Double IVCT = contigControllerHelper.calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank);
-		Double IConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(readsOnContig, rank);
+		
+		Double IConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomicByCountReads(readsOnContig, rank);
 		
 		Double IGConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(contig, readsOnContig, rank);
 		
@@ -175,16 +176,31 @@ public class ContigController {
 	}
 	
 	private Double calculateConsistencyTaxonomicScoreOfContig(Contig contig, List<Read> readsOnContig){
+		HashMap<String, Integer> rankMapValue = new HashMap<String, Integer>();
+		rankMapValue.put("species", 7);
+		rankMapValue.put("genus", 6);
+		rankMapValue.put("family", 5);
+		rankMapValue.put("order", 4);
+		rankMapValue.put("class", 3);
+		rankMapValue.put("phylum", 2);
+		rankMapValue.put("superkingdom", 1);
 		
-		List<String> rankList = Arrays.asList("species", "genus", "family", "order", "class", "phylum", "superkingdom");
+		
+//		List<String> rankList = Arrays.asList("species", "genus", "family", "order", "class", "phylum", "superkingdom");
+		
 		Double IGGConsT = 0d;
+		Double totalRankWeight = 0d;
 	
-		for (String rank : rankList) {
-			IGGConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomic(contig, readsOnContig, rank) + IGGConsT;
+		for (String rank : rankMapValue.keySet()) {
+			Integer rankValue = rankMapValue.get(rank);
+			totalRankWeight = totalRankWeight + rankValue;
+			IGGConsT = (contigControllerHelper.calculateIndexOfConsistencyTaxonomicByCountReads(readsOnContig, rank) * rankValue) + IGGConsT;
 		}
 		
 		
-		return (IGGConsT / rankList.size());
+		System.out.println("total rank weight: " + totalRankWeight);
+		
+		return (IGGConsT / totalRankWeight);
 	}
 
 

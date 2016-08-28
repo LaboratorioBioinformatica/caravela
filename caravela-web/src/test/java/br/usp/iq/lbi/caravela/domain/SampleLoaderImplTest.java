@@ -33,6 +33,7 @@ public class SampleLoaderImplTest {
 	@Ignore
 	@Test
 	public void test() throws Exception {
+		Long sampleId = 1l;
 		
 		Sample sample = new Sample(new Treatment(), SampleStatus.UPLOADED,"zcth-02", "description zcth-02");
 		
@@ -53,7 +54,7 @@ public class SampleLoaderImplTest {
 		
 		
 		SampleLoaderImpl target = new SampleLoaderImpl(mockContigTOProcessor);
-		target.loadFromFileToDatabase(sample);
+		target.loadFromFileToDatabase(sampleId);
 		
 		Mockito.verify(mockContigTOProcessor).convert(sample, contigTO);
 		

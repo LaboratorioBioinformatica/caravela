@@ -11,6 +11,9 @@ import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import br.usp.iq.lbi.caravela.controller.ContigControllerHelper;
 import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
@@ -25,11 +28,15 @@ import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
 import br.usp.iq.lbi.caravela.model.TaxonOnContig;
+import br.usp.iq.lbi.caravela.model.TaxonomicRank;
 
 @RequestScoped
 public class SampleReporterImpl implements SampleReporter {
 
-	private static final int _100 = 100;
+	private static final Double ZERO = 0d;
+
+	private static final Logger logger = LoggerFactory.getLogger(SampleReporterImpl.class);
+	
 	private static final Long MAX_RECORD_PER_PAGE = 10000l;
 	
 	@Inject private ContigDAO contigDAO;
@@ -73,6 +80,7 @@ public class SampleReporterImpl implements SampleReporter {
 //			System.out.println("################################################################################################");
 //			System.out.print("contig: " + contig.getId());
 			createReportByContig(sample, rank, contig);
+			classifiedReadsByContex(sample, rank, contig);
 
 		}
 	}
@@ -80,6 +88,9 @@ public class SampleReporterImpl implements SampleReporter {
 
 
 	public void createReportByContig(Sample sample, String rank, Contig contig) {
+		logger.info("Staring Cotig report: " + contig.getReference());
+		logger.info("Number of reads on contig: " + contig.getReads().size());
+		
 		List<Read> readsOnContig = contig.getReads();
 
 		IntervalTree<Taxon> intervalTree = new IntervalTree<Taxon>();
@@ -91,10 +102,25 @@ public class SampleReporterImpl implements SampleReporter {
 		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
 
 		Map<Taxon, Double> taxonCovarageMap = new HashMap<Taxon, Double>();
+		Double greaterNumberOfHitByTaxon = ZERO;
+		
+		
 		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
 			Double numberOfBaseOfPairAssignedToTaxon = 0d;
 			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
 			List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
+			
+			
+			if( ! taxonKey.equals(Taxon.getNOTaxon())){
+				double numberOfReads =  readListValue.size();
+				if(numberOfReads > greaterNumberOfHitByTaxon){
+					greaterNumberOfHitByTaxon = numberOfReads;
+				}
+			}
+			
+			
+			
+			
 			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
 
 			if (!taxonKey.equals(Taxon.getNOTaxon())) {
@@ -106,7 +132,7 @@ public class SampleReporterImpl implements SampleReporter {
 					intervalTree.addInterval(x, y, taxonKey);
 				}
 
-				Double taxonCovarage = (numberOfBaseOfPairAssignedToTaxon * _100) / contig.getSize();
+				Double taxonCovarage = (numberOfBaseOfPairAssignedToTaxon / contig.getSize());
 				taxonCovarageMap.put(taxonKey, taxonCovarage);
 
 			}
@@ -125,7 +151,7 @@ public class SampleReporterImpl implements SampleReporter {
 			numberOfBasePairAssignedToUndefined = (segment.getY() - segment.getX()) + numberOfBasePairAssignedToUndefined;
 		}
 
-		Double percentageOfContingAssignedToUndefined = (numberOfBasePairAssignedToUndefined * 100) / contig.getSize();
+		Double percentageOfContingAssignedToUndefined = (numberOfBasePairAssignedToUndefined / contig.getSize());
 
 		segmentsCandidatesToBeBoundaries.addAll(undfinedSegmentsConsensus);
 
@@ -147,7 +173,7 @@ public class SampleReporterImpl implements SampleReporter {
 			numberOfBasePairAssignedToUnclassified = (segment.getY() - segment.getX()) + numberOfBasePairAssignedToUnclassified;
 		}
 
-		Double percentageOfContingAssignedToUnclassified = (numberOfBasePairAssignedToUnclassified * 100) / contig.getSize();
+		Double percentageOfContingAssignedToUnclassified = (numberOfBasePairAssignedToUnclassified / contig.getSize());
 
 		segmentsCandidatesToBeBoundaries.addAll(unclassifiedRegions);
 
@@ -168,39 +194,56 @@ public class SampleReporterImpl implements SampleReporter {
 			}
 
 		}
+		
+		Double indexOfVerticalConsistencyTaxonomic  = (1 - (percentageOfContingAssignedToUnclassified + percentageOfContingAssignedToUndefined));
+		Double indexOfConsistencyTaxonomicByCountReads = (greaterNumberOfHitByTaxon / contig.getNumberOfReads());
+	
+		if(indexOfVerticalConsistencyTaxonomic.isNaN()){
+			indexOfVerticalConsistencyTaxonomic = 0d;
+		}
+		
+		if(indexOfConsistencyTaxonomicByCountReads.isNaN()){
+			indexOfConsistencyTaxonomicByCountReads = 0d;
+		}
+		
+//		logger.info("ivct" + indexOfVerticalConsistencyTaxonomic.toString());
+//		logger.info("ictcr" + indexOfConsistencyTaxonomicByCountReads.toString());
 
-		ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined);
+		ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined, indexOfConsistencyTaxonomicByCountReads, indexOfVerticalConsistencyTaxonomic);
 
 		contigStatisticByTiiDAO.save(reportContig);
 
-//			System.out.println(" tii: "
-//					+ contig.getTaxonomicIdentificationIndex()
-//					+ " boundaries: " + boundariesSegments.size()
-//					+ " unclissified: "
-//					+ percentageOfContingAssignedToUnclassified +
-//
-//					" undefined: " + percentageOfContingAssignedToUndefined
-//
-//			);
 
 		Set<Taxon> keySet = taxonCovarageMap.keySet();
 		int numberOfTaxonOnContig = keySet.size();
 		for (Taxon taxon : keySet) {
-			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, taxon, taxonCovarageMap.get(taxon));
+			// adicinoar número de reads associado a cada táxon (isso posibilita calcular outras coisa, pensar sobre isso!) Também precisa ser por rank! 
+			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), taxon, taxonCovarageMap.get(taxon));
 			taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
-//				System.out.println(taxon.getScientificName() + " : "+ taxonCovarageMap.get(taxon));
 		}
 		
-		Map<Taxon, List<Read>> unclassifiedReadThatCouldBeClassified = contigControllerHelper.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
-		Set<Taxon> taxons = unclassifiedReadThatCouldBeClassified.keySet();
-		int size = unclassifiedReadThatCouldBeClassified.values().size();
-		for (Taxon taxon : taxons) {
-			List<Read> list = unclassifiedReadThatCouldBeClassified.get(taxon);
-			for (Read read : list) {
-				ClassifiedReadByContex reportClassifiedReadByContex = new ClassifiedReadByContex(sample, contig, read, taxon);
+		
+	}
+
+
+
+	public List<ClassifiedReadByContex> classifiedReadsByContex(Sample sample, String rank, Contig contig) {
+		List<Read> readsOnContig = contig.getReads();
+		final Map<Taxon, List<Read>> unclassifiedReadThatCouldBeClassified = contigControllerHelper.searchbyUnclassifiedReadThatCouldBeClassified(readsOnContig, rank);
+		final Set<Taxon> taxons = unclassifiedReadThatCouldBeClassified.keySet();
+		final int size = unclassifiedReadThatCouldBeClassified.values().size();
+		
+		List<ClassifiedReadByContex> readClassiedByContex = new ArrayList<>();
+		
+		for (final Taxon taxon : taxons) {
+			final List<Read> list = unclassifiedReadThatCouldBeClassified.get(taxon);
+			for (final Read read : list) {
+				final ClassifiedReadByContex reportClassifiedReadByContex = new ClassifiedReadByContex(sample, contig, read, taxon);
+				readClassiedByContex.add(reportClassifiedReadByContex);
 				classifiedReadByContextDAO.addBatch(reportClassifiedReadByContex, size);
 			}
 		}
+		return readClassiedByContex;
 	}
 
 }

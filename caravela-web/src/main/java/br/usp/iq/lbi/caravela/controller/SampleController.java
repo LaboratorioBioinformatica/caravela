@@ -13,6 +13,7 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.validator.Severity;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
+import br.com.caelum.vraptor.view.Results;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
@@ -25,6 +26,7 @@ import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleStatus;
+import br.usp.iq.lbi.caravela.model.TaxonomicRank;
 import br.usp.iq.lbi.caravela.model.Treatment;
 
 
@@ -127,9 +129,15 @@ public class SampleController {
 	
 	@Post
 	public void process(Long sampleId){
-		Sample sample = sampleDAO.load(sampleId);
-		sampleLoader.loadFromFileToDatabase(sample);
-		validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
+		
+		try {
+			sampleLoader.loadFromFileToDatabase(sampleId);
+			validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
+		} catch (Exception e) {
+			e.printStackTrace();
+			validator.add(new SimpleMessage("sample.process", "Something was wrong!", Severity.ERROR));
+			result.use(Results.http()).sendError(500, "Error to process sample");
+		}
 		result.forwardTo(this).list(sampleId);
 	}
 	
@@ -158,20 +166,25 @@ public class SampleController {
 	public void analyze(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
 		Double tiiGreaterOrEqualsThan = 0.5;
-		Integer numberOfFeaturesGreaterOrEqualsThan = 1;
+		Integer numberOfFeaturesGreaterOrEqualsThan = 0;
 		Integer numberOfBoundariesLessOrEqualsThan = 0;
-		Double unclassifiedLessOrEqualsThan = 0.0;
-		Double undefinedLessOrEqualsThan = 0.0;
+		Double indexOfConsistencyTaxonomicByCountReadsGreaterOrEqualsThan = 0.40;
+		Double indexOfVerticalConsistencyTaxonomicGreaterOrEqualsThan = 0.70;
+		TaxonomicRank genus = TaxonomicRank.GENUS;
+		String rankString = genus.toString();
+		
 		Integer firstResult = 0;
 		Integer maxResult = 100;
 		
-		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, numberOfBoundariesLessOrEqualsThan, unclassifiedLessOrEqualsThan, undefinedLessOrEqualsThan, firstResult, maxResult);
+		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, genus, numberOfBoundariesLessOrEqualsThan, indexOfConsistencyTaxonomicByCountReadsGreaterOrEqualsThan, indexOfVerticalConsistencyTaxonomicGreaterOrEqualsThan, firstResult, maxResult);
 
+		
+		result.include("rankSelected", rankString.toUpperCase());
 		result.include("tiiGreaterOrEqualsThan", tiiGreaterOrEqualsThan);
 		result.include("numberOfFeaturesGreaterOrEqualsThan", numberOfFeaturesGreaterOrEqualsThan);
 		result.include("numberOfBoundariesLessOrEqualsThan", numberOfBoundariesLessOrEqualsThan);
-		result.include("unclassifiedLessOrEqualsThan", unclassifiedLessOrEqualsThan);
-		result.include("undefinedLessOrEqualsThan", undefinedLessOrEqualsThan);
+		result.include("ICTCRGreaterOrEqualsThan", indexOfConsistencyTaxonomicByCountReadsGreaterOrEqualsThan);
+		result.include("IVCTGreaterOrEqualsThan", indexOfVerticalConsistencyTaxonomicGreaterOrEqualsThan);
 		result.include("firstResult", firstResult);
 		
 		result.include("contigList", contigList);
@@ -181,17 +194,22 @@ public class SampleController {
 	
 	@Post
 	@Path("/sample/analyze/by")
-	public void analyze(Long sampleId, Double tiiGreaterOrEqualsThan, Integer numberOfFeaturesGreaterOrEqualsThan, Integer numberOfBoundariesLessOrEqualsThan, Double unclassifiedLessOrEqualsThan, Double undefinedLessOrEqualsThan){
+	public void analyze(Long sampleId, Double tiiGreaterOrEqualsThan, Integer numberOfFeaturesGreaterOrEqualsThan, String rank, Integer numberOfBoundariesLessOrEqualsThan, Double ICTCRGreaterOrEqualsThan, Double IVCTGreaterOrEqualsThan){
 		Sample sample = sampleDAO.load(sampleId);
 		Integer firstResult = 0;
 		Integer maxResult = 100;
-		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, numberOfBoundariesLessOrEqualsThan, unclassifiedLessOrEqualsThan, undefinedLessOrEqualsThan, firstResult, maxResult);
+		String rankString = rank.toUpperCase();
+		TaxonomicRank taxonomicRank = TaxonomicRank.valueOf(rankString);
+		
+		
+		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, taxonomicRank, numberOfBoundariesLessOrEqualsThan, ICTCRGreaterOrEqualsThan, IVCTGreaterOrEqualsThan, firstResult, maxResult);
 	
+		result.include("rankSelected", rankString.toUpperCase());
 		result.include("tiiGreaterOrEqualsThan", tiiGreaterOrEqualsThan);
 		result.include("numberOfFeaturesGreaterOrEqualsThan", numberOfFeaturesGreaterOrEqualsThan);
 		result.include("numberOfBoundariesLessOrEqualsThan", numberOfBoundariesLessOrEqualsThan);
-		result.include("unclassifiedLessOrEqualsThan", unclassifiedLessOrEqualsThan);
-		result.include("undefinedLessOrEqualsThan", undefinedLessOrEqualsThan);
+		result.include("ICTCRGreaterOrEqualsThan", ICTCRGreaterOrEqualsThan);
+		result.include("IVCTGreaterOrEqualsThan", IVCTGreaterOrEqualsThan);
 		result.include("firstResult", firstResult);
 		
 		result.include("contigList", contigList);

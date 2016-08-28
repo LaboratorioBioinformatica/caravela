@@ -235,10 +235,10 @@ public class ContigControllerHelper {
 	}
 	
 	public Double calculateIndexOfConsistencyTaxonomic(Contig contig, List<Read> readsOnContig, String rank) {
-		return (calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank) * calculateIndexOfConsistencyTaxonomic(readsOnContig, rank)) ;
+		return (calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank) * calculateIndexOfConsistencyTaxonomicByCountReads(readsOnContig, rank)) ;
 	}
 	
-	public Double calculateIndexOfConsistencyTaxonomic(List<Read> readsOnContig, String rank){
+	public Double calculateIndexOfConsistencyTaxonomicByCountReads(List<Read> readsOnContig, String rank){
 		double totalReadsOnContig = readsOnContig.size();
 		double greaterNumberOfHitByTaxon = ZERO;
 		

@@ -48,13 +48,13 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 		featureCreator.createList(contig, contigTO.getFeatures());
 		
 		List<ReadOnContigTO> readsOnCotig = contigTO.getReadsOnCotig();
-		createAndSaveReadsAndTaxons(sample, contig, readsOnCotig);
-		
+		List<Read> readsOnContigSaved = createAndSaveReadsAndTaxons(sample, contig, readsOnCotig);
+		contig.addReads(readsOnContigSaved);
 		return contig;
 
 	}
 
-	public void createAndSaveReadsAndTaxons(Sample sample, Contig contig, List<ReadOnContigTO> readsOnCotig ){
+	public List<Read> createAndSaveReadsAndTaxons(Sample sample, Contig contig, List<ReadOnContigTO> readsOnCotig ){
 
 		List<Read> reads = new ArrayList<Read>();
 		
@@ -97,6 +97,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 			
 			
 		}
+		return reads;
 		
 	}
 

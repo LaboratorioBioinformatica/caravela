@@ -93,9 +93,12 @@ create table contig_statistic_by_tii (
 	id INT NOT NULL AUTO_INCREMENT,
 	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
+	rank VARCHAR(50) NOT NULL,
 	boundary INT NOT null,
 	unclassified DOUBLE NOT NULL,
 	undefined DOUBLE NOT NULL,
+	ictcr DOUBLE NOT NULL,
+	ivct DOUBLE NOT NULL,
 	PRIMARY KEY(id),
 	INDEX (sample_id), INDEX(contig_id)
 );
@@ -106,6 +109,7 @@ create table taxon_on_contig (
 	id INT NOT NULL AUTO_INCREMENT,
 	sample_id INT NOT NULL,
 	contig_id INT NOT NULL,
+	rank VARCHAR(50) NOT NULL,
 	taxon_id INT NOT NULL,
 	covarage DOUBLE NOT NULL,
 	PRIMARY KEY(id),

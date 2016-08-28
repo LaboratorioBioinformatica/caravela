@@ -128,9 +128,14 @@ $(document).ready(function(){
 	$('#bnt-process').on('click', function(){
 		var $btn = $(this).button('loading');
 		var sampleIdToBeProcess = $(this).prop("value");
-		$.post('${linkTo[SampleController].process}', {sampleId: sampleIdToBeProcess}, 
-			function(){
+		$.post('${linkTo[SampleController].process}', {sampleId: sampleIdToBeProcess})
+			.done(function(msg){
 				window.location.href = "${linkTo[SampleController].listByTreatment}${treatmentSelected}";
+			})
+			.fail(function(xhr, status, error){
+				console.log(xhr);
+				console.log(status);
+				console.log(error);
 			});
 		
 	});

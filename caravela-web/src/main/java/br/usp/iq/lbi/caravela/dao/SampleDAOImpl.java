@@ -32,11 +32,5 @@ public class SampleDAOImpl extends DAOImpl<Sample> implements SampleDAO {
 		query.setParameter("treatment", treatment);
 		return query.getResultList();
 	}
-	
-	
-
-
-
-	
 
 }
