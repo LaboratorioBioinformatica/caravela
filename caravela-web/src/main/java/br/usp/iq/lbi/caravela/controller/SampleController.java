@@ -173,12 +173,15 @@ public class SampleController {
 		TaxonomicRank genus = TaxonomicRank.GENUS;
 		String rankString = genus.toString();
 		
+		Double taxonCoverage = 0.50;
+		
 		Integer firstResult = 0;
 		Integer maxResult = 100;
 		
 		List<Contig> contigList = contigDAO.FindByContigBySample(sample, tiiGreaterOrEqualsThan, numberOfFeaturesGreaterOrEqualsThan, genus, numberOfBoundariesLessOrEqualsThan, indexOfConsistencyTaxonomicByCountReadsGreaterOrEqualsThan, indexOfVerticalConsistencyTaxonomicGreaterOrEqualsThan, firstResult, maxResult);
 
 		
+		result.include("taxonCoverage", taxonCoverage);
 		result.include("rankSelected", rankString.toUpperCase());
 		result.include("tiiGreaterOrEqualsThan", tiiGreaterOrEqualsThan);
 		result.include("numberOfFeaturesGreaterOrEqualsThan", numberOfFeaturesGreaterOrEqualsThan);

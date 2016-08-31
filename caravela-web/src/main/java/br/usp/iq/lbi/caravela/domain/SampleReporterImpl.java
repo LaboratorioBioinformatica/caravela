@@ -102,6 +102,7 @@ public class SampleReporterImpl implements SampleReporter {
 		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
 
 		Map<Taxon, Double> taxonCovarageMap = new HashMap<Taxon, Double>();
+		Map<Taxon, Integer> numberOfReadsByTaxon = new HashMap<Taxon, Integer>();
 		Double greaterNumberOfHitByTaxon = ZERO;
 		
 		
@@ -113,12 +114,11 @@ public class SampleReporterImpl implements SampleReporter {
 			
 			if( ! taxonKey.equals(Taxon.getNOTaxon())){
 				double numberOfReads =  readListValue.size();
+				numberOfReadsByTaxon.put(taxonKey, readListValue.size());
 				if(numberOfReads > greaterNumberOfHitByTaxon){
 					greaterNumberOfHitByTaxon = numberOfReads;
 				}
 			}
-			
-			
 			
 			
 			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
@@ -217,8 +217,8 @@ public class SampleReporterImpl implements SampleReporter {
 		Set<Taxon> keySet = taxonCovarageMap.keySet();
 		int numberOfTaxonOnContig = keySet.size();
 		for (Taxon taxon : keySet) {
-			// adicinoar número de reads associado a cada táxon (isso posibilita calcular outras coisa, pensar sobre isso!) Também precisa ser por rank! 
-			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), taxon, taxonCovarageMap.get(taxon));
+			// adicinoar número de reads associado a cada táxon (isso posibilita calcular outras coisa, pensar sobre isso!) Também precisa ser por rank!
+			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), taxon, taxonCovarageMap.get(taxon), numberOfReadsByTaxon.get(taxon));
 			taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
 		}
 		

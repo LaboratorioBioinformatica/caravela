@@ -35,7 +35,7 @@ public class Feature implements Serializable {
 	private Integer strand;
 	@ManyToOne
 	private Taxon taxon;
-	@OneToOne(fetch=FetchType.EAGER, mappedBy="feature", cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.LAZY, mappedBy="feature", cascade=CascadeType.ALL)
 	private GeneProduct geneProduct;
 	@OneToOne(fetch=FetchType.EAGER, mappedBy="feature", cascade=CascadeType.ALL)
 	private Philodist philodist;

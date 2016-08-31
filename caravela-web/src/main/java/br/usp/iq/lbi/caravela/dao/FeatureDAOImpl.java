@@ -25,17 +25,10 @@ public class FeatureDAOImpl extends DAOImpl<Feature> implements FeatureDAO {
 	}
 	
 	public List<Contig> FindBySampleAndGeneProductSource(Sample sample, String geneProductSource) {
-		TypedQuery<Contig> query = entityManager.createQuery("SELECT DISTINCT c FROM Feature f INNER JOIN f.contig c  WHERE c.sample=:sample and f.productSource=:geneProductSource", Contig.class);
+		TypedQuery<Contig> query = entityManager.createQuery("SELECT DISTINCT c FROM Feature f INNER JOIN f.contig c  WHERE c.sample=:sample and f.geneProduct.source=:geneProductSource", Contig.class);
 		List<Contig> contigList = query.setParameter("sample", sample)
 				.setParameter("geneProductSource", geneProductSource).getResultList();
 		return contigList;
-	}
-	
-	public List<Feature> FindBySampleAndGeneProductName(Sample sample, String geneProductName) {
-		TypedQuery<Feature> query = entityManager.createQuery("SELECT DISTINCT f FROM Feature f WHERE f.contig.sample=:sample and f.productName LIKE:geneProductName", Feature.class);
-		List<Feature> featureList = query.setParameter("sample", sample)
-				.setParameter("geneProductName", "%"+geneProductName+"%").getResultList();
-		return featureList;
 	}
 	
 

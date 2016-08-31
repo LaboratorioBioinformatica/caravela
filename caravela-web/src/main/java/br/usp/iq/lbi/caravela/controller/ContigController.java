@@ -145,7 +145,10 @@ public class ContigController {
 		
 		List<Read> readsOnContig = contig.getReads();
 		Double INT = contigControllerHelper.calculateIndexOfNOTaxon(contig, readsOnContig, rank);
+		
 		Double IConfT = contigControllerHelper.calculateIndexOfConfusionTaxonomic(contig, readsOnContig, rank);
+		
+		
 		Double IVCT = contigControllerHelper.calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank);
 		
 		Double IConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomicByCountReads(readsOnContig, rank);
@@ -198,7 +201,7 @@ public class ContigController {
 		}
 		
 		
-		System.out.println("total rank weight: " + totalRankWeight);
+//		System.out.println("total rank weight: " + totalRankWeight);
 		
 		return (IGGConsT / totalRankWeight);
 	}

@@ -92,20 +92,31 @@
 											
 											<c:when test="${sampleStatus == 'PROCESSED'}">
 												<div>
-													<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button">
+													<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button" data-toggle="popover" data-trigger="hover" data-content="Click to analyze">
 													<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-													<span class="glyphicon-class">Analyze</span>
 													</a>
-												</div>	
+												
+													<a href="${linkTo[ContigReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report taxonomically good resolved contigs" class="btn btn-primary" role="button">
+														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+													</a>
+													
+													<a href="${linkTo[ContigReportController].taxonOnContigReport}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report taxa on contig good resolved contigs" class="btn btn-primary" role="button">
+														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+													</a>
+													
+													<a href="${linkTo[TaxonomicReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report reads no taxon classified by context" class="btn btn-primary" role="button">
+														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+													</a>
+												</div>													
+												
 											</c:when>
 											
 										</c:choose>
 										<div>
 											<form action="${linkTo[SampleController].deleteSample}" name="form-sample-delete" class="form-inline" role="form" method="post">
 													<input type="hidden" name="sampleId" value="${sample.id}">
-													<button type="submit" class="btn btn-danger" aria-label="Left Align"> 
+													<button type="submit" class="btn btn-danger" aria-label="Left Align" data-toggle="popover" data-trigger="hover" data-content="Click to delete"> 
 														<span class="glyphicon glyphicon-trash"aria-hidden="true"></span>
-														<span class="glyphicon-class">Delete</span>
 													</button>
 											</form>		
 										</div>
@@ -124,6 +135,9 @@
 
 $(document).ready(function(){
 	
+	$(function () {
+		  $('[data-toggle="popover"]').popover()
+	});
 	
 	$('#bnt-process').on('click', function(){
 		var $btn = $(this).button('loading');

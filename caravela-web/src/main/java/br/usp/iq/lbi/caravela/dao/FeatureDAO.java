@@ -9,6 +9,5 @@ import br.usp.iq.lbi.caravela.model.Sample;
 public interface FeatureDAO extends DAO<Feature>  {
 	List<Feature> loadAllFeaturesByContig(Contig contig);
 	List<Contig> FindBySampleAndGeneProductSource(Sample sample, String geneProductSource);
-	List<Feature> FindBySampleAndGeneProductName(Sample sample, String geneProductName);
 
 }

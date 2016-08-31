@@ -53,11 +53,15 @@ public class Contig implements Serializable {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig", orphanRemoval=true)
 	private List<Feature> features;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig", orphanRemoval=true)
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig", orphanRemoval=true)
 	private List<Read> reads;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="contig", orphanRemoval=true)
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig", orphanRemoval=true)
 	private List<ContigStatisticByTii> indexes;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="contig", orphanRemoval=true)
+	private List<TaxonOnContig> taxonOnContig;
+	
 	
 	public Contig() {}
 	
@@ -188,6 +192,10 @@ public class Contig implements Serializable {
 		return taxonCounterList;
 	}
 	
+	public List<TaxonOnContig> getAllTaxaOnContig(){
+		return taxonOnContig;
+	}
+	
 	
 	public HashMap<Long, TaxonCounterTO> getTaxonCounterTOHashMap(){
 		
@@ -224,6 +232,5 @@ public class Contig implements Serializable {
 		this.size.equals(contig.getSize());
 		
 	}
-	
 
 }

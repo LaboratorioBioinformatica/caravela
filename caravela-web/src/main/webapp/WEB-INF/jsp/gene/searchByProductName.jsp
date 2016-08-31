@@ -22,12 +22,12 @@
 					    </tr>
 					</thead>
 					<tbody>
-						<c:forEach var="feature" items="${featureList}">
+						<c:forEach var="geneProduct" items="${geneProductList}">
 							<tr>
-								<td>${feature.productName}</td>
+								<td>${geneProduct.product}</td>
 								<td>
-									<span  class="glyphicon-class">${feature.productSource}</span>
-									<a href="<c:url value="/gene/search/by/producSource/${sample.id}/${feature.productSource}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+									<span  class="glyphicon-class">${geneProduct.source}</span>
+									<a href="<c:url value="/gene/search/by/producSource/${sample.id}/${geneProduct.source}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
 								</td>
 							</tr> 
 						</c:forEach>			

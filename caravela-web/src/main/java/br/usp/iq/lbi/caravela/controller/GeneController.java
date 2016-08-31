@@ -3,6 +3,7 @@ package br.usp.iq.lbi.caravela.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -18,13 +19,13 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.GeneSearch;
 import br.usp.iq.lbi.caravela.dto.TaxonCounterTO;
 import br.usp.iq.lbi.caravela.model.Contig;
-import br.usp.iq.lbi.caravela.model.Feature;
+import br.usp.iq.lbi.caravela.model.GeneProduct;
 import br.usp.iq.lbi.caravela.model.Sample;
 
 @Controller
 public class GeneController {
 	
-	private static final Integer DEFAULT_TAXON_COVERAGE = 50;
+	private static final Double DEFAULT_TAXON_COVERAGE = 0.50;
 	private final Result result;
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
@@ -49,7 +50,7 @@ public class GeneController {
 	@Path("/gene/search/by/producSource")
 	public void searchByProductSource(Long sampleId, String productSource) {
 		Sample sample = sampleDAO.load(sampleId);
-		List<Contig> contigList = geneSearch.SearchContigListBySampleAndGeneProductSource(sample, productSource);
+		List<Contig> contigList = geneSearch.searchContigListBySampleAndGeneProductSource(sample, productSource);
 		
 		HashMap<Long,TaxonCounterTO> taxonCounterTOHashMap = new HashMap<Long, TaxonCounterTO>();
 		for (Contig contig : contigList) {
@@ -75,16 +76,16 @@ public class GeneController {
 		result.forwardTo(this).searchByProductSource(sampleId, productSource);
 	}
 	
-	
 	@Post
 	@Path("/gene/search/by/productName")
 	public void searchByProductName(Long sampleId, String productName) {
 		Sample sample = sampleDAO.load(sampleId);
-		List<Feature> featureList = geneSearch.SearchFeatureListBySampleAndGeneProductName(sample, productName);
-
+		
+		HashSet<GeneProduct> geneProductHashSet = geneSearch.searchGeneProductBySampleAndGeneProductName(sample, productName);
+		
 		result.include("productName", productName);
 		result.include("sample", sample);
-		result.include("featureList", featureList);
+		result.include("geneProductList", geneProductHashSet);
 		
 	}
 

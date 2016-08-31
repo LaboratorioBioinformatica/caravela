@@ -254,8 +254,8 @@ public class ContigControllerHelper {
 				
 			}
 		}
-		System.out.println("total of reads on contig: " + totalReadsOnContig);
-		System.out.println("greater number of hit by taxon: " + greaterNumberOfHitByTaxon);
+//		System.out.println("total of reads on contig: " + totalReadsOnContig);
+//		System.out.println("greater number of hit by taxon: " + greaterNumberOfHitByTaxon);
 		
 		return (greaterNumberOfHitByTaxon / totalReadsOnContig);
 		

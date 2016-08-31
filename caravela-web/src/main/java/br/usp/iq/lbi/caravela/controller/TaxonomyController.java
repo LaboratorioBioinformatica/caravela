@@ -21,6 +21,7 @@ import br.usp.iq.lbi.caravela.dto.search.GeneProductCounterTO;
 import br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
+import br.usp.iq.lbi.caravela.model.GeneProduct;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.Taxon;
 
@@ -53,10 +54,9 @@ public class TaxonomyController {
 	
 
 	@Path("/taxonomy/search/{sampleId}/{taxonomyId}/{taxonCoverage}")
-	public void search(Long sampleId, Long taxonomyId, Double taxonCoverage) {
-		Sample sample = sampleDAO.load(sampleId);
-		
-		List<Contig> contigList = taxonomySearch.SearchContigBySampleTaxonomyIdAndTaxonCovarage(sample, taxonomyId, taxonCoverage);
+	public void search(Long sampleId, Long taxonomyId, String taxonCoverage) {
+		Sample sample = sampleDAO.load(sampleId);		
+		List<Contig> contigList = taxonomySearch.SearchContigBySampleTaxonomyIdAndTaxonCovarage(sample, taxonomyId, new Double(taxonCoverage));
 		Hashtable<String, GeneProductCounterTO> geneProductCounterTOHashTable = new Hashtable<String, GeneProductCounterTO>();
 		
 		for (Contig contig : contigList) {
@@ -98,15 +98,18 @@ public class TaxonomyController {
 	
 	private void createGeneProductCounterTOHashMap(List<Feature> features, Hashtable<String,GeneProductCounterTO> geneProductCounterTOHashTable) {
 		for (Feature feature : features) {
-			String productSource = feature.getGeneProduct().getSource();
-			if(productSource != null){
-				GeneProductTO geneProduct = new GeneProductTO(feature.getGeneProduct().getProduct(), productSource);
-				GeneProductCounterTO geneProductCounterTO = geneProductCounterTOHashTable.get(productSource);
-				
-				if(geneProductCounterTO == null){
-					geneProductCounterTOHashTable.put(productSource, new GeneProductCounterTO(geneProduct));
-				} else {
-					geneProductCounterTO.addOne();
+			 GeneProduct product = feature.getGeneProduct();
+			if(product != null){
+				String source = product.getSource();
+				if(source != null){
+					GeneProductTO geneProduct = new GeneProductTO(feature.getGeneProduct().getProduct(), source);
+					GeneProductCounterTO geneProductCounterTO = geneProductCounterTOHashTable.get(source);
+					
+					if(geneProductCounterTO == null){
+						geneProductCounterTOHashTable.put(source, new GeneProductCounterTO(geneProduct));
+					} else {
+						geneProductCounterTO.addOne();
+					}
 				}
 			}
 		}

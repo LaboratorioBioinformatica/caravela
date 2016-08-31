@@ -1,5 +1,6 @@
 package br.usp.iq.lbi.caravela.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,15 +31,19 @@ public class TaxonOnContig {
 	
 	private Double covarage;
 	
+	@Column(name="number_of_reads")
+	private Integer numberOfReads;
+	
 	public TaxonOnContig() {
 		
 	}
 	
-	public TaxonOnContig(Sample sample, Contig contig, TaxonomicRank rank, Taxon taxon, Double covarage) {
+	public TaxonOnContig(Sample sample, Contig contig, TaxonomicRank rank, Taxon taxon, Double covarage, Integer numberOfReads) {
 		this.contig = contig;
 		this.taxon = taxon;
 		this.rank = rank;
 		this.covarage = covarage;
+		this.numberOfReads = numberOfReads;
 		this.sample = sample;
 	}
 
@@ -64,6 +69,10 @@ public class TaxonOnContig {
 
 	public Contig getContig() {
 		return contig;
+	}
+	
+	public Integer getNumberOfReads(){
+		return numberOfReads;
 	}
 	
 

@@ -21,9 +21,11 @@
 							<span class="col-sm-4"></span>
 						</div>
 						<div class="form-group">
-							<label for="taxonCoverage" class="col-sm-2 control-label"> Taxon covarage - (between 0 and 100) - Less or equals </label>
+						
+							<label for="taxonCoverage" class="col-sm-2 control-label"> Taxon covarage - (between 0 and 1) - Less or equals </label>
 							<div class="col-sm-6">
-								<input class="form-control" value="50" size="3" maxlength="3" min=0 max=100 type="number" id="taxonCoverage" name="taxonCoverage">
+								<fmt:formatNumber type="number" maxIntegerDigits="4" value="${taxonCoverage}" var="taxonCoverageFormated" />
+								<input class="form-control" value="${taxonCoverageFormated}" size="4" maxlength="4" type="text" id="taxonCoverage" name="taxonCoverage">
 							</div>
 							<span class="col-sm-4"></span>
 						</div>
@@ -142,6 +144,7 @@
 					<div class="col-sm-2">
 						<fmt:formatNumber type="number" maxIntegerDigits="4" value="${IVCTGreaterOrEqualsThan}" var="IVCTGreaterOrEqualsThanFormated" />
 						<input class="form-control" value="${IVCTGreaterOrEqualsThanFormated}" size="4" maxlength="4"  type="text" id="IVCTGreaterOrEqualsThan" name="IVCTGreaterOrEqualsThan">
+						
 					</div>
 					<div class="col-sm-2">
 						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="IVCT" data-content="IVCT: Index of Vertical Consistency Taxonomic - Put a value between 0.00 and 1"> 
