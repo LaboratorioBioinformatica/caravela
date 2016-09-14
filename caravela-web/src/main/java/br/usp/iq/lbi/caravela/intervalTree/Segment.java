@@ -74,7 +74,7 @@ private static final long serialVersionUID = 6552981806740144131L;
 					resultList.add(remnantSegmentOnRigth);
 				}
 			
-				if (hasRemnantSegmentOnLeft(this.x, other.x -1)) {
+				if (hasRemnantSegmentOnLeft(this.x, other.x)) {
 					Segment<Type> remnantSegmentOnLeft = createRemnantSegment(this.x, other.x -1, this.getData());
 					resultList.add(remnantSegmentOnLeft);
 				}

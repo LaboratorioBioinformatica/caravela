@@ -297,6 +297,22 @@ public class SegmentTest {
 		
 	}
 	
+	@Test
+	public void testSubtracionbetweenSegmentsWhenResultIsOnlyFistBaseFromMinuend() throws Exception {
+		List<Taxon> dataListTaxonA = createTaxonDataList(1l,1l,"A", "taxon hank A");
+		List<Taxon> dataListTaxonB = createTaxonDataList(2l, 1l,"B", "taxon hank B");
+		
+		Segment<Taxon> reference = new Segment<Taxon>(1, 311, dataListTaxonA);
+		
+		Segment<Taxon> subtrahend = new Segment<Taxon>(2, 311, dataListTaxonB);
+		
+		List<Segment<Taxon>> subtractResultList = new ArrayList<Segment<Taxon>>();
+		subtractResultList.add(new Segment<Taxon>(1,1, dataListTaxonA));
+		
+		Assert.assertEquals(subtractResultList, reference.subtract(subtrahend));
+		
+	}
+	
 	
 	private List<Segment<Taxon>> createSubtractResultList(Segment<Taxon>... segments){
 		List<Segment<Taxon>> resultList = new ArrayList<Segment<Taxon>>();
