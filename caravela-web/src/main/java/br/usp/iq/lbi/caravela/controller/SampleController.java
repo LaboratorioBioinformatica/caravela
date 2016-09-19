@@ -22,6 +22,7 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.TaxonOnContigDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
 import br.usp.iq.lbi.caravela.domain.SampleLoader;
+import br.usp.iq.lbi.caravela.domain.SampleProcessorManager;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
@@ -45,15 +46,16 @@ public class SampleController {
 	private final TaxonOnContigDAO taxonOnContigDAO;
 	private final ClassifiedReadByContextDAO classifiedReadByContextDAO;
 	private final ContigStatisticByTiiDAO contigStatisticByTiiDAO;
+	private final SampleProcessorManager sampleProcessorManager;
 	
 	protected SampleController(){
-		this(null, null, null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null, null, null, null);
 	}
 	
 	@Inject
 	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, 
 			ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader,
-			TaxonOnContigDAO taxonOnContigDAO, ClassifiedReadByContextDAO classifiedReadByContextDAO, ContigStatisticByTiiDAO contigStatisticByTiiDAO){
+			TaxonOnContigDAO taxonOnContigDAO, ClassifiedReadByContextDAO classifiedReadByContextDAO, ContigStatisticByTiiDAO contigStatisticByTiiDAO, SampleProcessorManager sampleProcessorManager){
 		this.result = result;
 		this.webUser = webUser;
 		this.treatmentDAO = treatmentDAO;
@@ -65,6 +67,7 @@ public class SampleController {
 		this.taxonOnContigDAO = taxonOnContigDAO;
 		this.classifiedReadByContextDAO = classifiedReadByContextDAO;
 		this.contigStatisticByTiiDAO = contigStatisticByTiiDAO;
+		this.sampleProcessorManager = sampleProcessorManager;
 	}
 	
 	public void view(){
@@ -111,11 +114,12 @@ public class SampleController {
 	public void deleteSample(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
 		System.out.println("delete sample: " + sample.getName());
-		sampleDAO.delete(sample);
-		taxonOnContigDAO.removeBySample(sampleId);
-		classifiedReadByContextDAO.removeBySample(sampleId);
-		contigStatisticByTiiDAO.removeBySample(sampleId);
 		
+		sampleDAO.delete(sample);
+//		taxonOnContigDAO.removeBySample(sampleId);
+		System.out.println("delete classified reads by context from sample: " + sample.getName());
+		classifiedReadByContextDAO.removeBySample(sampleId);
+//		contigStatisticByTiiDAO.removeBySample(sampleId); 
 		result.forwardTo(this).list(sample.getTreatment().getId());
 		
 		
@@ -139,6 +143,13 @@ public class SampleController {
 			result.use(Results.http()).sendError(500, "Error to process sample");
 		}
 		result.forwardTo(this).list(sampleId);
+	}
+	
+	@Get
+	@Path("/sample/process/all")
+	public void processAllSample(){
+		sampleProcessorManager.processAllSamplesUploaded();
+		result.use(Results.nothing());
 	}
 	
 	@Post
