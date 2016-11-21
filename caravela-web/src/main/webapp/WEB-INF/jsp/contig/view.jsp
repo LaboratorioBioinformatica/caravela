@@ -31,11 +31,10 @@
 				<div class="panel-heading"> <strong> ${rank} </strong></div>
 	  			<div class="panel-body text-center">
 	  				<div class="row">
-					  <div class="col-md-2"><strong> No Taxon: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" /></div>
-					  <div class="col-md-2"><strong> T. Confusion: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" /></div>
-					  <div class="col-md-3"><strong> T. Consistency Vertical: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IVCT}" /></div>
-					  <div class="col-md-3"><strong> T. Consistency by NOfR: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConsT}" /></div>
-					  <div class="col-md-2"><strong> T. Consistency: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IGConsT}" /></div>
+					  <div class="col-md-3"><strong> No Taxon: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" /></div>
+					  <div class="col-md-3"><strong> T. Confusion: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" /></div>
+					  <div class="col-md-3"><strong> CT: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConsT}" /></div>
+					  <div class="col-md-3"><strong> CTV: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IVCT}" /></div>
 					</div>
 	  			</div>
 		</div> 
@@ -45,7 +44,9 @@
 				<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/family/${viewingMode}"/>">Family</a>
 				<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/order/${viewingMode}"/>">Order</a>
 				<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/class/${viewingMode}"/>">Class</a>
-				<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">phylum</a>
+				<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/phylum/${viewingMode}"/>">Phylum</a>
+				<a class="btn btn-default" role="button" href="<c:url value="/contig/view/${contig.id}/superkingdom/${viewingMode}"/>">Kingdom</a>
+				
  					<div class="btn-group" role="group">
 	    				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	    					Contig Viewing Mode
@@ -58,7 +59,6 @@
   				</div>
   					
 		</div>
-		<h4><span class="pull-right"> Consistency Score: <strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${CTSC}" /></strong> </span> </h4>
 		<div id="contigViewer">
 		</div>
 		
