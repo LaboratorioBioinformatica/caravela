@@ -18,6 +18,7 @@ import br.usp.iq.lbi.caravela.domain.NCBITaxonManager;
 
 @Controller
 public class AdminController {
+	
 
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	
@@ -41,21 +42,28 @@ public class AdminController {
 	
 	public void view(){
 		
-		environment.get("ncbi.file.path.taxonomy.name");
-		environment.get("ncbi.file.path.taxonomy.node");
+		File catalinaBase = new File( System.getProperty("catalina.base")).getAbsoluteFile();
+		String catalinaDirectoryBase = catalinaBase.getParent();
+		environment.set("dir.base.caravela", catalinaDirectoryBase);
 		
 		Long numberOfTaxon = ncbiTaxonManager.countNumberOfTaxon();
 		
-		result.include("ncbiFilePathTaxonomyName", environment.get("ncbi.file.path.taxonomy.name"));
-		result.include("ncbiFilePathTaxonomyNode", environment.get("ncbi.file.path.taxonomy.node"));
-		result.include("directoryUpload", environment.get("directory.upload"));
-		result.include("directoryBase", environment.get("directory.base"));
-		result.include("directoryConfig", environment.get("directory.config"));
+		result.include("ncbiFilePathTaxonomyName", getfullPath(environment.get("directory.config")).concat(environment.get("ncbi.file.taxonomy.name")));
+		result.include("ncbiFilePathTaxonomyNode", getfullPath(environment.get("directory.config")).concat(environment.get("ncbi.file.taxonomy.node")));
+		
+		
+		result.include("directoryUpload", getfullPath(environment.get("directory.upload")));
+		result.include("directoryBase", environment.get("dir.base.caravela"));
+		result.include("directoryConfig", getfullPath(environment.get("directory.config")));
 		
 		result.include("numberOfTaxon", numberOfTaxon);
 		
 	}
 	
+	private String getfullPath(String string) {
+		return environment.get("dir.base.caravela").concat(string);
+	}
+
 	@Post
 	public void load(String scientificaNameFile, String nodesFile) {
 		try {

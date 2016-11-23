@@ -78,7 +78,7 @@ public class UploadController {
 		
 		Sample sample = sampleDAO.load(sampleId);
 		
-		File fileToSaveUniqueFileName = File.createTempFile("sampleFile_", ".json", new File(environment.get("directory.upload")));
+		File fileToSaveUniqueFileName = File.createTempFile("sampleFile_", ".json", new File(getFullPathDirectoryUpload()));
 		file.writeTo(fileToSaveUniqueFileName);
 		
 		SampleFile sampleFile = new SampleFile(sample, FileType.ALL_JSON, FileStatus.UPLOADED, "pier", fileToSaveUniqueFileName.getAbsolutePath());
@@ -88,6 +88,12 @@ public class UploadController {
 		sampleDAO.save(sample);
 		
 		result.use(Results.json()).from(sample).serialize();
+	}
+
+	private String getFullPathDirectoryUpload() {
+		File catalinaBase = new File( System.getProperty("catalina.base")).getAbsoluteFile();
+		String catalinaDirectoryBase = catalinaBase.getParent();
+		return catalinaDirectoryBase.concat(environment.get("directory.upload"));
 	}
 	
 	
