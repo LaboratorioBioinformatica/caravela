@@ -1,14 +1,21 @@
+
+/* define user defult to  caravela app */
+SET @app_user_name = "Gianluca";
+SET @app_user = "gianlucamajor@gmail.com";
+SET @app_pwd = "gianluca1010";
+
+
+/* create mysql defult user to CARAVELA */
 CREATE USER 'caravela-user'@'localhost' IDENTIFIED BY 'c@r@vela';
 
 /* create database */ 
 create schema caravela;
 
-/* giving privileges to user METAZOO on database METAZOO */  
+/* giving privileges to user CARAVELA on database CARAVELA */  
 GRANT ALL PRIVILEGES ON caravela.* TO 'caravela-user'@'localhost';
 flush privileges;
 
 USE caravela;
-
 
 -- create table taxon 
 create table taxon (
@@ -190,4 +197,5 @@ create table feature_annotation (
 
 
 
-insert into system_user values (id, "gianlucamajor@gmail.com", "Gianluca", "gianluca1010");
+insert into system_user values (id, @app_user, @app_user_name, @app_pwd);
+
