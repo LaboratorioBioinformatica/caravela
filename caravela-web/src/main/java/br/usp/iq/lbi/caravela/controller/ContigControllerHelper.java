@@ -333,6 +333,35 @@ public class ContigControllerHelper {
 		
 	}
 	
+	public Map<Taxon, Integer> createUniqueTaxonConsensus(Contig contig, List<Read> readsOnContig, String rank){
+		
+		List<Segment<Taxon>> undefinedSegments  = searchOverlap(readsOnContig, rank);
+		List<Segment<Taxon>> undefinedSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(undefinedSegments);
+		
+		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
+		Map<Taxon, Integer> taxonSegmentListMap = new HashMap<Taxon, Integer>();
+		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
+			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
+			
+			if( ! Taxon.getNOTaxon().equals(taxonKey)){
+				List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
+				List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
+				
+				List<Segment<Taxon>> subtract = segmentsCalculator.subtract(taxonSegmentsConsensus, undefinedSegmentsConsensus);
+				Integer totalSegmentSize = 0;
+				for (Segment<Taxon> segment : subtract) {
+					totalSegmentSize = (segment.getSize() + totalSegmentSize);
+				}
+				
+				
+				taxonSegmentListMap.put(taxonKey, totalSegmentSize);
+			
+			}
+		}
+		return taxonSegmentListMap;
+		
+	}
+	
 	private List<FeatureViewerDataTO> createFeatureViewerDataTOListConsensus(List<Segment<Taxon>> taxonSegmentsConsensus) {
 		List<FeatureViewerDataTO> featureViewerDataTOListConsensus = new ArrayList<FeatureViewerDataTO>();
 		for (Segment<Taxon> segment : taxonSegmentsConsensus) {
