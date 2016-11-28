@@ -23,6 +23,7 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
+import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Read;
@@ -63,6 +64,15 @@ public class ContigController {
 		List<Read> readsOnContig = contig.getReads();
 		Map<String, List<FeatureViewerDataTO>> featureViewerConsensusDataMap = contigControllerHelper.createConsensusFeatureViwer(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(featureViewerConsensusDataMap).serialize();
+	}
+	
+	@Get
+	@Path("/contig/uniqueConsensusTaxonOnContig/{contigId}/{rank}")
+	public void uniqueConsensusTaxonOnContig(Long contigId, String rank) {
+		Contig contig = contigDAO.load(contigId);
+		List<Read> readsOnContig = contig.getReads();
+		Map<Taxon, Integer> createUniqueTaxonConsensus = contigControllerHelper.createUniqueTaxonConsensus(contig, readsOnContig, rank);
+		result.use(Results.json()).withoutRoot().from(createUniqueTaxonConsensus).serialize();
 	}
 	
 	@Get
