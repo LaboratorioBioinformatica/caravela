@@ -2,16 +2,9 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
@@ -28,7 +21,6 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.SampleFileDAO;
 import br.usp.iq.lbi.caravela.domain.ContigTOProcessor;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
-import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.model.FileStatus;
 import br.usp.iq.lbi.caravela.model.FileType;
 import br.usp.iq.lbi.caravela.model.Sample;
