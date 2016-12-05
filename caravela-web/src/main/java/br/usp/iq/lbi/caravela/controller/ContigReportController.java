@@ -80,7 +80,7 @@ public class ContigReportController {
 					StringBuilder line = new StringBuilder();
 					line.append(contig.getReference()).append(TAB)
 					.append(taxonOnContig.getNumberOfReads()).append(TAB)
-					.append(decimal.format(taxonOnContig.getCovarage())).append(TAB)
+					.append(decimal.format(taxonOnContig.getCoverage())).append(TAB)
 					.append(taxonOnContig.getRank()).append(TAB)
 					.append(taxonOnContig.getTaxon().getScientificName()).append(TAB)
 					.append(LINE_SEPARATOR);

@@ -9,9 +9,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
-
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -23,13 +20,15 @@ import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
-import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Taxon;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
 
 @Controller
 public class ContigController {
@@ -71,7 +70,7 @@ public class ContigController {
 	public void uniqueConsensusTaxonOnContig(Long contigId, String rank) {
 		Contig contig = contigDAO.load(contigId);
 		List<Read> readsOnContig = contig.getReads();
-		Map<Taxon, Integer> createUniqueTaxonConsensus = contigControllerHelper.createUniqueTaxonConsensus(contig, readsOnContig, rank);
+		Map<Taxon, Integer> createUniqueTaxonConsensus = contigControllerHelper.createUniqueTaxonConsensus(readsOnContig, rank);
 		result.use(Results.json()).withoutRoot().from(createUniqueTaxonConsensus).serialize();
 	}
 	

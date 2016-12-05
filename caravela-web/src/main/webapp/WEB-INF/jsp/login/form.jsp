@@ -48,9 +48,9 @@ margin: 0 100;
 	  <div class="jumbotron">
 			<form  class="form-horizontal" action="<c:url value='/login/login'/>" method="post">
 			  <div class="form-group">
-			    <label for="userEmail" class="col-sm-2 control-label">E-mail</label>
+			    <label for="userName" class="col-sm-2 control-label">User name:</label>
 			    <div class="col-sm-10">
-			      <input type="email" name="userName" class="form-control" id="userEmail" placeholder="Email">
+			      <input type="text" name="userName" class="form-control" id="userName" placeholder="User Name">
 			    </div>
 			  </div>
 			  

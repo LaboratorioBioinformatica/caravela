@@ -10,6 +10,7 @@ public interface NCBITaxonManager {
 	
 	Long countNumberOfTaxon();
 	void clear();
+	Boolean isClean();
 	void register(File fileNCBIScientificNames, File fileNCBINodes) throws FileNotFoundException;
 	Taxon searchByTaxonomicId(Long taxonomicId);
 	Map<Long, Taxon> SearchAllTaxon();

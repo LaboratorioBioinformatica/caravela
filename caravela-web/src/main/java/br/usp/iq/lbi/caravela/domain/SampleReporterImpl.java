@@ -214,15 +214,17 @@ public class SampleReporterImpl implements SampleReporter {
 		contigStatisticByTiiDAO.save(reportContig);
 
 
+		Map<Taxon, Integer> buildUniqueTaxonConsensus = consensusBuilding.buildUniqueTaxonConsensus(readsOnContig, rank);
+		
 		Set<Taxon> keySet = taxonCovarageMap.keySet();
 		int numberOfTaxonOnContig = keySet.size();
 		for (Taxon taxon : keySet) {
+			Integer numberOfUniqueBasesByTaxon = buildUniqueTaxonConsensus.get(taxon);
+			Double coverageUniqueBasesByTaxon = ((double)numberOfUniqueBasesByTaxon / contig.getSize());
 			// adicinoar número de reads associado a cada táxon (isso posibilita calcular outras coisa, pensar sobre isso!) Também precisa ser por rank!
-			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), taxon, taxonCovarageMap.get(taxon), numberOfReadsByTaxon.get(taxon));
+			TaxonOnContig reportTaxonOnContig = new TaxonOnContig(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), taxon, taxonCovarageMap.get(taxon), numberOfReadsByTaxon.get(taxon), numberOfUniqueBasesByTaxon, coverageUniqueBasesByTaxon);
 			taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
 		}
-		
-		
 	}
 
 

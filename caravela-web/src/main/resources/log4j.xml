@@ -10,7 +10,7 @@
 
 
 	<appender name="caravela" class="org.apache.log4j.FileAppender">
-		<param name="File" value="/opt/tomcat/logs/caravela.log" />
+		<param name="File" value="logs/caravela.log" />
 		<param name="Append" value="false" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />

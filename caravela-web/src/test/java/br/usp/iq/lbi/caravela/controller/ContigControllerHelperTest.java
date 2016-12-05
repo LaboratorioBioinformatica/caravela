@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import br.usp.iq.lbi.caravela.domain.ConsensusBuilding;
+import br.usp.iq.lbi.caravela.domain.OverlapBuilder;
 import br.usp.iq.lbi.caravela.domain.ReadWrapper;
 import br.usp.iq.lbi.caravela.domain.SegmentsCalculator;
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
@@ -40,11 +41,12 @@ public class ContigControllerHelperTest {
 	@Mock private ReadWrapper readWrapperMock;
 	@Mock private ConsensusBuilding consensusBuildingMock;
 	@Mock private SegmentsCalculator segmentsCalculatorMock;
+	@Mock private OverlapBuilder overlapBuilder;
 	
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		target = new ContigControllerHelper(readWrapperMock, consensusBuildingMock, null, segmentsCalculatorMock);
+		target = new ContigControllerHelper(readWrapperMock, consensusBuildingMock, null, segmentsCalculatorMock, overlapBuilder);
 
 	}
 

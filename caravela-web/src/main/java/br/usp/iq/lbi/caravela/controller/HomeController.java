@@ -1,71 +1,40 @@
 package br.usp.iq.lbi.caravela.controller;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import javax.inject.Inject;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Result;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
-import br.usp.iq.lbi.caravela.dao.SampleDAO;
-import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
-import br.usp.iq.lbi.caravela.dto.ContigTO;
-import br.usp.iq.lbi.caravela.model.Sample;
-import br.usp.iq.lbi.caravela.model.SampleFile;
+import br.usp.iq.lbi.caravela.domain.NCBITaxonManager;
 
 @Controller
 public class HomeController {
 	
 	private final Result result;
 	private WebUser webUser;
-	private final TreatmentDAO treatmentDAO;
-	private final SampleDAO sampleDAO;
+	private final NCBITaxonManager ncbiTaxonManager;
 	
 	protected HomeController(){
-		this(null, null, null, null);
+		this(null, null, null);
 	}
 	
 	@Inject
-	public HomeController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO){
+	public HomeController(Result result, WebUser webUser, NCBITaxonManager ncbiTaxonManager){
 		this.result = result;
 		this.webUser = webUser;
-		this.treatmentDAO = treatmentDAO;
-		this.sampleDAO = sampleDAO;
+		this.ncbiTaxonManager = ncbiTaxonManager;
 	}
     
 	@Get("/")
 	public void home() {
-		
-		//List<Treatment> treatments = treatmentDAO.findAll();
-		//result.include("treatments", treatments);
+		if(ncbiTaxonManager.isClean()){
+			result.forwardTo(AdminController.class).ncbiTaxonomyLoaderView();
+		}
 		result.forwardTo(SampleController.class).view();
 		
 	}
 	
-	
-	
-	public void example() throws FileNotFoundException{
-		Sample sample = sampleDAO.load(1l);
-		SampleFile fileWithAllInformation = sample.getFileWithAllInformation();
-		String filePath = fileWithAllInformation.getFilePath();
-		Gson gson = new Gson();
-		
-		JsonStreamParser parser = new JsonStreamParser(new FileReader(filePath));
-		
-		while (parser.hasNext()) {
-			ContigTO contig = gson.fromJson(parser.next(), ContigTO.class);
-			 System.out.println(contig);
-			
-		}
-		
-		
-		
-	}
 	
 
 }

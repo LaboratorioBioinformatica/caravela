@@ -21,6 +21,8 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 @RequestScoped
 public class NCBITaxonManagerImpl implements NCBITaxonManager {
 	
+	private static final double ONE = 1d;
+
 	private static final Logger logger = LoggerFactory.getLogger(NCBITaxonManagerImpl.class);
 	
 	private static final String DELIMITER_PATTERN = "\\||\\n";
@@ -33,8 +35,17 @@ public class NCBITaxonManagerImpl implements NCBITaxonManager {
 
 	public void clear() {
 		taxonDAO.truncateTaxonTable();
-		
 	}
+	
+	public Boolean isClean() {
+		Long count = taxonDAO.count();
+		if (count < ONE) {
+			return Boolean.TRUE;
+		} else {
+			return Boolean.FALSE;
+		}
+	}
+	
 
 	public void register(File fileNCBIScientificNames, File fileNCBINodes) throws FileNotFoundException {
 		FileReader fileReaderNCBIScientificNames = new FileReader(fileNCBIScientificNames);

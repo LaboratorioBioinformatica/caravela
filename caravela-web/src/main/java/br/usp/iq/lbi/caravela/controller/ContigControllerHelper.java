@@ -2,13 +2,8 @@ package br.usp.iq.lbi.caravela.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +14,7 @@ import javax.inject.Inject;
 
 import br.usp.iq.lbi.caravela.domain.ColorPicker;
 import br.usp.iq.lbi.caravela.domain.ConsensusBuilding;
+import br.usp.iq.lbi.caravela.domain.OverlapBuilder;
 import br.usp.iq.lbi.caravela.domain.ReadWrapper;
 import br.usp.iq.lbi.caravela.domain.SegmentsCalculator;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
@@ -47,16 +43,18 @@ public class ContigControllerHelper {
 	private ConsensusBuilding consensusBuilding;
 	private ColorPicker colorPicker;
 	private SegmentsCalculator segmentsCalculator;
+	private OverlapBuilder overlapBuilder;
 	
 	public ContigControllerHelper() {
 	}
 	
 	@Inject
-	public ContigControllerHelper(ReadWrapper readWrapper, ConsensusBuilding consensusBuilding, ColorPicker colorPicker, SegmentsCalculator segmentsCalculator) {
+	public ContigControllerHelper(ReadWrapper readWrapper, ConsensusBuilding consensusBuilding, ColorPicker colorPicker, SegmentsCalculator segmentsCalculator, OverlapBuilder overlapBuilder) {
 		this.readWrapper = readWrapper;
 		this.consensusBuilding = consensusBuilding;
 		this.colorPicker = colorPicker;
 		this.segmentsCalculator = segmentsCalculator;
+		this.overlapBuilder = overlapBuilder;
 	}
 	
 	
@@ -333,33 +331,8 @@ public class ContigControllerHelper {
 		
 	}
 	
-	public Map<Taxon, Integer> createUniqueTaxonConsensus(Contig contig, List<Read> readsOnContig, String rank){
-		
-		List<Segment<Taxon>> undefinedSegments  = searchOverlap(readsOnContig, rank);
-		List<Segment<Taxon>> undefinedSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(undefinedSegments);
-		
-		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
-		Map<Taxon, Integer> taxonSegmentListMap = new HashMap<Taxon, Integer>();
-		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
-			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
-			
-			if( ! Taxon.getNOTaxon().equals(taxonKey)){
-				List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
-				List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
-				
-				List<Segment<Taxon>> subtract = segmentsCalculator.subtract(taxonSegmentsConsensus, undefinedSegmentsConsensus);
-				Integer totalSegmentSize = 0;
-				for (Segment<Taxon> segment : subtract) {
-					totalSegmentSize = (segment.getSize() + totalSegmentSize);
-				}
-				
-				
-				taxonSegmentListMap.put(taxonKey, totalSegmentSize);
-			
-			}
-		}
-		return taxonSegmentListMap;
-		
+	public Map<Taxon, Integer> createUniqueTaxonConsensus(List<Read> readsOnContig, String rank){
+		return consensusBuilding.buildUniqueTaxonConsensus(readsOnContig, rank);
 	}
 	
 	private List<FeatureViewerDataTO> createFeatureViewerDataTOListConsensus(List<Segment<Taxon>> taxonSegmentsConsensus) {
@@ -481,21 +454,7 @@ public class ContigControllerHelper {
 	
 
 	private List<Segment<Taxon>> searchOverlap(List<Read> readsOnContig, String rank) {
-		
-		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
-		Map<Taxon, List<Segment<Taxon>>> segmentsConsensusMap = new HashMap<Taxon, List<Segment<Taxon>>>();
-		
-		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
-			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
-			List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
-			List<Segment<Taxon>> taxonSegmentsConsensus = consensusBuilding.buildSegmentsConsensus(readListValue, rank);
-			segmentsConsensusMap.put(taxonKey, taxonSegmentsConsensus);
-		}
-		
-		//No taxon should not participate of undefine segments building.  
-		segmentsConsensusMap.remove(Taxon.getNOTaxon());
-		List<Segment<Taxon>> buildUndfinedSegmentsByTaxon = segmentsCalculator.buildUndfinedSegmentsByTaxon(segmentsConsensusMap);
-		return buildUndfinedSegmentsByTaxon;
+		return overlapBuilder.searchOverlap(readsOnContig, rank);
 	}
 	
 	
@@ -514,33 +473,6 @@ public class ContigControllerHelper {
 		return "read: " + scientificName;
 	}
 	
-	
-	private Map<String, List<FeatureViewerDataTO>> sortMap(Map<String, List<FeatureViewerDataTO>> unsortMap, Comparator<Map.Entry<String, List<FeatureViewerDataTO>>> comparator){
-		
-		List<Map.Entry<String, List<FeatureViewerDataTO>>> list = new LinkedList<Map.Entry<String,List<FeatureViewerDataTO>>>(unsortMap.entrySet());
-		
-		Collections.sort(list, comparator);
-		
-		Map<String, List<FeatureViewerDataTO>> sortedMap = new LinkedHashMap<String, List<FeatureViewerDataTO>>();
-		
-		for (Iterator<Map.Entry<String, List<FeatureViewerDataTO>>> it = list.iterator(); it.hasNext();) {
-			Map.Entry<String, List<FeatureViewerDataTO>> entry = it.next();
-			sortedMap.put(entry.getKey(), entry.getValue());
-		}
-		
-		return sortedMap;
-	}
-	
-	private Comparator<Map.Entry<String, List<FeatureViewerDataTO>>> createComparatorByNumberOfSegments() {
-		Comparator<Map.Entry<String, List<FeatureViewerDataTO>>> comparator = new Comparator<Map.Entry<String, List<FeatureViewerDataTO>>>() {
-			public int compare(Entry<String, List<FeatureViewerDataTO>> o1, Entry<String, List<FeatureViewerDataTO>> o2) {
-				//ORDER DESC
-				return (o2.getValue().size() - o1.getValue().size());
-			}
-			
-		};
-		return comparator;
-	}
 	
 	private String createFeatureViewerId(List<Taxon> taxonList) {
 		String id = "no id";

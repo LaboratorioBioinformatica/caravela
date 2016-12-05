@@ -2,10 +2,15 @@ package br.usp.iq.lbi.caravela.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Read;
@@ -13,6 +18,10 @@ import br.usp.iq.lbi.caravela.model.Taxon;
 
 @RequestScoped
 public class ConsensusBuildingImpl implements ConsensusBuilding {
+	
+	@Inject private OverlapBuilder overlapBuilder;
+	@Inject private ReadWrapper readWrapper;
+	@Inject private SegmentsCalculator segmentsCalculator;
 	
 	private static final int NUMBER_ELEMENT_ENOUGH_TO_BUILD_CONSENSUS = 2;
 
@@ -89,5 +98,34 @@ public class ConsensusBuildingImpl implements ConsensusBuilding {
 		
 		return segmentTaxonList;
 	}
+	
+	public Map<Taxon, Integer> buildUniqueTaxonConsensus(List<Read> readsOnContig, String rank){
+		
+		List<Segment<Taxon>> undefinedSegments  = overlapBuilder.searchOverlap(readsOnContig, rank);
+		List<Segment<Taxon>> undefinedSegmentsConsensus = buildSegmentsConsensus(undefinedSegments);
+		
+		Set<Entry<Taxon, List<Read>>> readsGroupedByTaxon = readWrapper.groupBy(readsOnContig, rank).entrySet();
+		Map<Taxon, Integer> taxonSegmentListMap = new HashMap<Taxon, Integer>();
+		for (Entry<Taxon, List<Read>> readsGroupedByTaxonEntry : readsGroupedByTaxon) {
+			Taxon taxonKey = readsGroupedByTaxonEntry.getKey();
+			
+			if( ! Taxon.getNOTaxon().equals(taxonKey)){
+				List<Read> readListValue = readsGroupedByTaxonEntry.getValue();
+				List<Segment<Taxon>> taxonSegmentsConsensus = buildSegmentsConsensus(readListValue, rank);
+				
+				List<Segment<Taxon>> subtract = segmentsCalculator.subtract(taxonSegmentsConsensus, undefinedSegmentsConsensus);
+				Integer totalSegmentSize = 0;
+				for (Segment<Taxon> segment : subtract) {
+					totalSegmentSize = (segment.getSize() + totalSegmentSize);
+				}
+				
+				
+				taxonSegmentListMap.put(taxonKey, totalSegmentSize);
+			
+			}
+		}
+		return taxonSegmentListMap;
+		
+	}	
 
 }

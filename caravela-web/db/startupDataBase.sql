@@ -1,8 +1,8 @@
 
 /* define user defult to  caravela app */
-SET @app_user_name = "Gianluca";
-SET @app_user = "gianlucamajor@gmail.com";
-SET @app_pwd = "gianluca1010";
+SET @app_user_name = "skipper";
+SET @app_user = "skipper";
+SET @app_pwd = "skipper";
 
 
 /* create mysql defult user to CARAVELA */
@@ -118,8 +118,10 @@ create table taxon_on_contig (
 	contig_id INT NOT NULL,
 	rank VARCHAR(50) NOT NULL,
 	taxon_id INT NOT NULL,
-	covarage DOUBLE NOT NULL,
+	coverage DOUBLE NOT NULL,
 	number_of_reads INT NOT NULL,
+	number_of_unique_bases INT NOT NULL,
+	unique_coverage DOUBLE NOT NULL,
 	PRIMARY KEY(id),
 	INDEX (sample_id), INDEX(contig_id), INDEX(taxon_id)
 );

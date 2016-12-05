@@ -1,3 +1,4 @@
+
 package br.usp.iq.lbi.caravela.controller;
 
 import java.io.File;
@@ -14,12 +15,10 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.environment.Environment;
 import br.com.caelum.vraptor.observer.upload.UploadSizeLimit;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
-import br.com.caelum.vraptor.validator.Validator;
 import br.com.caelum.vraptor.view.Results;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.SampleFileDAO;
-import br.usp.iq.lbi.caravela.domain.ContigTOProcessor;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.FileStatus;
 import br.usp.iq.lbi.caravela.model.FileType;
@@ -38,23 +37,19 @@ public class UploadController {
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
 	private final SampleFileDAO sampleFileDAO;
-	private final ContigTOProcessor contigTOProcessor;
 	private final SampleReporter sampleReporter;
-	private final Validator validator;
 	private final Environment environment;
 	
 	public UploadController() {
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null);
 	}
 	
 	@Inject
-	public UploadController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigTOProcessor contigTOProcessor, SampleReporter sampleReporter, Validator validator, SampleFileDAO sampleFileDAO, Environment environment) {
+	public UploadController(Result result, WebUser webUser, SampleDAO sampleDAO, SampleReporter sampleReporter, SampleFileDAO sampleFileDAO, Environment environment) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
-		this.contigTOProcessor = contigTOProcessor;
 		this.sampleReporter = sampleReporter;
-		this.validator = validator;
 		this.sampleFileDAO = sampleFileDAO;
 		this.environment = environment;
 	}

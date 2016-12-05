@@ -29,21 +29,30 @@ public class TaxonOnContig {
 	@ManyToOne
 	private Taxon taxon;
 	
-	private Double covarage;
+	private Double coverage;
 	
 	@Column(name="number_of_reads")
 	private Integer numberOfReads;
+	
+	@Column(name="number_of_unique_bases")
+	private Integer numberOfUniqueBases;
+	
+	@Column(name="unique_coverage")
+	private Double uniqueCoverage;
+	
 	
 	public TaxonOnContig() {
 		
 	}
 	
-	public TaxonOnContig(Sample sample, Contig contig, TaxonomicRank rank, Taxon taxon, Double covarage, Integer numberOfReads) {
+	public TaxonOnContig(Sample sample, Contig contig, TaxonomicRank rank, Taxon taxon, Double coverage, Integer numberOfReads, Integer numberOfUniqueBases, Double uniqueCoverage) {
 		this.contig = contig;
 		this.taxon = taxon;
 		this.rank = rank;
-		this.covarage = covarage;
+		this.coverage = coverage;
 		this.numberOfReads = numberOfReads;
+		this.numberOfUniqueBases = numberOfUniqueBases;
+		this.uniqueCoverage = uniqueCoverage;
 		this.sample = sample;
 	}
 
@@ -59,8 +68,8 @@ public class TaxonOnContig {
 		return taxon;
 	}
 
-	public Double getCovarage() {
-		return covarage;
+	public Double getCoverage() {
+		return coverage;
 	}
 
 	public Sample getSample() {
@@ -74,6 +83,15 @@ public class TaxonOnContig {
 	public Integer getNumberOfReads(){
 		return numberOfReads;
 	}
+	
+	public Integer getNumberOfUniqueBases(){
+		return this.numberOfUniqueBases;
+	}
+	
+	public Double getUniqueCoverage(){
+		return this.uniqueCoverage;
+	}
+	
 	
 
 }

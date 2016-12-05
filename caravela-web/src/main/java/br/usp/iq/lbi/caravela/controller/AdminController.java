@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.com.caelum.vraptor.Controller;
+import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.environment.Environment;
@@ -39,6 +40,23 @@ public class AdminController {
 		this.environment = environment;
 	}
 	
+	
+	@Path("/admin/ncbiTaxonomyLoader")
+	public void ncbiTaxonomyLoaderView(){
+		
+		File catalinaBase = new File( System.getProperty("catalina.base")).getAbsoluteFile();
+		String catalinaDirectoryBase = catalinaBase.getParent();
+		environment.set("dir.base.caravela", catalinaDirectoryBase);
+		
+		Long numberOfTaxon = ncbiTaxonManager.countNumberOfTaxon();
+		
+		
+		result.include("ncbiFilePathTaxonomyName", getfullPath(environment.get("directory.config")).concat(environment.get("ncbi.file.taxonomy.name")));
+		result.include("ncbiFilePathTaxonomyNode", getfullPath(environment.get("directory.config")).concat(environment.get("ncbi.file.taxonomy.node")));
+		
+		result.include("numberOfTaxon", numberOfTaxon);
+		
+	}
 	
 	public void view(){
 		
