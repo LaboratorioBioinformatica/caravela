@@ -57,11 +57,20 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		return contigList;
 	}
 	
-	public List<Contig> findContigBySampleAndTaxonomyIdAndTaxonCovarageOrderByTaxonCovarageDesc(Sample sample, Long taxonomyId, Double taxonCovarage) {
-		System.out.println("coverage: " + taxonCovarage);
-		Query query = entityManager.createQuery(" SELECT toc.contig FROM TaxonOnContig toc JOIN toc.taxon t WHERE toc.sample=:sample and t.id =:taxonomyId and toc.covarage >=:taxonCovarage ORDER BY toc.covarage DESC", Contig.class);
+	public List<Contig> findContigBySampleAndTaxonomyIdAndTaxonCovarageOrderByTaxonExclusiveCovarageDesc(Sample sample, Long taxonomyId, Double taxonCoverage) {
+		System.out.println("coverage: " + taxonCoverage);
+		Query query = entityManager.createQuery(" SELECT toc.contig FROM TaxonOnContig toc JOIN toc.taxon t WHERE toc.sample=:sample and t.id =:taxonomyId and toc.uniqueCoverage >=:taxonCoverage ORDER BY toc.uniqueCoverage DESC", Contig.class);
 		query.setParameter("sample", sample);
-		query.setParameter("taxonCovarage", taxonCovarage);
+		query.setParameter("taxonCoverage", taxonCoverage);
+		query.setParameter("taxonomyId", taxonomyId);
+		return query.getResultList();
+	}
+	
+	public List<Contig> findContigBySampleAndTaxonomyIdAndTaxonCovarageOrderByTaxonCovarageDesc(Sample sample, Long taxonomyId, Double taxonCoverage) {
+		System.out.println("coverage: " + taxonCoverage);
+		Query query = entityManager.createQuery(" SELECT toc.contig FROM TaxonOnContig toc JOIN toc.taxon t WHERE toc.sample=:sample and t.id =:taxonomyId and toc.coverage >=:taxonCoverage ORDER BY toc.coverage DESC", Contig.class);
+		query.setParameter("sample", sample);
+		query.setParameter("taxonCoverage", taxonCoverage);
 		query.setParameter("taxonomyId", taxonomyId);
 		return query.getResultList();
 	}

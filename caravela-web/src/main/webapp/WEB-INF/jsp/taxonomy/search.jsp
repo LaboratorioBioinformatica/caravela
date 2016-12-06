@@ -4,9 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <t:default>
-	<jsp:attribute name="headImport">
-		 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	</jsp:attribute>
 	<jsp:body>
 	<div class="container">
 		<div class="page-header">
@@ -14,7 +11,7 @@
 		</div>
 		<div class="panel-heading well">
 			<h3>
-				Search by contigs <small> where at least </small> ${taxonCoverage}% <small> of contig was mapped by </small>reads<small> assigned to taxon 
+				Search by contigs <small> where at least </small> <fmt:formatNumber type="percent" maxIntegerDigits="3" value="${taxonCoverage}" /> <small> of contig was mapped by </small>reads<small> assigned to taxon 
 				</small> ${scientificName}. 
 			</h3>
 			<p>Number of contig found: <b>${numberOfContigFound}</b></p>
@@ -49,18 +46,6 @@
 			 	</table>
 	</div>
 	<hr>
-	
-	
-	<div class="panel panel-default">
-		<div class="panel-heading">All functions found in contigs</div>
-		
-		<div id="donutFeatureChart" style="width: 900px; height: 500px;" class="center-block"></div>
-	</div>	
-		
-		
-		
-	<hr>
-
 
 	<c:if test="${not empty contigList}">
 		<div class="panel panel-default">
@@ -98,37 +83,6 @@
 		</div>
 	</c:if>
 	</div>
-	
-	<script type="text/javascript">
-	
-	$(document).ready(function(){
-		var geneProductCounter = ${geneProductCounterJson};
-		google.charts.load('current', {'packages':['corechart']});
-	    google.charts.setOnLoadCallback(drawChart);
-	    
-	    function drawChart() {
-	        var data = new google.visualization.DataTable();
-	        data.addColumn('string', 'function');
-	        data.addColumn('number', 'total');
-	        
-	        $.each(geneProductCounter, function(k, v) {
-	        	data.addRow([v.geneProductTO.product, v.total]);
-	        });
-	        
-
-	        var options = {
-	          title: 'All functions found on contigs',
-	          pieHole: 0.4,
-	        };
-
-	        var chart = new google.visualization.PieChart(document.getElementById('donutFeatureChart'));
-	        chart.draw(data, options);
-	      }
-		
-	});
-		
-		
-	</script>
 	
    </jsp:body>
 </t:default>

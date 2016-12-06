@@ -53,10 +53,19 @@ public class TaxonomyController {
 	}
 	
 
-	@Path("/taxonomy/search/{sampleId}/{taxonomyId}/{taxonCoverage}")
-	public void search(Long sampleId, Long taxonomyId, String taxonCoverage) {
+	@Path("/taxonomy/search/{sampleId}/{taxonomyId}/{taxonCoverage}/{exclusively}")
+	public void search(Long sampleId, Long taxonomyId, String taxonCoverage, boolean exclusively) {
 		Sample sample = sampleDAO.load(sampleId);		
-		List<Contig> contigList = taxonomySearch.SearchContigBySampleTaxonomyIdAndTaxonCovarage(sample, taxonomyId, new Double(taxonCoverage));
+		Double taxonCovarageDouble = new Double(taxonCoverage);
+		
+		List<Contig> contigList = new ArrayList<>();
+		
+		if(exclusively){
+			contigList.addAll(taxonomySearch.SearchContigBySampleTaxonomyIdAndExclusiveTaxonCovarage(sample, taxonomyId, taxonCovarageDouble));
+		} else {
+			contigList.addAll(taxonomySearch.SearchContigBySampleTaxonomyIdAndTaxonCovarage(sample, taxonomyId, taxonCovarageDouble));
+		}
+		
 		Hashtable<String, GeneProductCounterTO> geneProductCounterTOHashTable = new Hashtable<String, GeneProductCounterTO>();
 		
 		for (Contig contig : contigList) {
@@ -73,7 +82,7 @@ public class TaxonomyController {
 		
 		
 		result.include("geneProductCounterJson", gson.toJson(geneProductCounterTOList));
-		result.include("taxonCoverage", taxonCoverage);
+		result.include("taxonCoverage", taxonCovarageDouble);
 		result.include("geneProductCounterToList", geneProductCounterTOList);
 		result.include("numberOfContigFound", contigList.size());
 		result.include("scientificName", taxon.getScientificName());
@@ -85,13 +94,21 @@ public class TaxonomyController {
 	
 	@Post
 	@Path("/taxonomy/search/fragment")
-	public void searchFragment(Long sampleId, String scientificName, Double taxonCoverage) {
+	public void searchFragment(Long sampleId, String scientificName, Double taxonCoverage, boolean exclusively) {
 		Sample sample = sampleDAO.load(sampleId);
-		List<TaxonCounterTO> taxonCounterTOList = taxonomySearch.searchTaxonCounterTOBySampleAndScientificName(sample, scientificName, taxonCoverage);
+		List<TaxonCounterTO> taxonCounterTOList = new ArrayList<>();
+		
+		if (exclusively) {
+			taxonCounterTOList.addAll(taxonomySearch.searchTaxonCounterTOBySampleScientificNameAndExclusiveTaxonCoverage(sample, scientificName, taxonCoverage));
+		} else {
+			taxonCounterTOList.addAll(taxonomySearch.searchTaxonCounterTOBySampleAndScientificName(sample, scientificName, taxonCoverage));
+		}
+		
 		
 		result.include("scientificName", scientificName);
 		result.include("sample", sample);
 		result.include("taxonCounterTOList", taxonCounterTOList);
+		result.include("exclusively", exclusively);
 		result.include("taxonCoverage", taxonCoverage);
 		
 	}

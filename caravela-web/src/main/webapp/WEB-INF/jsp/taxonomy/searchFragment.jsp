@@ -28,7 +28,7 @@
 								<td>${taxonCounter.taxon.rank}</td>
 								<td>
 									<span  class="glyphicon-class">${taxonCounter.taxon.scientificName}</span>
-									<a href="<c:url value="/taxonomy/search/${sample.id}/${taxonCounter.taxon.id}/${taxonCoverage}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+									<a href="<c:url value="/taxonomy/search/${sample.id}/${taxonCounter.taxon.id}/${taxonCoverage}/${exclusively}"/>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
 								</td>
 								<td>${taxonCounter.total}</td>
 							</tr> 

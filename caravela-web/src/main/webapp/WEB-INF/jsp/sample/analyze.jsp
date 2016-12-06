@@ -27,7 +27,9 @@
 								<fmt:formatNumber type="number" maxIntegerDigits="4" value="${taxonCoverage}" var="taxonCoverageFormated" />
 								<input class="form-control" value="${taxonCoverageFormated}" size="4" maxlength="4" type="text" id="taxonCoverage" name="taxonCoverage">
 							</div>
-							<span class="col-sm-4"></span>
+							<span class="col-sm-4 checkbox">
+								<label class="checkbox-inline"><input name="exclusively" type="checkbox" value="true">Exclusively</label>
+							</span>
 						</div>
 						
 						<div class="form-group">
