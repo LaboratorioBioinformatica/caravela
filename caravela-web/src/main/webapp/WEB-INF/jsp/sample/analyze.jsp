@@ -81,7 +81,7 @@
 				<input type="hidden" name="sampleId" value="${sample.id}">
 				
 				<div class="form-group">
-					<label for="tiiGreaterOrEqualsThan" class="col-sm-4 control-label"> GTII: </label>
+					<label for="tiiGreaterOrEqualsThan" class="col-sm-4 control-label"> ITG: </label>
 					<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="GTII" data-content="GTII: General Taxonomic Identification Index - Put a value between 0.00 and 1"> 
 							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
 					</button>
@@ -131,25 +131,25 @@
 				</div>
 				
 				<div class="form-group">
-						<label for="ICTCRGreaterOrEqualsThan" class="col-sm-2 control-label">ICTCR:</label>
+						<label for="ICTCRGreaterOrEqualsThan" class="col-sm-2 control-label">CT:</label>
 					<div class="col-sm-2">
 						<fmt:formatNumber type="number" maxIntegerDigits="4" value="${ICTCRGreaterOrEqualsThan}" var="ICTCRGreaterOrEqualsThanFormated" />
 						<input class="form-control" value="${ICTCRGreaterOrEqualsThanFormated}" size="4" maxlength="4" type="text" id="ICTCRGreaterOrEqualsThan" name="ICTCRGreaterOrEqualsThan">
 					</div>
 					<div class="col-sm-2">
-						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="ICTCR" data-content="ICTCR: Index of Consistency Taxonomic by Count Reads - Put a value between 0.00 and 1"> 
+						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="CT" data-content="CT: Index of Consistency Taxonomic by Count Reads - Put a value between 0.00 and 1"> 
 							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
 						</button>
 					</div>
 				
-					<label for="IVCTGreaterOrEqualsThan" class="col-sm-2 control-label">IVCT:</label>
+					<label for="IVCTGreaterOrEqualsThan" class="col-sm-2 control-label">CTV:</label>
 					<div class="col-sm-2">
 						<fmt:formatNumber type="number" maxIntegerDigits="4" value="${IVCTGreaterOrEqualsThan}" var="IVCTGreaterOrEqualsThanFormated" />
 						<input class="form-control" value="${IVCTGreaterOrEqualsThanFormated}" size="4" maxlength="4"  type="text" id="IVCTGreaterOrEqualsThan" name="IVCTGreaterOrEqualsThan">
 						
 					</div>
 					<div class="col-sm-2">
-						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="IVCT" data-content="IVCT: Index of Vertical Consistency Taxonomic - Put a value between 0.00 and 1"> 
+						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="CTV" data-content="CTV: Index of Vertical Consistency Taxonomic - Put a value between 0.00 and 1"> 
 							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
 						</button>
 					</div>

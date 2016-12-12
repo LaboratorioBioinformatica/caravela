@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
@@ -33,6 +37,8 @@ import br.usp.iq.lbi.caravela.model.Treatment;
 
 @Controller
 public class SampleController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SampleController.class);
 	
 	private static final int SAMPLE_NAME_MIN_SIZE = 3;
 	private final Result result;
@@ -234,9 +240,14 @@ public class SampleController {
 	@Path("/sample/analyze/by/contigName")
 	public void analyze(Long sampleId, String contigName){
 		Sample sample = sampleDAO.load(sampleId);
-		 Contig contig = contigDAO.findContigBySampleAndContigReference(sample, contigName);
 		List<Contig> contigList = new ArrayList<Contig>();
-		contigList.add(contig);
+		try {
+			Contig contig = contigDAO.findContigBySampleAndContigReference(sample, contigName);
+			contigList.add(contig);
+		} catch (NoResultException nre) {
+			validator.add(new SimpleMessage("search.by.contigReference", "No contig found!", Severity.WARN));
+			logger.warn(nre.getMessage(), nre);
+		}
 
 		result.include("contigList", contigList);
 		result.include("sample", sample);

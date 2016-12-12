@@ -23,7 +23,6 @@ import br.usp.iq.lbi.caravela.intervalTree.Segment;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Feature;
 import br.usp.iq.lbi.caravela.model.FeatureAnnotation;
-import br.usp.iq.lbi.caravela.model.GeneProduct;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Taxon;
 
@@ -94,12 +93,8 @@ public class ContigControllerHelper {
 
 	private String createFeatureViewerToFeature(Feature feature) {
 		StringBuilder descriptionBuilder = new StringBuilder();
-		descriptionBuilder.append("feature: ");
+		descriptionBuilder.append("feature type: ");
 		descriptionBuilder.append(feature.getType());
-		GeneProduct geneProduct = feature.getGeneProduct();
-		if(geneProduct != null){
-			descriptionBuilder.append(" - ").append(geneProduct.getProduct());
-		}
 		return descriptionBuilder.toString();
 	}
 
