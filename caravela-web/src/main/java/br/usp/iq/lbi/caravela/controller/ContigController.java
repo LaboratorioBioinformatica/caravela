@@ -9,6 +9,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonStreamParser;
+
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
@@ -18,6 +21,7 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.domain.ContigManager;
+import br.usp.iq.lbi.caravela.domain.VerticalTaxonomiConsistencyCalculator;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.dto.featureViewer.FeatureViewerDataTO;
 import br.usp.iq.lbi.caravela.model.Contig;
@@ -26,9 +30,6 @@ import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 import br.usp.iq.lbi.caravela.model.Taxon;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonStreamParser;
 
 @Controller
 public class ContigController {
@@ -39,20 +40,22 @@ public class ContigController {
 	private final ContigDAO contigDAO;
 	private final ContigManager contigManager;
 	private final ContigControllerHelper contigControllerHelper;
+	private final VerticalTaxonomiConsistencyCalculator vtcc;
 
 	public ContigController() {
-		this(null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public ContigController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigDAO contigDAO,
-			ContigManager contigManager, ContigControllerHelper readsOnContigHelper) {
+			ContigManager contigManager, ContigControllerHelper readsOnContigHelper, VerticalTaxonomiConsistencyCalculator vtcc) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
 		this.contigDAO = contigDAO;
 		this.contigManager = contigManager;
 		this.contigControllerHelper = readsOnContigHelper;
+		this.vtcc = vtcc;
 
 	}
 
@@ -157,8 +160,9 @@ public class ContigController {
 		
 		Double IConfT = contigControllerHelper.calculateIndexOfConfusionTaxonomic(contig, readsOnContig, rank);
 		
+		Map<Taxon, Integer> uniqueTaxonConsensus = contigControllerHelper.createUniqueTaxonConsensus(readsOnContig, rank);
 		
-		Double IVCT = contigControllerHelper.calculateIndexOfVerticalConsistencyTaxonomic(contig, readsOnContig, rank);
+		Double IVCT = vtcc.calculateVTCByList(uniqueTaxonConsensus.values(), contig.getSize());
 		
 		Double IConsT = contigControllerHelper.calculateIndexOfConsistencyTaxonomicByCountReads(readsOnContig, rank);
 		

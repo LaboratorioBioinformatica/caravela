@@ -38,7 +38,7 @@ public class SampleReporterImpl implements SampleReporter {
 	private static final Logger logger = LoggerFactory.getLogger(SampleReporterImpl.class);
 	
 	private static final Long MAX_RECORD_PER_PAGE = 10000l;
-	
+
 	@Inject private ContigDAO contigDAO;
 	@Inject private ReadWrapper readWrapper;
 	@Inject private ConsensusBuilding consensusBuilding;
@@ -48,6 +48,7 @@ public class SampleReporterImpl implements SampleReporter {
 	@Inject private Paginator paginator;
 	@Inject private ContigControllerHelper contigControllerHelper;
 	@Inject private ClassifiedReadByContextDAO classifiedReadByContextDAO;
+	@Inject private VerticalTaxonomiConsistencyCalculator vtcc;
 	
 	
 
@@ -195,12 +196,7 @@ public class SampleReporterImpl implements SampleReporter {
 
 		}
 		
-		Double indexOfVerticalConsistencyTaxonomic  = (1 - (percentageOfContingAssignedToUnclassified + percentageOfContingAssignedToUndefined));
 		Double indexOfConsistencyTaxonomicByCountReads = (greaterNumberOfHitByTaxon / contig.getNumberOfReads());
-	
-		if(indexOfVerticalConsistencyTaxonomic.isNaN()){
-			indexOfVerticalConsistencyTaxonomic = 0d;
-		}
 		
 		if(indexOfConsistencyTaxonomicByCountReads.isNaN()){
 			indexOfConsistencyTaxonomicByCountReads = 0d;
@@ -209,12 +205,14 @@ public class SampleReporterImpl implements SampleReporter {
 //		logger.info("ivct" + indexOfVerticalConsistencyTaxonomic.toString());
 //		logger.info("ictcr" + indexOfConsistencyTaxonomicByCountReads.toString());
 
-		ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined, indexOfConsistencyTaxonomicByCountReads, indexOfVerticalConsistencyTaxonomic);
+		Map<Taxon, Integer> buildUniqueTaxonConsensus = consensusBuilding.buildUniqueTaxonConsensus(readsOnContig, rank);
+		Double ctv = vtcc.calculateVTCByList(buildUniqueTaxonConsensus.values(), contig.getSize());
+		
+		ContigStatisticByTii reportContig = new ContigStatisticByTii(sample, contig, TaxonomicRank.valueOf(rank.toUpperCase()), boundariesSegments.size(), percentageOfContingAssignedToUnclassified, percentageOfContingAssignedToUndefined, indexOfConsistencyTaxonomicByCountReads, ctv);
 
 		contigStatisticByTiiDAO.save(reportContig);
 
 
-		Map<Taxon, Integer> buildUniqueTaxonConsensus = consensusBuilding.buildUniqueTaxonConsensus(readsOnContig, rank);
 		
 		Set<Taxon> keySet = taxonCovarageMap.keySet();
 		int numberOfTaxonOnContig = keySet.size();
@@ -226,8 +224,6 @@ public class SampleReporterImpl implements SampleReporter {
 			taxonOnContigDAO.addBatch(reportTaxonOnContig, numberOfTaxonOnContig); 
 		}
 	}
-
-
 
 	public List<ClassifiedReadByContex> classifiedReadsByContex(Sample sample, String rank, Contig contig) {
 		List<Read> readsOnContig = contig.getReads();
