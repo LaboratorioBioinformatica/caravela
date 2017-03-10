@@ -17,16 +17,12 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.validator.Severity;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
-import br.com.caelum.vraptor.view.Results;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
-import br.usp.iq.lbi.caravela.dao.ContigStatisticByTiiDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
-import br.usp.iq.lbi.caravela.dao.TaxonOnContigDAO;
 import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
 import br.usp.iq.lbi.caravela.domain.SampleLoader;
-import br.usp.iq.lbi.caravela.domain.SampleProcessorManager;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
@@ -49,19 +45,15 @@ public class SampleController {
 	private final SampleReporter sampleReporter;
 	private final Validator validator;
 	private final SampleLoader sampleLoader;
-	private final TaxonOnContigDAO taxonOnContigDAO;
 	private final ClassifiedReadByContextDAO classifiedReadByContextDAO;
-	private final ContigStatisticByTiiDAO contigStatisticByTiiDAO;
-	private final SampleProcessorManager sampleProcessorManager;
 	
 	protected SampleController(){
-		this(null, null, null, null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null);
 	}
 	
 	@Inject
 	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, 
-			ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader,
-			TaxonOnContigDAO taxonOnContigDAO, ClassifiedReadByContextDAO classifiedReadByContextDAO, ContigStatisticByTiiDAO contigStatisticByTiiDAO, SampleProcessorManager sampleProcessorManager){
+			ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader, ClassifiedReadByContextDAO classifiedReadByContextDAO){
 		this.result = result;
 		this.webUser = webUser;
 		this.treatmentDAO = treatmentDAO;
@@ -70,11 +62,9 @@ public class SampleController {
 		this.sampleReporter = sampleReporter;
 		this.validator = validator;
 		this.sampleLoader = sampleLoader;
-		this.taxonOnContigDAO = taxonOnContigDAO;
 		this.classifiedReadByContextDAO = classifiedReadByContextDAO;
-		this.contigStatisticByTiiDAO = contigStatisticByTiiDAO;
-		this.sampleProcessorManager = sampleProcessorManager;
 	}
+	
 	
 	public void view(){
 		List<Treatment> treatmentList = treatmentDAO.findAll();
@@ -137,31 +127,12 @@ public class SampleController {
 		list(treatmentId);
 	}
 	
-	@Post
-	public void process(Long sampleId){
-		
-		try {
-			sampleLoader.loadFromFileToDatabase(sampleId);
-			validator.add(new SimpleMessage("treatment.load", "Sample proccess successfuly", Severity.SUCCESS));
-		} catch (Exception e) {
-			e.printStackTrace();
-			validator.add(new SimpleMessage("sample.process", "Something was wrong!", Severity.ERROR));
-			result.use(Results.http()).sendError(500, "Error to process sample");
-		}
-		result.forwardTo(this).list(sampleId);
-	}
-	
-	@Get
-	@Path("/sample/process/all")
-	public void processAllSample(){
-		sampleProcessorManager.processAllSamplesUploaded();
-		result.use(Results.nothing());
-	}
 	
 	@Post
 	public void list(Long treatmentId){
 		Treatment treatment = treatmentDAO.load(treatmentId);
 		List<Sample> sampleList = sampleDAO.listAllByTreatment(treatment);
+		Boolean sampleLoaderRunning = sampleLoader.isRunningSampleLoader();
 		
 		if (sampleList.isEmpty()) {
 			validator.add(new SimpleMessage("treatment.list", "There is no sample to show", Severity.WARN));
@@ -169,6 +140,7 @@ public class SampleController {
 		
 		result.include("sampleList", sampleList);
 		result.include("treatmentSelected", treatmentId);
+		result.include("isSampleLoaderRunning", sampleLoaderRunning);
 		result.forwardTo(this).view();
 	}
 	

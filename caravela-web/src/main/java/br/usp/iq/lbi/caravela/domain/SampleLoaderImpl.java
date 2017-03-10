@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -16,17 +16,20 @@ import com.google.gson.Gson;
 
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
 import br.usp.iq.lbi.caravela.dao.SampleFileDAO;
+import br.usp.iq.lbi.caravela.domain.exception.ServiceAlreadyIsRunningException;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleFile;
 
-@RequestScoped
+@ApplicationScoped
 public class SampleLoaderImpl implements SampleLoader {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SampleLoaderImpl.class);
 	
-	@Inject private  ContigTOProcessor contigTOProcessor;
+	private boolean sampleLoaderRunning;
+	
+	@Inject private ContigTOProcessor contigTOProcessor;
 	@Inject private SampleDAO sampleDAO;
 	@Inject private SampleFileDAO sampleFileDAO;
 	@Inject private SampleReporter sampleReporter;
@@ -34,6 +37,7 @@ public class SampleLoaderImpl implements SampleLoader {
 	public SampleLoaderImpl() {}
 	
 	public SampleLoaderImpl(ContigTOProcessor contigTOProcessor) {
+		setSampleLoaderToNOTRunnning();
 		this.contigTOProcessor = contigTOProcessor;
 	}
 	
@@ -41,8 +45,14 @@ public class SampleLoaderImpl implements SampleLoader {
 	@Override
 	public void loadFromFileToDatabase(Long sampleId) throws Exception {
 		
-		
+		sampleLoaderProccess(sampleId);
+			
+	}
+
+	private void sampleLoaderProccess(Long sampleId) throws Exception {
+		if(isNOTRunningSampleLoader()){
 			try {
+				setSampleLoaderToRunnning();
 				Sample sample = sampleDAO.load(sampleId);
 				sample.toProcessing();
 				sampleDAO.update(sample);
@@ -56,7 +66,7 @@ public class SampleLoaderImpl implements SampleLoader {
 				logger.info("number of contig to load: " + totalNumberOfContigToBeLoad);
 				
 				long startTime = System.currentTimeMillis();
-		
+				
 				Gson gson = new Gson();
 				Stream<String> stream = Files.lines(path);
 				
@@ -93,9 +103,29 @@ public class SampleLoaderImpl implements SampleLoader {
 			} catch (Exception e) {
 				logger.error("Error to load sample file", e);
 				throw e;
+			} finally {
+				setSampleLoaderToNOTRunnning();
 			}
 			
-			
+		} else {
+			throw new ServiceAlreadyIsRunningException("Action can not be done becouse Sample Loader already is running!");
+		}
+	}
+	
+	private void setSampleLoaderToNOTRunnning(){
+		this.sampleLoaderRunning = false;
+	}
+	
+	private void setSampleLoaderToRunnning(){
+		this.sampleLoaderRunning = true;
+	}
+	
+	public boolean isRunningSampleLoader(){
+		return sampleLoaderRunning;
+	}
+	
+	public boolean isNOTRunningSampleLoader(){
+		return ! sampleLoaderRunning;
 	}
 	
 	private Long getTotalNumberOfFileLines(Path path) throws IOException{

@@ -68,7 +68,17 @@
 	            <ul class="nav navbar-nav">
 	              <li><a href="${linkTo[HomeController].home}">Home</a></li>
 	              <li><a href="${linkTo[SampleController].view}">Samples</a></li>
-	              <li><a href="${linkTo[AdminController].view}">Admin</a></li>
+	              
+	               <li class="dropdown">
+          			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+          				<ul class="dropdown-menu">
+            				<li><a href="${linkTo[AdminController].view}">Loader NCBI taxa file</a></li>
+            				<li><a href="${linkTo[AdminController].sampleProcessorView}">Samples processor</a></li>
+            				
+            				<!-- <li role="separator" class="divider"></li> -->
+            				<!--<li><a href="#">Separated link</a></li> -->
+          				</ul>
+        		  </li>
 	              <li><a href="${linkTo[LoginController].logout}">Logout</a></li>
 	              <!--li><a href="#contact">Contact</a></li -->
 	            </ul>

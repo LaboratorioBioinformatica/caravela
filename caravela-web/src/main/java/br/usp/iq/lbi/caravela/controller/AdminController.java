@@ -16,6 +16,9 @@ import br.com.caelum.vraptor.validator.Severity;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
 import br.usp.iq.lbi.caravela.domain.NCBITaxonManager;
+import br.usp.iq.lbi.caravela.domain.SampleLoader;
+import br.usp.iq.lbi.caravela.domain.SampleProcessorManager;
+import br.usp.iq.lbi.caravela.domain.exception.ServiceAlreadyIsRunningException;
 
 @Controller
 public class AdminController {
@@ -27,17 +30,21 @@ public class AdminController {
 	private final NCBITaxonManager ncbiTaxonManager;
 	private final Validator validator;
 	private final Environment environment;
+	private final SampleLoader sampleLoader;
+	private final SampleProcessorManager sampleProcessorManager;
 	
 	protected AdminController() {
-		this(null, null, null, null);
+		this(null, null, null, null, null, null);
 	}
 	
 	@Inject
-	public AdminController(Result result, NCBITaxonManager ncbiTaxonManager, Validator validator, Environment environment){
+	public AdminController(Result result, NCBITaxonManager ncbiTaxonManager, Validator validator, Environment environment, SampleLoader sampleLoader, SampleProcessorManager sampleProcessorManager){
 		this.result = result;
 		this.ncbiTaxonManager =  ncbiTaxonManager;
 		this.validator = validator;
 		this.environment = environment;
+		this.sampleLoader = sampleLoader;
+		this.sampleProcessorManager = sampleProcessorManager;
 	}
 	
 	
@@ -58,7 +65,28 @@ public class AdminController {
 		
 	}
 	
+	public void sampleProcessorView(){
+		boolean sampleProcessorRunning = sampleLoader.isRunningSampleLoader();
+		result.include("isSampleProcessorRunning", sampleProcessorRunning);
+	}
+	
+	@Post
+	public void processAllSample(){
+		
+		if( ! sampleLoader.isRunningSampleLoader()){
+			sampleProcessorManager.processAllSamplesUploaded();
+		} else {
+			validator.add(new SimpleMessage("sample.processor", "Action can not be done becouse Sample Loader already is running!", Severity.WARN));
+		}
+		
+		result.forwardTo(this).sampleProcessorView();
+	}
+	
 	public void view(){
+		
+		if(ncbiTaxonManager.isRegisterRunning()){
+			validator.add(new SimpleMessage("ncbi.taxonomy.file.load", "NCBI taxonomy information is loading ... ", Severity.INFO));
+		}
 		
 		File catalinaBase = new File( System.getProperty("catalina.base")).getAbsoluteFile();
 		String catalinaDirectoryBase = catalinaBase.getParent();
@@ -90,6 +118,13 @@ public class AdminController {
 			ncbiTaxonManager.clear();
 			ncbiTaxonManager.register(fileNCBIScientificNames, fileNCBINodes);
 			validator.add(new SimpleMessage("ncbi.taxonomy.file.load", "NCBI taxonomy information loaded successfuly", Severity.SUCCESS));
+		} catch (ServiceAlreadyIsRunningException isRunningException){
+			
+			validator.add(
+					new SimpleMessage("ncbi.taxonomy.file.load", 
+							isRunningException.getMessage(), 
+							Severity.WARN));
+	
 		} catch (Exception e) {
 			logger.error("NCBI files: Scientific names and Nodes NOT FOUND!", e);
 			validator.add(

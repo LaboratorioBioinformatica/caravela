@@ -71,17 +71,18 @@
 	
 											</c:when>
 											<c:when test="${sampleStatus == 'UPLOADED'}">
-												<div id="sampleToBeProcess">
-													<button type="button" id="bnt-process" class="btn btn-primary" value="${sample.id}" data-loading-text="Loading..." aria-label="Left Align"> 
-														<span class="glyphicon glyphicon-play-circle"aria-hidden="true"></span>
-														<span class="glyphicon-class">Process</span>
-													</button>	
-													<input type="hidden" name="sampleId" value="${sample.id}">
+												<div>
+												<c:choose>
+													<c:when test="${isSampleLoaderRunning}">
+														<button type="button" class="btn btn-warning disabled">Processing ...</button>
+													</c:when>
 													
-													<form action="${linkTo[SampleController].process}" name="form-sample-process" class="form-inline" role="form" method="post">
-													</form>
-													
-												</div>			
+													<c:otherwise>
+														<button type="button" class="btn btn-default disabled">Waiting to be processed</button>
+													</c:otherwise>
+												</c:choose>
+												</div>
+															
 											</c:when>
 											
 											<c:when test="${sampleStatus == 'PROCESSING'}">
@@ -128,35 +129,11 @@
 						</c:forEach>			
 					</tbody> 	
 			 	</table>
+
 			</div>
+			
 		</c:if>
 	</div>
-<script type="text/javascript">
-
-$(document).ready(function(){
-	
-	$(function () {
-		  $('[data-toggle="popover"]').popover()
-	});
-	
-	$('#bnt-process').on('click', function(){
-		var $btn = $(this).button('loading');
-		var sampleIdToBeProcess = $(this).prop("value");
-		$.post('${linkTo[SampleController].process}', {sampleId: sampleIdToBeProcess})
-			.done(function(msg){
-				window.location.href = "${linkTo[SampleController].listByTreatment}${treatmentSelected}";
-			})
-			.fail(function(xhr, status, error){
-				console.log(xhr);
-				console.log(status);
-				console.log(error);
-			});
-		
-	});
-	
-});
-
-</script>
    </jsp:body>
 </t:default>
 

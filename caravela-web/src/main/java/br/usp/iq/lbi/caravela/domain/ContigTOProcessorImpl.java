@@ -28,7 +28,6 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 	
 	@Inject private ContigDAO contigDAO;
 	@Inject private ReadDAO readDAO;
-	@Inject private NCBITaxonManager ncbiTaxonManager;
 	@Inject private FeatureCreator featureCreator;
 	@Inject private NCBITaxonFinder ncbiTaxonFinder;
 	
@@ -60,7 +59,6 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 		
 		if(readsOnCotig != null && !readsOnCotig.isEmpty()){
 			
-//			Map<Long, Taxon> allTaxon = ncbiTaxonManager.SearchAllTaxon();
 			
 			for (ReadOnContigTO readOnContigTO : readsOnCotig) {
 				Mapping mapping = new Mapping(readOnContigTO.getStartAlignment(), readOnContigTO.getEndAlignment(), readOnContigTO.getCigar(), readOnContigTO.getFlag());
@@ -71,8 +69,7 @@ public class ContigTOProcessorImpl implements ContigTOProcessor {
 				if(taxonTO != null){
 					Long taxonomyId = taxonTO.getTaxonomyId(); 
 					
-					//TODO ISTO DEVERIA ESTAR EM MEMÓRIA!
-//					Taxon taxon = ncbiTaxonManager.searchByTaxonomicId(taxonomyId);
+					//TODO ISTO DEVE ESTAR EM MEMÓRIA!
 					Taxon taxon = ncbiTaxonFinder.searchTaxonByNCBITaxonomyId(taxonomyId);
 					
 					if(taxon != null){
