@@ -31,8 +31,8 @@
 				<div class="panel-heading"> <strong> ${rank} </strong></div>
 	  			<div class="panel-body text-center">
 	  				<div class="row">
-					  <div class="col-md-3"><strong> No Taxon: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" /></div>
-					  <div class="col-md-3"><strong> T. Confusion: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" /></div>
+					  <div class="col-md-3"><strong> Region Size Unclassified: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${INT}" /></div>
+					  <div class="col-md-3"><strong> Region Size Undefined: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConfT}" /></div>
 					  <div class="col-md-3"><strong> CT: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IConsT}" /></div>
 					  <div class="col-md-3"><strong> CTV: </strong> <fmt:formatNumber type="number" maxFractionDigits="3" value="${IVCT}" /></div>
 					</div>
