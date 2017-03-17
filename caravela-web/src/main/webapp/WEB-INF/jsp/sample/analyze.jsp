@@ -76,95 +76,9 @@
 
 	<div class="jumbotron">
 		<h3>Filter By:</h3>
-		<div class="form-group">
-			<form action="<c:url value="/sample/analyze/by"/>" class="form-horizontal" role="form" method="post">
-				<input type="hidden" name="sampleId" value="${sample.id}">
-				
-				<div class="form-group">
-					<label for="tiiGreaterOrEqualsThan" class="col-sm-4 control-label"> ITG: </label>
-					<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="GTII" data-content="GTII: General Taxonomic Identification Index - Put a value between 0.00 and 1"> 
-							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
-					</button>
-					<div class="col-sm-2">
-						<fmt:formatNumber type="number" maxIntegerDigits="3" value="${tiiGreaterOrEqualsThan}" var="tiiGreaterOrEqualsThanFormated" />
-						<input class="form-control" value="${tiiGreaterOrEqualsThanFormated}" size="3" maxlength="3"  type="text" id="tiiGreaterOrEqualsThan" name="tiiGreaterOrEqualsThan">
-						
-					</div>
-					<span class="col-sm-6"></span>
-				</div>
-				
-				<div class="form-group">
-						<label class="col-sm-4 control-label" for="numberOfFeaturesGreaterOrEqualsThan"> Features</label>
-						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="Features" data-content="Minimum number of CDSs or Genes annotated on contig"> 
-							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
-						</button>
-					<div class="col-sm-2">
-						<input class="form-control" value="${numberOfFeaturesGreaterOrEqualsThan}" size="4" maxlength="4" min=0 type="number" id="numberOfFeaturesGreaterOrEqualsThan" name="numberOfFeaturesGreaterOrEqualsThan">
-					</div>
-					<span class="col-sm-6"></span>
-				</div>
-				
-				
-				<div class="form-group">
-					<label for="numberOfBoundariesLessOrEqualsThan" class="col-sm-4 control-label">Rank</label>
-					
-					<div class="col-sm-2">
-						 <select class="form-control" name="rank" id="selectRank">
-							  <option value="species" ${rankSelected eq "SPECIES" ? 'selected="selected"' : ''}>SPECIES</option>
-							  <option value="genus" ${rankSelected eq "GENUS" ? 'selected="selected"' : ''}>GENUS</option>
-							  <option value="family" ${rankSelected eq "FAMILY" ? 'selected="selected"' : ''}>FAMILY</option>
-							  
-						</select> 					
-					</div>
-					<span class="col-sm-6"></span>
-				</div>
-				
-				<div class="form-group">
-						<label for="numberOfBoundariesLessOrEqualsThan" class="col-sm-4 control-label">Borders:</label>
-						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="Borders" data-content="Borders are unclassified or undefined regions that are flanked by different taxa."> 
-							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
-						</button>
-					<div class="col-sm-2">
-						<input class="form-control" value="${numberOfBoundariesLessOrEqualsThan}" size="4" maxlength="2" min=0 type="number" id="numberOfBoundariesLessOrEqualsThan" name="numberOfBoundariesLessOrEqualsThan">
-					</div>
-					<span class="col-sm-6"></span>
-				</div>
-				
-				<div class="form-group">
-						<label for="ICTCRGreaterOrEqualsThan" class="col-sm-2 control-label">CT:</label>
-					<div class="col-sm-2">
-						<fmt:formatNumber type="number" maxIntegerDigits="4" value="${ICTCRGreaterOrEqualsThan}" var="ICTCRGreaterOrEqualsThanFormated" />
-						<input class="form-control" value="${ICTCRGreaterOrEqualsThanFormated}" size="4" maxlength="4" type="text" id="ICTCRGreaterOrEqualsThan" name="ICTCRGreaterOrEqualsThan">
-					</div>
-					<div class="col-sm-2">
-						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="CT" data-content="CT: Index of Consistency Taxonomic by Count Reads - Put a value between 0.00 and 1"> 
-							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
-						</button>
-					</div>
-				
-					<label for="IVCTGreaterOrEqualsThan" class="col-sm-2 control-label">CTV:</label>
-					<div class="col-sm-2">
-						<fmt:formatNumber type="number" maxIntegerDigits="4" value="${IVCTGreaterOrEqualsThan}" var="IVCTGreaterOrEqualsThanFormated" />
-						<input class="form-control" value="${IVCTGreaterOrEqualsThanFormated}" size="4" maxlength="4"  type="text" id="IVCTGreaterOrEqualsThan" name="IVCTGreaterOrEqualsThan">
-						
-					</div>
-					<div class="col-sm-2">
-						<button type="button" id="bnt-info" class="btn btn-default" aria-label="Left Align"  data-container="body" data-toggle="popover" data-placement="top" title="CTV" data-content="CTV: Index of Vertical Consistency Taxonomic - Put a value between 0.00 and 1"> 
-							<span class="glyphicon glyphicon-info-sign"aria-hidden="true"></span>
-						</button>
-					</div>
-				</div>
-				
-				<div class="form-group">
-					<div class="col-sm-12 center-block">
-						<button type="submit" class="btn btn-success center-block">Filter</button>
-					</div>
-				</div>
-				
-				
-			</form>
-		</div>
-	</div>
+			<a class="btn-lg btn-primary" href="<c:url value="/filter/contig/tbr/view/${sample.id}"/>" role="button">Filter by Contigs TBR</a>
+			<a class="btn-lg btn-danger" href="<c:url value="/filter/contig/pq/view/${sample.id}"/>" role="button">Filter by Contigs PQ</a>
+		</div>	
 	<hr>
 		      <div class="jumbotron">
 		      	<h3>Search by contig name</h3>
@@ -220,17 +134,16 @@
 		 	</table>
 		</div>
 	</c:if>
-	</div>
+
 <script type="text/javascript">
 
 $(document).ready(function(){
 	
 	$(function () {
 		  $('[data-toggle="popover"]').popover()
-	});	
+	});
 	
 });
-
 
 </script>	
     </jsp:body>
