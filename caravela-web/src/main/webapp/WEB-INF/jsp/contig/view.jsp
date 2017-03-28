@@ -57,6 +57,7 @@
 		      				<li><a href="<c:url value="/contig/view/${contig.id}/${rank}/consensusReadsOnContig"/>">consensus reads</a></li>
 	    				</ul>
   				</div>
+  				 <a class="btn btn-info" role="button" href="<c:url value="/report/taxonOnContig/by/contig/${contig.id}"/>">Download taxa on contig</a>
   					
 		</div>
 		<div id="contigViewer">
