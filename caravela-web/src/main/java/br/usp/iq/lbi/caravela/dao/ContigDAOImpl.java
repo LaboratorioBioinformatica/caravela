@@ -112,6 +112,11 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		return contigList;
 	}
 	
+	public List<Contig> FindContigBySampleOrderByContigSizeAndITGDesc(Sample sample) {
+		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample ORDER by length(c.sequence) DESC,  c.taxonomicIdentificationIndex DESC", Contig.class);
+		return query.setParameter("sample", sample).getResultList();
+	}
+	
 	public List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer startPosition, Integer maxResult) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample AND c.taxonomicIdentificationIndex >:tii ORDER by c.id", Contig.class);
 		List<Contig> contigList = query.setParameter("sample", sample)

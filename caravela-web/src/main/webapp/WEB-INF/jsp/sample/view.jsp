@@ -6,6 +6,13 @@
 	<jsp:body>
     <div class="container">
 	    <div class="page-header">
+			<c:forEach items="${errors}" var="error">
+		 			<div class="alert alert-danger" role="alert">
+		 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		 			<p>${error.message}</p>
+		 			</div>
+			</c:forEach>
+	    
 			<h1>Samples</h1>
 		</div>
 		<c:if test="${empty treatmentList}">
@@ -98,10 +105,6 @@
 													</a>
 												
 													<a href="${linkTo[ContigReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report taxonomically good resolved contigs" class="btn btn-primary" role="button">
-														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-													</a>
-													
-													<a href="${linkTo[ContigReportController].taxonOnContigReport}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report taxa on contig good resolved contigs" class="btn btn-primary" role="button">
 														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
 													</a>
 													

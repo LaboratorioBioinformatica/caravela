@@ -28,7 +28,7 @@ public class NCBITaxonFinderImplTest {
 	}
 	
 	@Test
-		public void testSearchTaxonByNCBITaxonomyIdWhenTaxonNoFoundShouldReturnNull() throws Exception {
+	public void testSearchTaxonByNCBITaxonomyIdWhenTaxonNoFoundShouldReturnNull() throws Exception {
 			
 			Taxon taxonToBeSearch = createTaxonWithTaxonomyId(3l);
 			List<Taxon> allTaxonList = Arrays.asList(createTaxonWithTaxonomyId(1l), createTaxonWithTaxonomyId(2l), taxonToBeSearch, createTaxonWithTaxonomyId(4l), createTaxonWithTaxonomyId(8l));

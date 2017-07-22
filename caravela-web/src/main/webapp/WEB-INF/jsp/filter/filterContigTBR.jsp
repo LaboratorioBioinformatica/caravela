@@ -110,7 +110,22 @@
 
 	<c:if test="${not empty contigList}">
 		<div class="panel panel-default">
-			<div class="panel-heading"><h4>Contigs</h4></div>
+			<div class="panel-heading">
+				<h4>Contigs</h4>
+				<form name="form-download-taxons-on-contigs" action="<c:url value="/report/taxonOnContig/by/sample"/>" class="form-horizontal" role="form" method="post">
+					<input type="hidden" name="sampleId" value="${sample.id}">
+					
+					
+					<input type="hidden" value="${ITGFormated}" id="itg" name="contigFilterParameters.itg">
+					<input type="hidden" value="${filterTBRParameters.numberOfFeatures}" id="numberOfFeatures" name="contigFilterParameters.numberOfFeatures">
+					<input type="hidden" value="${filterTBRParameters.taxonomicRank}" id="taxonomicRank" name="contigFilterParameters.taxonomicRank">
+					<input type="hidden" value="${filterTBRParameters.numberOfBorders}" id="numberOfBorders" name="contigFilterParameters.numberOfBorders">
+					<input type="hidden" value="${CTFormated}" id="ct" name="contigFilterParameters.ct">
+					<input type="hidden" value="${CTVFormated}" id="ctv" name="contigFilterParameters.ctv">
+					<button type="submit" class="btn btn-info center-block">Download taxa on contigs</button>
+				</form>		
+				
+			</div>
 		 	<table class="table">
 			    <thead>
 			    	<tr>

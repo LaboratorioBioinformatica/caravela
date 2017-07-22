@@ -45,6 +45,7 @@ public class DAOImpl<T> implements DAO<T> {
 		return entityManager.createQuery("from " + entityClass.getName()).getResultList();
 	}
 	
+	// this method should return EntityNotFoundException, should not return null!! 
 	public T load(Long id) {
 		if(id != null){
 			return entityManager.find(entityClass, id);
