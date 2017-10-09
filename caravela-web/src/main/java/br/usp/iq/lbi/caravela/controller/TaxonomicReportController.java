@@ -67,6 +67,8 @@ public class TaxonomicReportController {
 				StringBuilder line = new StringBuilder();
 				line.append(read.getReference())
 				.append(TAB)
+				.append(taxon.getTaxonomyId())
+				.append(TAB)
 				.append(taxon.getScientificName())
 				.append(TAB)
 				.append(decimal.format(contig.getIndexOfConsistencyTaxonomicByCountReads(TaxonomicRank.GENUS)))

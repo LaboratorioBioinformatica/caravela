@@ -3,7 +3,7 @@ $(document).ready(function() {
 	$('#div-form-sample').hide();
 	
 	$('#select-treatment-id').change(function(){
-		var baseURL = "treatment/sample/list/" 
+		var baseURL = "treatment/sample/list/"; 
 		var optionSelected = $('#select-treatment-id option:selected').val();
 		
 		$.getJSON(baseURL+optionSelected, function( data ) {
