@@ -12,7 +12,6 @@ public interface ContigDAO extends DAO<Contig> {
 	Long CountByContigBySampleAndTiiGreatherThan(Sample sample, Double tii);
 	List<Contig> FindByContigListTBRBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic, Integer firstResult, Integer maxResult);
 	List<Contig> FindByContigBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic);
-	List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer maxResult);
 	List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer startPosition, Integer maxResult);
 	Contig findContigBySampleAndContigReference(Sample sample, String contigReference);
 	List<Contig> FindContigBySampleOrderByContigSizeAndITGDesc(Sample sample);
