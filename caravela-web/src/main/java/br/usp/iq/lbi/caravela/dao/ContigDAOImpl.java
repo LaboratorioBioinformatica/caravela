@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.TaxonomicRank;
+import sun.util.resources.ga.LocaleNames_ga;
 
 
 public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
@@ -20,7 +21,7 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		super(entityManager);
 	}
 	
-	public List<Contig> FindByContigListTBRBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic, Integer firstResult, Integer maxResult) {
+	public List<Contig> findByContigListTBRBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic, Integer firstResult, Integer maxResult) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM  ContigStatisticByTii cs INNER JOIN cs.contig c  WHERE c.sample = :sample and cs.rank = :taxonomicRank "
 				+ "AND c.taxonomicIdentificationIndex >= :tii "
 				+ "AND c.numberOfFeatures >= :NOF "
@@ -40,7 +41,7 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		return contigList;
 	}
 	
-	public List<Contig> FindByContigListPQBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic, Integer firstResult, Integer maxResult) {
+	public List<Contig> findByContigListPQBySample(Sample sample, Double tii, Integer numberOfFeatures, TaxonomicRank taxonomicRank, Integer numberOfBoundaries, Double indexOfConsistencyTaxonomicByCountReads, Double indexOfVerticalConsistencyTaxonomic, Integer firstResult, Integer maxResult) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM  ContigStatisticByTii cs INNER JOIN cs.contig c  WHERE c.sample = :sample and cs.rank = :taxonomicRank "
 				+ "AND c.taxonomicIdentificationIndex >= :tii "
 				+ "AND c.numberOfFeatures >= :NOF "
@@ -104,12 +105,20 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 	}
 
 	
-	public List<Contig> FindContigBySampleOrderByContigSizeAndITGDesc(Sample sample) {
+	public List<Contig> findAllContigsBySample(Sample sample, Integer start, Integer max) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample ORDER by length(c.sequence) DESC,  c.taxonomicIdentificationIndex DESC", Contig.class);
-		return query.setParameter("sample", sample).getResultList();
+		query.setParameter("sample", sample);
+		query.setFirstResult(start);
+		query.setMaxResults(max);
+		return query.getResultList();
+	}
+
+	public Long countAllContigsBySample(Sample sample) {
+		Query query = entityManager.createQuery("SELECT COUNT(c.id) FROM Contig c WHERE c.sample=:sample", Long.class);
+		return (Long) query.setParameter("sample", sample).getSingleResult();
 	}
 	
-	public List<Contig> FindByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer startPosition, Integer maxResult) {
+	public List<Contig> findByContigBySampleAndTiiGreatherThan(Sample sample, Double tii, Integer startPosition, Integer maxResult) {
 		TypedQuery<Contig> query = entityManager.createQuery("SELECT c FROM Contig c WHERE c.sample=:sample AND c.taxonomicIdentificationIndex >:tii ORDER by c.id", Contig.class);
 		List<Contig> contigList = query.setParameter("sample", sample)
 				.setParameter("tii", tii)
@@ -118,7 +127,7 @@ public class ContigDAOImpl extends DAOImpl<Contig> implements ContigDAO {
 		return contigList;
 	}
 	
-	public Long CountByContigBySampleAndTiiGreatherThan(Sample sample, Double tii) {
+	public Long countByContigBySampleAndTiiGreatherThan(Sample sample, Double tii) {
 		Query query = entityManager.createQuery("SELECT COUNT(c.id) FROM Contig c WHERE c.sample=:sample AND c.taxonomicIdentificationIndex >:tii", Long.class);
 		return (Long) query.setParameter("sample", sample).setParameter("tii", tii).getSingleResult();
 	}

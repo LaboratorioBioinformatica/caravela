@@ -59,7 +59,7 @@ public class FilterController {
 		Integer maxResult = 100;
 		
 		Sample sample = sampleDAO.load(sampleId);
-		List<Contig> contigList = contigDAO.FindByContigListTBRBySample(sample, filterTBRParameters.getItg(), filterTBRParameters.getNumberOfFeatures(), filterTBRParameters.getTaxonomicRank(), 
+		List<Contig> contigList = contigDAO.findByContigListTBRBySample(sample, filterTBRParameters.getItg(), filterTBRParameters.getNumberOfFeatures(), filterTBRParameters.getTaxonomicRank(),
 				filterTBRParameters.getNumberOfBorders(), filterTBRParameters.getCt(), filterTBRParameters.getCtv(), firstResult, maxResult);
 		
 		result.include("sample", sample);
@@ -86,7 +86,7 @@ public class FilterController {
 		Integer maxResult = 100;
 		
 		Sample sample = sampleDAO.load(sampleId);
-		List<Contig> contigList = contigDAO.FindByContigListPQBySample(sample, filterPQParameters.getItg(), filterPQParameters.getNumberOfFeatures(), filterPQParameters.getTaxonomicRank(), 
+		List<Contig> contigList = contigDAO.findByContigListPQBySample(sample, filterPQParameters.getItg(), filterPQParameters.getNumberOfFeatures(), filterPQParameters.getTaxonomicRank(),
 				filterPQParameters.getNumberOfBorders(), filterPQParameters.getCt(), filterPQParameters.getCtv(), firstResult, maxResult);
 		
 		result.include("sample", sample);

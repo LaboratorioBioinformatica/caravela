@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import br.usp.iq.lbi.caravela.domain.ContigManager;
+import br.usp.iq.lbi.caravela.dto.ContigReportTO;
+import br.usp.iq.lbi.caravela.dto.ContigTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +47,8 @@ public class ContigReportController {
 	private WebUser webUser;
 	private final SampleDAO sampleDAO;
 	private final ContigDAO contigDAO;
+	private final ContigManager contigManager;
+
 
 	private Double TII_GREATER_OR_EQUALS_THAN = 0.5;
 	private Integer NUMBER_OF_FEATURES_GREATER_OR_EQUALS_THAN = 0;
@@ -56,15 +61,16 @@ public class ContigReportController {
 	private TaxonomicRank FAMILY = TaxonomicRank.FAMILY;
 
 	protected ContigReportController() {
-		this(null, null, null, null, null);
+		this(null, null, null, null, null, null);
 	}
 
 	@Inject
-	public ContigReportController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigDAO contigDAO, Validator validator) {
+	public ContigReportController(Result result, WebUser webUser, SampleDAO sampleDAO, ContigDAO contigDAO, Validator validator, ContigManager contigManager) {
 		this.result = result;
 		this.webUser = webUser;
 		this.sampleDAO = sampleDAO;
 		this.contigDAO = contigDAO;
+		this.contigManager = contigManager;
 		this.validator = validator;
 	}
 
@@ -204,8 +210,9 @@ public class ContigReportController {
 		try {
 			
 			Sample sample = sampleDAO.load(sampleId);
-			List<Contig> contigList = contigDAO.FindContigBySampleOrderByContigSizeAndITGDesc(sample);
-			
+			final List<ContigReportTO> contigReportTOList = contigManager.searchAllContigBySample(sample);
+
+
 			StringBuffer fileNameStringBuffer = new StringBuffer();
 			fileNameStringBuffer.append("/tmp/").append("Report_Contigs")
 				.append("_").append(replaceSpacesToUnderline(sample.getName())).append(".tsv");
@@ -219,18 +226,28 @@ public class ContigReportController {
 			FileWriter fw = new FileWriter(file);
 			fw.write(createHeaderToReportContigs());
 			fw.write(LINE_SEPARATOR);
-			for (Contig contig : contigList) {
+			for (ContigReportTO contigTO : contigReportTOList) {
 				StringBuilder line = new StringBuilder();
-				line.append(contig.getReference()).append(TAB).append(contig.getSize()).append(TAB)
-						.append(getICTCR(decimal, contig, SPECIES)).append(TAB)
-						.append(getIVCT(decimal, contig, SPECIES)).append(TAB).append(getBorders(contig, SPECIES))
-						.append(TAB).append(getICTCR(decimal, contig, GENUS)).append(TAB)
-						.append(getIVCT(decimal, contig, GENUS)).append(TAB).append(getBorders(contig, GENUS))
-						.append(TAB).append(getICTCR(decimal, contig, FAMILY)).append(TAB)
-						.append(getIVCT(decimal, contig, FAMILY)).append(TAB).append(getBorders(contig, FAMILY))
-						.append(TAB).append(decimal.format(contig.getTaxonomicIdentificationIndex())).append(TAB)
-						.append(contig.getNumberOfReads()).append(TAB).append(contig.getNumberOfReadsClassified())
-						.append(TAB).append(contig.getNumberOfFeatures())
+				line.append(
+						contigTO.getReference()).append(TAB)
+						.append(contigTO.getSize()).append(TAB)
+
+						.append(decimal.format(contigTO.getSpeciesCT())).append(TAB)
+						.append(decimal.format(contigTO.getSpeciesCTV())).append(TAB)
+						.append(contigTO.getSpeciesBorder()).append(TAB)
+
+						.append(decimal.format(contigTO.getGenusCT())).append(TAB)
+						.append(decimal.format(contigTO.getGenusCTV())).append(TAB)
+						.append(contigTO.getGenusBorder()).append(TAB)
+
+						.append(decimal.format(contigTO.getFamilyCT())).append(TAB)
+						.append(decimal.format(contigTO.getFamilyCTV())).append(TAB)
+						.append(contigTO.getFamilyBorder()).append(TAB)
+
+						.append(decimal.format(contigTO.getTaxonomicIdentificationGeneral())).append(TAB)
+						.append(contigTO.getNumberOfReads()).append(TAB)
+						.append(contigTO.getNumberOfReadsClassified()).append(TAB)
+						.append(contigTO.getNumberOfFeatures())
 
 						.append(LINE_SEPARATOR);
 				fw.write(line.toString());

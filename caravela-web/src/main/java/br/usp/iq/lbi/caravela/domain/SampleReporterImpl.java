@@ -54,7 +54,7 @@ public class SampleReporterImpl implements SampleReporter {
 
 	public void reportChimericPotentialFromContig(Sample sample, Double tii, String rank) {
 
-		Long totalNumberOfContig = contigDAO.CountByContigBySampleAndTiiGreatherThan(sample, tii);
+		Long totalNumberOfContig = contigDAO.countByContigBySampleAndTiiGreatherThan(sample, tii);
 		
 		List<IntervalPage> pages = paginator.getPages(totalNumberOfContig, MAX_RECORD_PER_PAGE);
 		
@@ -63,7 +63,7 @@ public class SampleReporterImpl implements SampleReporter {
 		for (IntervalPage intervalPage : pages) {
 			Integer start = intervalPage.getStart();
 			System.out.println("START: " + start + " MAX RESULT: " + MAX_RECORD_PER_PAGE);
-			List<Contig> contigs = contigDAO.FindByContigBySampleAndTiiGreatherThan(sample, tii, start, MAX_RECORD_PER_PAGE.intValue());
+			List<Contig> contigs = contigDAO.findByContigBySampleAndTiiGreatherThan(sample, tii, start, MAX_RECORD_PER_PAGE.intValue());
 			report(sample, rank, contigs);
 			
 		}
