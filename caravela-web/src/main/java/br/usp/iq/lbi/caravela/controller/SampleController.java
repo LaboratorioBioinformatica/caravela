@@ -21,13 +21,13 @@ import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.ContigDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
-import br.usp.iq.lbi.caravela.dao.TreatmentDAO;
+import br.usp.iq.lbi.caravela.dao.StudyDAO;
 import br.usp.iq.lbi.caravela.domain.SampleLoader;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleStatus;
-import br.usp.iq.lbi.caravela.model.Treatment;
+import br.usp.iq.lbi.caravela.model.Study;
 
 
 @Controller
@@ -38,7 +38,7 @@ public class SampleController {
 	private static final int SAMPLE_NAME_MIN_SIZE = 3;
 	private final Result result;
 	private WebUser webUser;
-	private final TreatmentDAO treatmentDAO;
+	private final StudyDAO studyDAO;
 	private final SampleDAO sampleDAO;
 	private final ContigDAO contigDAO;
 	private final SampleReporter sampleReporter;
@@ -51,11 +51,11 @@ public class SampleController {
 	}
 	
 	@Inject
-	public SampleController(Result result, WebUser webUser, TreatmentDAO treatmentDAO, SampleDAO sampleDAO, 
-			ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader, ClassifiedReadByContextDAO classifiedReadByContextDAO){
+	public SampleController(Result result, WebUser webUser, StudyDAO studyDAO, SampleDAO sampleDAO,
+							ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader, ClassifiedReadByContextDAO classifiedReadByContextDAO){
 		this.result = result;
 		this.webUser = webUser;
-		this.treatmentDAO = treatmentDAO;
+		this.studyDAO = studyDAO;
 		this.sampleDAO = sampleDAO;
 		this.contigDAO = contigDAO;
 		this.sampleReporter = sampleReporter;
@@ -66,8 +66,8 @@ public class SampleController {
 	
 	
 	public void view(){
-		List<Treatment> treatmentList = treatmentDAO.findAll();
-		result.include("treatmentList", treatmentList);
+		List<Study> studyList = studyDAO.findAll();
+		result.include("studyList", studyList);
 	}
 	
 	@Get
@@ -80,29 +80,29 @@ public class SampleController {
 	
 	@Path("/sample/new")
 	public void newSample(){
-		List<Treatment> treatmentList = treatmentDAO.findAll();
-		result.include("treatmentList", treatmentList);
+		List<Study> studyList = studyDAO.findAll();
+		result.include("studyList", studyList);
 	}
 	
 	@Post
-	public void add(Long treatmentId, String sampleName, String description){
+	public void add(Long studyId, String sampleName, String description){
 		
-		Treatment treatment = treatmentDAO.load(treatmentId);
+		Study study = studyDAO.load(studyId);
 		
 		validator.addIf(sampleName == null || sampleName.length() < SAMPLE_NAME_MIN_SIZE, 
 				new SimpleMessage("sample.name", "can not be null or less than " + SAMPLE_NAME_MIN_SIZE, Severity.ERROR));
-		validator.addIf(treatment == null , new SimpleMessage("sample.treatment", "invalid", Severity.ERROR));
+		validator.addIf(study == null , new SimpleMessage("sample.study", "invalid", Severity.ERROR));
 		
 		validator.onErrorForwardTo(this).form();
 		
-		result.include("treatmentSelected", treatmentId);
+		result.include("studySelected", studyId);
 		result.include("sampleName", sampleName);
 		result.include("description", description);
 		
-		Sample sample = new Sample(treatment, SampleStatus.CREATED, sampleName, description);
+		Sample sample = new Sample(study, SampleStatus.CREATED, sampleName, description);
 		sampleDAO.save(sample);
 				
-		result.forwardTo(this).list(treatmentId);
+		result.forwardTo(this).list(studyId);
 	}
 	
 	@Post
@@ -115,37 +115,37 @@ public class SampleController {
 		System.out.println("delete classified reads by context from sample: " + sample.getName());
 		classifiedReadByContextDAO.removeBySample(sampleId);
 //		contigStatisticByTiiDAO.removeBySample(sampleId); 
-		result.forwardTo(this).list(sample.getTreatment().getId());
+		result.forwardTo(this).list(sample.getStudy().getId());
 		
 		
 	}
 	
 	@Get
-	@Path("/sample/list/by/treatment/{treatmentId}")
-	public void listByTreatment(Long treatmentId){
-		list(treatmentId);
+	@Path("/sample/list/by/study/{studyId}")
+	public void listByStudy(Long studyId){
+		list(studyId);
 	}
 	
 	
 	@Post
-	public void list(Long treatmentId){
-		Treatment treatment = treatmentDAO.load(treatmentId);
-		List<Sample> sampleList = sampleDAO.listAllByTreatment(treatment);
+	public void list(Long studyId){
+		Study study = studyDAO.load(studyId);
+		List<Sample> sampleList = sampleDAO.listAllByStudy(study);
 		Boolean sampleLoaderRunning = sampleLoader.isRunningSampleLoader();
 		
 		if (sampleList.isEmpty()) {
-			validator.add(new SimpleMessage("treatment.list", "There is no sample to show", Severity.WARN));
+			validator.add(new SimpleMessage("study.list", "There is no sample to show", Severity.WARN));
 		}
 		
 		result.include("sampleList", sampleList);
-		result.include("treatmentSelected", treatmentId);
+		result.include("studySelected", studyId);
 		result.include("isSampleLoaderRunning", sampleLoaderRunning);
 		result.forwardTo(this).view();
 	}
 	
 	@Get
 	public void form() {
-		result.include("treatmentList", treatmentDAO.findAll());
+		result.include("studyList", studyDAO.findAll());
 
 	}
 	

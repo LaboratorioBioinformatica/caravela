@@ -67,6 +67,7 @@
 	          <div class="navbar-collapse collapse">
 	            <ul class="nav navbar-nav">
 	              <li><a href="${linkTo[HomeController].home}">Home</a></li>
+	              <li><a href="${linkTo[StudyController].list}">Studies</a></li>
 	              <li><a href="${linkTo[SampleController].view}">Samples</a></li>
 	              
 	               <li class="dropdown">

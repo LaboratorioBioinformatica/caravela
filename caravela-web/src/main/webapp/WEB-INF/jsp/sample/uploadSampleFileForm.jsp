@@ -47,7 +47,7 @@ $('#uploadSampleFileForm').fileupload({
 	},
 	done: function (e, data) {
 		console.log('upload finished!');
-		$(location).attr('href', '${linkTo[SampleController].listByTreatment}${sample.treatment.id}');
+		$(location).attr('href', '${linkTo[SampleController].listByStudy}${sample.study.id}');
 	}
 	});
 </script>	

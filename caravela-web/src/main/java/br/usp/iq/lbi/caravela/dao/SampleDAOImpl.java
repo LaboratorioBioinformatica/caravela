@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleStatus;
-import br.usp.iq.lbi.caravela.model.Treatment;
+import br.usp.iq.lbi.caravela.model.Study;
 
 
 
@@ -28,9 +28,9 @@ public class SampleDAOImpl extends DAOImpl<Sample> implements SampleDAO {
 		return entityManager.find(Sample.class, sample.getId());
 	}
 
-	public List<Sample> listAllByTreatment(Treatment treatment) {
-		Query query = entityManager.createQuery("from Sample s where s.treatment=:treatment", Sample.class);
-		query.setParameter("treatment", treatment);
+	public List<Sample> listAllByStudy(Study study) {
+		Query query = entityManager.createQuery("from Sample s where s.study=:study", Sample.class);
+		query.setParameter("study", study);
 		return query.getResultList();
 	}
 	

@@ -16,10 +16,10 @@
 		        		
 							<input type="hidden" name="sampleId" value="${sample.id}">
 							<div class="form-group">
-								<label>Choose a treatment: </label>
-								<select id="select-treatment-id" name="treatmentId" class="form-control">
-									<c:forEach var="treatment" items="${treatmentList}">
-										<option ${treatmentSelected eq treatment.id ? 'selected="selected"' : ''} value="${treatment.id}">${treatment.name}</option>
+								<label>Choose a study: </label>
+								<select id="select-study-id" name="studyId" class="form-control">
+									<c:forEach var="study" items="${studyList}">
+										<option ${studySelected eq study.id ? 'selected="selected"' : ''} value="${study.id}">${study.name}</option>
 									</c:forEach>
 								</select>
 							</div>	

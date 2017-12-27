@@ -22,10 +22,10 @@ public class ReadTest {
 	@Test
 	public void testWhenReferenceSampleAndPairAreSameShouldBeEquals() throws Exception {
 		
-		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
+		Study study = new Study("Composting 3b", "description composting 3d");
 		
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(study, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;
@@ -62,9 +62,9 @@ public class ReadTest {
 	@Test
 	public void testWhenOnlyPairIsDiferentSameShouldNotBeEquals() throws Exception {
 		
-		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
+		Study study = new Study("Composting 3b", "description composting 3d");
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(study, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;
@@ -99,11 +99,11 @@ public class ReadTest {
 	@Test
 	public void testWhenOnlySampleIsDiferentSameShouldNotBeEquals() throws Exception {
 		
-		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
+		Study study = new Study("Composting 3b", "description composting 3d");
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(study, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
-		Sample sampleZC3bDay30 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-30", "description zc3b-day-30");
+		Sample sampleZC3bDay30 = new Sample(study, SampleStatus.PROCESSED, "zc3b-day-30", "description zc3b-day-30");
 		
 		Long taxonomyId = 1289127l;
 		Long taxonomyParentId = 1289122l;
@@ -137,9 +137,9 @@ public class ReadTest {
 	@Test
 	public void testWhenOnlyReferenceIsDiferentSameShouldNotBeEquals() throws Exception {
 		
-		Treatment treatment = new Treatment("Composting 3b", "description composting 3d");
+		Study study = new Study("Composting 3b", "description composting 3d");
 		Mapping mapping = createMapping();
-		Sample sampleZC3bDay01 = new Sample(treatment, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
+		Sample sampleZC3bDay01 = new Sample(study, SampleStatus.PROCESSED, "zc3b-day-01", "description zc3b-day-01");
 		
 		
 		Long taxonomyId = 1289127l;

@@ -22,7 +22,7 @@ public class Sample {
 	private Long id;
 	
 	@ManyToOne
-	private Treatment treatment;
+	private Study study;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="sample_status")
@@ -40,8 +40,8 @@ public class Sample {
 	
 	public Sample() {}
 	
-	public Sample(Treatment treatment, SampleStatus sampleStatus, String name, String description) {
-		this.treatment = treatment;
+	public Sample(Study study, SampleStatus sampleStatus, String name, String description) {
+		this.study = study;
 		this.name = name;
 		this.sampleStatus = sampleStatus;
 		this.description = description;
@@ -51,8 +51,8 @@ public class Sample {
 		return id;
 	}
 	
-	public Treatment getTreatment() {
-		return treatment;
+	public Study getStudy() {
+		return study;
 	}
 	
 	public String getName() {
@@ -150,7 +150,7 @@ public class Sample {
 		
 		return this.name.equals(sample.getName()) && 
 				this.description.equals(sample.getDescription()) && 
-				this.treatment.equals(sample.getTreatment()) && 
+				this.study.equals(sample.getStudy()) &&
 				this.sampleStatus.equals(sample.getSampleStatus()); 
 		
 	}

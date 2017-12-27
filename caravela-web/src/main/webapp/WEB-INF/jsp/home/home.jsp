@@ -5,20 +5,20 @@
 <t:default>
 <jsp:attribute name="headImport">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="<c:url value='/js/treatment-behavior.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/study-behavior.js'/>"></script>
 </jsp:attribute>
 
     <jsp:body>
         <h2>=P</h2>
-	      <c:if test="${not empty treatments}">
+	      <c:if test="${not empty studies}">
 			<div class="form-group">
-				<form action="<c:url value="/"/>" name="form-treatment-sample" class="form-inline" role="form" method="post">
+				<form action="<c:url value="/"/>" name="form-study-sample" class="form-inline" role="form" method="post">
 					<!-- label></label -->
-					<select id="select-treatment-id" name="treatmentId" class="form-control">
-							<option value="0" >Choose a treatment</option>
-						<c:forEach var="treatment" items="${treatments}">
-							<option ${treatmentSelected eq treatment.id ? 'selected="selected"' : ''}
-								value="${treatment.id}">${treatment.name}</option>
+					<select id="select-study-id" name="studyId" class="form-control">
+							<option value="0" >Choose a study</option>
+						<c:forEach var="study" items="${studies}">
+							<option ${studySelected eq study.id ? 'selected="selected"' : ''}
+								value="${study.id}">${study.name}</option>
 						</c:forEach>
 					</select> 
 				</form>

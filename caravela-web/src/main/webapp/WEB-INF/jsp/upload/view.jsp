@@ -7,11 +7,11 @@
 		  <div class="mdl-cell--6-col-desktop">
 			  <form action="<c:url value='/login/login'/>" method="post">
 			  		<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<select class="mdl-textfield__input" name="treatment" id="treatment">
+						<select class="mdl-textfield__input" name="study" id="study">
 						  <option value="volvo">ZC3b</option>
 						  <option value="saab">zc4</option>
 						</select>
-						<label class="mdl-textfield__label" for="treatment">Treatment Name</label>
+						<label class="mdl-textfield__label" for="study">Study Name</label>
 					</div>
 		  			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					  <input class="mdl-textfield__input" name="sample.name" type="text" id="sampleName" />

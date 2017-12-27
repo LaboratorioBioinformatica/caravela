@@ -7,7 +7,7 @@ public class SampleTest {
 	
 	@Test
 	public void test() {
-		Sample sample = new Sample(new Treatment(), SampleStatus.CREATED, "Teste", "Teste");
+		Sample sample = new Sample(new Study(), SampleStatus.CREATED, "Teste", "Teste");
 		
 		
 		Assert.assertEquals(sample.getSampleStatus(), SampleStatus.CREATED);

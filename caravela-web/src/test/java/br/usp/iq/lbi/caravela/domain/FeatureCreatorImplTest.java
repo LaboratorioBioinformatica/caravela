@@ -27,7 +27,7 @@ import br.usp.iq.lbi.caravela.model.Philodist;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleStatus;
 import br.usp.iq.lbi.caravela.model.Taxon;
-import br.usp.iq.lbi.caravela.model.Treatment;
+import br.usp.iq.lbi.caravela.model.Study;
 
 public class FeatureCreatorImplTest {
 
@@ -48,8 +48,8 @@ public class FeatureCreatorImplTest {
 	@Test
 	public void testName() throws Exception {
 		
-		Treatment ZC4Treatment = new Treatment("ZC4", "Zoo composting 4");
-		Sample ZC4Day01Sample = new Sample(ZC4Treatment, SampleStatus.UPLOADED, "ZC4-DAY-01", "day 01 from zc4");
+		Study ZC4Study = new Study("ZC4", "Zoo composting 4");
+		Sample ZC4Day01Sample = new Sample(ZC4Study, SampleStatus.UPLOADED, "ZC4-DAY-01", "day 01 from zc4");
 		Contig contig = new Contig(ZC4Day01Sample, "ASD12F1AS2D1F2AS1DF", "ATGTGGTCGTAGTGCTAGCAAGTCGTAGTGA", 31, 1, 1, 0, 0.5d);
 		
 		GeneProductTO geneProductTO = new GeneProductTO("gene product", "source gene Product");
@@ -108,8 +108,8 @@ public class FeatureCreatorImplTest {
 	
 	@Test
 	public void testCreateAndSaveFeatureListWhenFeatureTOListHasJustOnlyRequiredFileds() throws Exception {
-		Treatment ZC4Treatment = new Treatment("ZC4", "Zoo composting 4");
-		Sample ZC4Day01Sample = new Sample(ZC4Treatment, SampleStatus.UPLOADED, "ZC4-DAY-01", "day 01 from zc4");
+		Study ZC4Study = new Study("ZC4", "Zoo composting 4");
+		Sample ZC4Day01Sample = new Sample(ZC4Study, SampleStatus.UPLOADED, "ZC4-DAY-01", "day 01 from zc4");
 		Contig contig = new Contig(ZC4Day01Sample, "ASD12F1AS2D1F2AS1DF", "ATGTGGTCGTAGTGCTAGCAAGTCGTAGTGA", 31, 1, 1, 0, 0.5d);
 		
 		FeatureTO featureTOCDS = createFeatureTO("CDS", 1, 150, -1, null, null, null, null);

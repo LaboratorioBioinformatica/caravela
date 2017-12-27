@@ -1,17 +1,5 @@
 package br.usp.iq.lbi.caravela.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import br.usp.iq.lbi.caravela.domain.ConsensusBuilding;
 import br.usp.iq.lbi.caravela.domain.OverlapBuilder;
 import br.usp.iq.lbi.caravela.domain.ReadWrapper;
@@ -22,9 +10,20 @@ import br.usp.iq.lbi.caravela.model.Mapping;
 import br.usp.iq.lbi.caravela.model.Read;
 import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.SampleStatus;
+import br.usp.iq.lbi.caravela.model.Study;
 import br.usp.iq.lbi.caravela.model.Taxon;
 import br.usp.iq.lbi.caravela.model.TaxonomicAssignment;
-import br.usp.iq.lbi.caravela.model.Treatment;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ContigControllerHelperTest {
@@ -53,9 +52,9 @@ public class ContigControllerHelperTest {
 	@Test
 	public void testSearchbyUnclassifiedReadThatWouldBeClassified() throws Exception {
 		
-		Treatment treatment = new Treatment("ZC4","Zoo Composting 4");
+		Study study = new Study("ZC4","Zoo Composting 4");
 		Contig contig = new Contig();
-		Sample sample = new Sample(treatment, SampleStatus.PROCESSED, "zc4 day 01","day 01 from zc4");
+		Sample sample = new Sample(study, SampleStatus.PROCESSED, "zc4 day 01","day 01 from zc4");
 		
 		
 		

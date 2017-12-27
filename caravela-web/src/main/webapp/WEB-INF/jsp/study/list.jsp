@@ -7,17 +7,17 @@
     <div class="container">
     
 	    <div class="page-header">
-			<h1>Treatments</h1>
+			<h1>Studies</h1>
 			<div class="bnt-group">
-				<a href="${linkTo[TreatmentController].form}" class="btn btn-success pull-right"  role="button">
+				<a href="${linkTo[StudyController].form}" class="btn btn-success pull-right"  role="button">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					<span class="glyphicon-class">new treatment</span>
+					<span class="glyphicon-class">new study</span>
 				</a>
 			</div>
 		</div>
 		
 		
-	<c:if test="${not empty treatments}">
+	<c:if test="${not empty studies}">
 		<div class="panel panel-default">
 		 	<table class="table">
 			    <thead>
@@ -28,12 +28,12 @@
 				    </tr>
 				</thead>
 				<tbody>
-					<c:forEach var="treatment" items="${treatments}">
+					<c:forEach var="study" items="${studies}">
 						<tr>
-							<td>${treatment.name}</td>
-							<td>${treatment.description}</td>
+							<td>${study.name}</td>
+							<td>${study.description}</td>
 							<td>
-								<a class="btn btn-success glyphicon glyphicon-eye-open" href="${linkTo[SampleController].listByTreatment}${treatment.id}" role="button"></a>
+								<a class="btn btn-success glyphicon glyphicon-eye-open" href="${linkTo[SampleController].listByStudy}${study.id}" role="button"></a>
 							</td>
 						</tr>
 					</c:forEach>

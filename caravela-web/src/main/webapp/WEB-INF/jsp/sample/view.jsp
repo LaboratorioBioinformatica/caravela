@@ -15,26 +15,26 @@
 	    
 			<h1>Samples</h1>
 		</div>
-		<c:if test="${empty treatmentList}">
-			<h3> Before creating a sample you need register a Treatment.</h3>  
-			<a href="${linkTo[TreatmentController].form}" class="btn btn-success"  role="button">
+		<c:if test="${empty studyList}">
+			<h3> Before creating a sample you need register a study.</h3>
+			<a href="${linkTo[StudyController].form}" class="btn btn-success"  role="button">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						<span class="glyphicon-class">new treatment</span>
+						<span class="glyphicon-class">new study</span>
 			</a> 
 		</c:if>
 		
-		<c:if test="${not empty treatmentList}">
+		<c:if test="${not empty studyList}">
 		
 			<div class="form-group">
-				<form action="<c:url value="/sample/list"/>" name="form-sample-treatment" class="form-inline" role="form"
+				<form action="<c:url value="/sample/list"/>" name="form-sample-study" class="form-inline" role="form"
 							method="post">
-					<label>Choose a treatment: </label>
-					<select id="select-treatment-id" name="treatmentId"
+					<label>Choose a study: </label>
+					<select id="select-study-id" name="studyId"
 								class="form-control">
-						<c:forEach var="treatment" items="${treatmentList}">
+						<c:forEach var="study" items="${studyList}">
 							<option
-										${treatmentSelected eq treatment.id ? 'selected="selected"' : ''}
-										value="${treatment.id}">${treatment.name}</option>
+										${studySelected eq study.id ? 'selected="selected"' : ''}
+										value="${study.id}">${study.name}</option>
 						</c:forEach>
 					</select>
 					<button type="submit" class="btn btn-default">Search samples</button>
@@ -99,31 +99,42 @@
 											</c:when>
 											
 											<c:when test="${sampleStatus == 'PROCESSED'}">
-												<div>
-													<a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button" data-toggle="popover" data-trigger="hover" data-content="Click to analyze">
-													<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-													</a>
-												
-													<a href="${linkTo[ContigReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report taxonomically good resolved contigs" class="btn btn-primary" role="button">
-														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-													</a>
-													
-													<a href="${linkTo[TaxonomicReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report reads no taxon classified by context" class="btn btn-primary" role="button">
-														<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-													</a>
-												</div>													
+												<div class="col-md-3">
+                                                    <ul class="list-unstyled">
+                                                        <li>
+
+                                                            <a href="<c:url value="/sample/analyze/${sample.id}"/>" class="btn btn-success" role="button" data-toggle="popover" data-trigger="hover" data-content="Click to analyze">
+                                                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                                                                <span class="glyphicon-class">Analyze</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+
+                                                            <a href="${linkTo[ContigReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report taxonomically good resolved contigs" class="btn btn-primary" role="button">
+                                                                <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                                                                <span class="glyphicon-class">Download taxonomically good resolved contigs</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="${linkTo[TaxonomicReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report reads no taxon classified by context" class="btn btn-primary" role="button">
+                                                                <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                                                                <span class="glyphicon-class">Download reads classified by context</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+												</div>
 												
 											</c:when>
 											
 										</c:choose>
-										<div>
+										<!--div>
 											<form action="${linkTo[SampleController].deleteSample}" name="form-sample-delete" class="form-inline" role="form" method="post">
 													<input type="hidden" name="sampleId" value="${sample.id}">
 													<button type="submit" class="btn btn-danger" aria-label="Left Align" data-toggle="popover" data-trigger="hover" data-content="Click to delete"> 
 														<span class="glyphicon glyphicon-trash"aria-hidden="true"></span>
 													</button>
 											</form>		
-										</div>
+										</div-->
 									</div>	
 										
 		

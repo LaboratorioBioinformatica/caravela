@@ -6,8 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "treatment")
-public class Treatment {
+@Table(name = "study")
+public class Study {
 
 	@Id
 	@GeneratedValue
@@ -16,10 +16,10 @@ public class Treatment {
 	private String name;
 	private String description;
 
-	public Treatment() {
+	public Study() {
 	}
 
-	public Treatment(String name, String description) {
+	public Study(String name, String description) {
 		this.name = name;
 		this.description = description;
 	}
@@ -38,7 +38,7 @@ public class Treatment {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Treatment)) {
+		if (!(obj instanceof Study)) {
 			return false;
 		}
 
@@ -46,8 +46,8 @@ public class Treatment {
 			return true;
 		}
 
-		Treatment treatment = (Treatment) obj;
-		return this.name.equals(treatment.getName()) && this.description.equals(treatment.getDescription());
+		Study study = (Study) obj;
+		return this.name.equals(study.getName()) && this.description.equals(study.getDescription());
 	}
 
 }

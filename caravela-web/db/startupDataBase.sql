@@ -28,8 +28,8 @@ create table taxon (
 	INDEX (taxonomy_id), INDEX (taxonomy_parent_id), INDEX (scientific_name)
 );
 
--- create table treatment
-create table treatment (
+-- create table study
+create table study (
 	id INT NOT NULL AUTO_INCREMENT,
 	name VARCHAR(100) NOT NULL,
 	description VARCHAR(500) NULL,
@@ -39,12 +39,12 @@ create table treatment (
 -- create table sample
 create table sample (
 	id INT NOT NULL AUTO_INCREMENT,
-	treatment_id INT NOT NULL,
+	study_id INT NOT NULL,
 	name VARCHAR(100) NOT NULL,
 	sample_status VARCHAR(50) NOT NULL,
 	description VARCHAR(500) NULL,
 	PRIMARY KEY(id),
-	INDEX (treatment_id) 
+	INDEX (study_id)
 );
 
 -- create table sample files

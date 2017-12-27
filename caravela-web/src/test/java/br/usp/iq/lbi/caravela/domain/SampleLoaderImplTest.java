@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import br.usp.iq.lbi.caravela.model.*;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,13 +18,7 @@ import com.google.gson.Gson;
 import br.usp.iq.lbi.caravela.dto.ContigTO;
 import br.usp.iq.lbi.caravela.dto.FeatureTO;
 import br.usp.iq.lbi.caravela.dto.ReadOnContigTO;
-import br.usp.iq.lbi.caravela.model.Contig;
-import br.usp.iq.lbi.caravela.model.FileStatus;
-import br.usp.iq.lbi.caravela.model.FileType;
-import br.usp.iq.lbi.caravela.model.Sample;
-import br.usp.iq.lbi.caravela.model.SampleFile;
-import br.usp.iq.lbi.caravela.model.SampleStatus;
-import br.usp.iq.lbi.caravela.model.Treatment;
+import br.usp.iq.lbi.caravela.model.Study;
 
 public class SampleLoaderImplTest {
 	
@@ -35,7 +30,7 @@ public class SampleLoaderImplTest {
 	public void test() throws Exception {
 		Long sampleId = 1l;
 		
-		Sample sample = new Sample(new Treatment(), SampleStatus.UPLOADED,"zcth-02", "description zcth-02");
+		Sample sample = new Sample(new Study(), SampleStatus.UPLOADED,"zcth-02", "description zcth-02");
 		
 		ContigTO contigTO = createContigTO();
 		Contig contig = createContig(contigTO, sample);
