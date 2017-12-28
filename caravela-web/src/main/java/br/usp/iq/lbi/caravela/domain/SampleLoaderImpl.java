@@ -26,7 +26,11 @@ import br.usp.iq.lbi.caravela.model.SampleFile;
 public class SampleLoaderImpl implements SampleLoader {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SampleLoaderImpl.class);
-	
+
+	private static Integer HUNDRED_THOUSAND = 100000;
+	private static Integer TWO = 2;
+	public static final int ZERO = 0;
+
 	private boolean sampleLoaderRunning;
 	
 	@Inject private ContigTOProcessor contigTOProcessor;
@@ -71,7 +75,16 @@ public class SampleLoaderImpl implements SampleLoader {
 				Stream<String> stream = Files.lines(path);
 				
 				stream.forEach(c-> {
-					Contig contig = contigTOProcessor.convert(sample, gson.fromJson(c, ContigTO.class));
+					final ContigTO contigTO = gson.fromJson(c, ContigTO.class);
+					final Integer numberOfreads = contigTO.getNumberOfreads();
+
+					// Limite mínimo de DOIS reads e máximo de CEM MILL reads por contig.
+					if(numberOfreads.compareTo(HUNDRED_THOUSAND) > ZERO || numberOfreads.compareTo(TWO) < ZERO){
+						logger.info("Contig {} not processed. Number of reads outside the boundary min {} and max {}", contigTO.getReference(), TWO, HUNDRED_THOUSAND);
+						return;
+					}
+
+					Contig contig = contigTOProcessor.convert(sample, contigTO);
 					String genusRank = "genus";
 					String specieRank = "species";
 					String familyRank = "family";
