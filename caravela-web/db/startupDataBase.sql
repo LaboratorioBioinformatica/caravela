@@ -13,6 +13,10 @@ create schema caravela;
 
 /* giving privileges to user CARAVELA on database CARAVELA */  
 GRANT ALL PRIVILEGES ON caravela.* TO 'caravela-user'@'localhost';
+
+/* giving privileges to user caravela on procedures */
+GRANT SELECT ON mysql.proc TO 'caravela-user'@'localhost';
+
 flush privileges;
 
 USE caravela;

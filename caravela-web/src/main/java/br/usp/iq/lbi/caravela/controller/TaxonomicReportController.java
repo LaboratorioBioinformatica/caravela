@@ -15,6 +15,7 @@ import br.com.caelum.vraptor.observer.download.DownloadBuilder;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
 import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
 import br.usp.iq.lbi.caravela.dao.SampleDAO;
+import br.usp.iq.lbi.caravela.dto.report.TaxonomicReportTO;
 import br.usp.iq.lbi.caravela.model.ClassifiedReadByContex;
 import br.usp.iq.lbi.caravela.model.Contig;
 import br.usp.iq.lbi.caravela.model.Read;
@@ -43,7 +44,66 @@ public class TaxonomicReportController {
 		this.sampleDAO = sampleDAO;
 		this.classifiedReadByContextDAO = classifiedReadByContextDAO;
 	}
-	
+
+
+	@Path("/taxonomic/classified/report/sample/{sampleId}")
+	public Download taxonomicReport(Long sampleId){
+		Sample sample = sampleDAO.load(sampleId);
+
+		List<TaxonomicReportTO> taxonomicReportBySampleList = classifiedReadByContextDAO.findTaxonomicReportBySample(sample);
+
+		StringBuilder reportFileName = new StringBuilder()
+				.append("/tmp/report-")
+				.append(sample.getId())
+				.append("-")
+				.append(sample.getStudy().getId())
+				.append("-genus.tsv");
+
+
+		File file = new File(reportFileName.toString());
+
+		DecimalFormat decimal = new DecimalFormat("#.###");
+
+		Download download = null;
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(createHeaderReadsClassifiedByContexReport());
+			fw.write(LINE_SEPARATOR);
+
+			for (TaxonomicReportTO taxonomicReportTO : taxonomicReportBySampleList) {
+
+				StringBuilder line = new StringBuilder();
+				line
+						.append(taxonomicReportTO.getSequenceReference())
+						.append(TAB)
+						.append(taxonomicReportTO.getNcbiScientificName())
+						.append(TAB)
+						.append(decimal.format(taxonomicReportTO.getCT()))
+						.append(TAB)
+						.append(decimal.format(taxonomicReportTO.getCTV()))
+						.append(TAB)
+						.append(taxonomicReportTO.getBorders())
+						.append(TAB)
+						.append(taxonomicReportTO.getContigReference())
+						.append(LINE_SEPARATOR);
+				fw.write(line.toString());
+			}
+			fw.close();
+			download = DownloadBuilder.of(file)
+					.withContentType("text/plain")
+					.downloadable()
+					.build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+		return download;
+	}
+
+
+
 	@Path("/taxonomic/readsNoTaxonClassifiedByContex/report/by/sample/{sampleId}")
 	public Download report(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
@@ -96,10 +156,11 @@ public class TaxonomicReportController {
 	}
 
 	private String createHeaderReadsClassifiedByContexReport() {
-		return new StringBuilder().append("READ REFERENCE").append(TAB)
+		return new StringBuilder()
+				.append("READ REFERENCE").append(TAB)
 				.append("SCIENTIFIC NAME").append(TAB)
-				.append("ICTCR|GE").append(TAB)
-				.append("IVCT|GE").append(TAB)
+				.append("CT|GE").append(TAB)
+				.append("CTV|GE").append(TAB)
 				.append("BORDERS|GE").append(TAB)
 				.append("CONTIG REFERENCE").append(TAB)
 				.toString();				

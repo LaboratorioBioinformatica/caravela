@@ -31,7 +31,7 @@ public class TaxonDAOImpl extends DAOImpl<Taxon> implements TaxonDAO {
 	}
 	
 	public List<TaxonCounterTO> findTaxonsBySampleAndScientificNameAndExclusiveCoverage(Sample sample, String scientificName, Double taxonCoverage) {
-		Query query = entityManager.createQuery(" SELECT NEW br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO(t, COUNT(toc.contig.id)) FROM TaxonOnContig toc JOIN toc.taxon t WHERE toc.sample=:sample and t.scientificName LIKE:scientificName and toc.uniqueCoverage >=:taxonCoverage GROUP BY t.id ORDER BY COUNT(toc.contig.id) DESC", TaxonCounterTO.class);
+		Query query = entityManager.createQuery(" SELECT NEW br.usp.iq.lbi.caravela.dto.search.TaxonCounterTO(t, COUNT(toc.contig.id)) FROM TaxonOnContig toc git  toc.taxon t WHERE toc.sample=:sample and t.scientificName LIKE:scientificName and toc.uniqueCoverage >=:taxonCoverage GROUP BY t.id ORDER BY COUNT(toc.contig.id) DESC", TaxonCounterTO.class);
 		query.setParameter("sample", sample);
 		query.setParameter("taxonCoverage", taxonCoverage);
 		query.setParameter("scientificName", "%"+scientificName+"%");
