@@ -52,12 +52,7 @@ public class TaxonomicReportController {
 
 		List<TaxonomicReportTO> taxonomicReportBySampleList = classifiedReadByContextDAO.findTaxonomicReportBySample(sample);
 
-		StringBuilder reportFileName = new StringBuilder()
-				.append("/tmp/report-")
-				.append(sample.getId())
-				.append("-")
-				.append(sample.getStudy().getId())
-				.append("-genus.tsv");
+		StringBuilder reportFileName = createReportName(sample);
 
 
 		File file = new File(reportFileName.toString());
@@ -102,8 +97,22 @@ public class TaxonomicReportController {
 		return download;
 	}
 
+	private StringBuilder createReportName(Sample sample) {
+
+		String sampleName = sample.getName().replace(" ", "-");
+
+		return new StringBuilder()
+				.append("/tmp/report-")
+				.append(sample.getStudy().getId())
+				.append("-")
+				.append(sample.getId())
+				.append("-")
+				.append(sampleName)
+				.append("-genus.tsv");
+	}
 
 
+	// TODO to be delete because was replaced by taxonomicReport
 	@Path("/taxonomic/readsNoTaxonClassifiedByContex/report/by/sample/{sampleId}")
 	public Download report(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);

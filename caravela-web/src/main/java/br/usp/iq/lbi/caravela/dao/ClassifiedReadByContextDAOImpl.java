@@ -13,8 +13,7 @@ import java.util.List;
 public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByContex> implements ClassifiedReadByContextDAO {
 
 
-
-	private static final Integer CONTIG_ID = 0;
+    private static final Integer CONTIG_ID = 0;
 	private static final Integer SAMPLE_ID = 1;
 	private static final Integer CONTIG_REFERENCE = 2;
 	private static final Integer CONTIG_SIZE = 3;
@@ -31,9 +30,10 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 	private static final Integer NCBI_TAXONOMY_ID = 14;
 	private static final Integer NCBI_SCIENTIFIC_NAME = 15;
 
+    public static final String STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT = "reportTaxonClassifiedByContext";
 
 
-	@Inject
+    @Inject
 	public ClassifiedReadByContextDAOImpl(EntityManager entityManager) {
 		super(entityManager);
 	}
@@ -56,10 +56,10 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 
 	public List<TaxonomicReportTO> findTaxonomicReportBySample(Sample sample){
 
-		StoredProcedureQuery query = entityManager.createStoredProcedureQuery("reportTaxonClassifiedByContext")
+		StoredProcedureQuery query = entityManager.createStoredProcedureQuery(STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT)
 				.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
 				.registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-				.setParameter(1, 1L)
+				.setParameter(1, sample.getId())
 				.setParameter(2, TaxonomicRank.GENUS.toString());
 
 
