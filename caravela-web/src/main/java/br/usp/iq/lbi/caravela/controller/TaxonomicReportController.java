@@ -67,9 +67,10 @@ public class TaxonomicReportController {
 
 			for (TaxonomicReportTO taxonomicReportTO : taxonomicReportBySampleList) {
 
-				StringBuilder line = new StringBuilder();
-				line
-						.append(taxonomicReportTO.getSequenceReference())
+				String line = new StringBuilder()
+                        .append(taxonomicReportTO.getSequenceReference())
+						.append(TAB)
+						.append(taxonomicReportTO.getNcbiTaxonomyId())
 						.append(TAB)
 						.append(taxonomicReportTO.getNcbiScientificName())
 						.append(TAB)
@@ -80,8 +81,10 @@ public class TaxonomicReportController {
 						.append(taxonomicReportTO.getBorders())
 						.append(TAB)
 						.append(taxonomicReportTO.getContigReference())
-						.append(LINE_SEPARATOR);
-				fw.write(line.toString());
+						.append(LINE_SEPARATOR)
+                        .toString();
+
+				fw.write(line);
 			}
 			fw.close();
 			download = DownloadBuilder.of(file)
@@ -111,62 +114,10 @@ public class TaxonomicReportController {
 				.append("-genus.tsv");
 	}
 
-
-	// TODO to be delete because was replaced by taxonomicReport
-	@Path("/taxonomic/readsNoTaxonClassifiedByContex/report/by/sample/{sampleId}")
-	public Download report(Long sampleId){
-		Sample sample = sampleDAO.load(sampleId);
-		List<ClassifiedReadByContex> readsNoTaxonClassifiedByContex = classifiedReadByContextDAO.findBySample(sample);
-		
-		File file = new File("/tmp/ReadsNoTaxonClassifiedByContex-genus.tsv");
-		
-		DecimalFormat decimal = new DecimalFormat("#.###");
-		
-		Download download = null;
-		try {
-			FileWriter fw = new FileWriter(file);
-			fw.write(createHeaderReadsClassifiedByContexReport());
-			fw.write(LINE_SEPARATOR);
-			
-			for (ClassifiedReadByContex readByContext : readsNoTaxonClassifiedByContex) {
-				Contig contig = readByContext.getContig();
-				Read read = readByContext.getRead();
-				Taxon taxon = readByContext.getTaxon();
-				
-				StringBuilder line = new StringBuilder();
-				line.append(read.getReference())
-				.append(TAB)
-				.append(taxon.getTaxonomyId())
-				.append(TAB)
-				.append(taxon.getScientificName())
-				.append(TAB)
-				.append(decimal.format(contig.getIndexOfConsistencyTaxonomicByCountReads(TaxonomicRank.GENUS)))
-				.append(TAB)
-				.append(decimal.format(contig.getIndexOfVerticalConsistencyTaxonomic(TaxonomicRank.GENUS)))
-				.append(TAB)
-				.append(decimal.format(contig.getNumberOfBorders(TaxonomicRank.GENUS)))
-				.append(TAB)
-				.append(contig.getReference())
-				.append(LINE_SEPARATOR);
-				fw.write(line.toString());
-			}
-			fw.close();
-			download = DownloadBuilder.of(file)
-				    .withContentType("text/plain")
-				    .downloadable()
-				    .build();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-		return download;
-	}
-
 	private String createHeaderReadsClassifiedByContexReport() {
 		return new StringBuilder()
 				.append("READ REFERENCE").append(TAB)
+				.append("NCBI TAXONOMY ID").append(TAB)
 				.append("SCIENTIFIC NAME").append(TAB)
 				.append("CT|GE").append(TAB)
 				.append("CTV|GE").append(TAB)

@@ -20,8 +20,9 @@ public class TaxonomicReportTO {
     private String ncbiTaxonomyRank;
     private String ncbiScientificName;
 
-    public TaxonomicReportTO(String contigReference, String ncbiScientificName, Double ITG, String readReference, Double CT, Double CTV, Integer borders){
+    public TaxonomicReportTO(String contigReference, Long ncbiTaxonomyId, String ncbiScientificName, Double ITG, String readReference, Double CT, Double CTV, Integer borders){
         this.contigReference = contigReference;
+        this.ncbiTaxonomyId = ncbiTaxonomyId;
         this.ncbiScientificName = ncbiScientificName;
         this.sequenceReference = readReference;
         this.ITG = ITG;

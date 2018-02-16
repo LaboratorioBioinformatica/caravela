@@ -6,7 +6,10 @@ import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.TaxonomicRank;
 
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 	private static final Integer NCBI_TAXONOMY_ID = 14;
 	private static final Integer NCBI_SCIENTIFIC_NAME = 15;
 
-    public static final String STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT = "reportTaxonClassifiedByContext";
+    private static final String STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT = "reportTaxonClassifiedByContext";
 
 
     @Inject
@@ -43,15 +46,6 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 		query.setParameter("sampleId", sampleId);
 		return query.executeUpdate();
 	}
-	
-	public List<ClassifiedReadByContex> findBySample(Sample sample){
-		TypedQuery<ClassifiedReadByContex> query = entityManager.createQuery("SELECT c FROM ClassifiedReadByContex c WHERE c.sample=:sample", ClassifiedReadByContex.class);
-		List<ClassifiedReadByContex> classifiedReadByContexList = query.setParameter("sample", sample).getResultList();
-		return classifiedReadByContexList;
-		
-		
-	}
-
 
 
 	public List<TaxonomicReportTO> findTaxonomicReportBySample(Sample sample){
@@ -72,6 +66,7 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 				resultLine -> {
 					resultList.add(new TaxonomicReportTO(
 							resultLine[CONTIG_REFERENCE].toString(),
+							Long.parseLong(resultLine[NCBI_TAXONOMY_ID].toString()),
 							resultLine[NCBI_SCIENTIFIC_NAME].toString(),
 							Double.parseDouble(resultLine[ITG].toString()),
 							resultLine[READ_REFERENCE].toString(),
