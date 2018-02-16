@@ -6,15 +6,17 @@ import br.usp.iq.lbi.caravela.model.Sample;
 import br.usp.iq.lbi.caravela.model.TaxonomicRank;
 
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByContex> implements ClassifiedReadByContextDAO {
 
 
-
-	private static final Integer CONTIG_ID = 0;
+    private static final Integer CONTIG_ID = 0;
 	private static final Integer SAMPLE_ID = 1;
 	private static final Integer CONTIG_REFERENCE = 2;
 	private static final Integer CONTIG_SIZE = 3;
@@ -31,9 +33,10 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 	private static final Integer NCBI_TAXONOMY_ID = 14;
 	private static final Integer NCBI_SCIENTIFIC_NAME = 15;
 
+    private static final String STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT = "reportTaxonClassifiedByContext";
 
 
-	@Inject
+    @Inject
 	public ClassifiedReadByContextDAOImpl(EntityManager entityManager) {
 		super(entityManager);
 	}
@@ -43,23 +46,14 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 		query.setParameter("sampleId", sampleId);
 		return query.executeUpdate();
 	}
-	
-	public List<ClassifiedReadByContex> findBySample(Sample sample){
-		TypedQuery<ClassifiedReadByContex> query = entityManager.createQuery("SELECT c FROM ClassifiedReadByContex c WHERE c.sample=:sample", ClassifiedReadByContex.class);
-		List<ClassifiedReadByContex> classifiedReadByContexList = query.setParameter("sample", sample).getResultList();
-		return classifiedReadByContexList;
-		
-		
-	}
-
 
 
 	public List<TaxonomicReportTO> findTaxonomicReportBySample(Sample sample){
 
-		StoredProcedureQuery query = entityManager.createStoredProcedureQuery("reportTaxonClassifiedByContext")
+		StoredProcedureQuery query = entityManager.createStoredProcedureQuery(STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT)
 				.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN)
 				.registerStoredProcedureParameter(2, String.class, ParameterMode.IN)
-				.setParameter(1, 1L)
+				.setParameter(1, sample.getId())
 				.setParameter(2, TaxonomicRank.GENUS.toString());
 
 
@@ -72,6 +66,7 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 				resultLine -> {
 					resultList.add(new TaxonomicReportTO(
 							resultLine[CONTIG_REFERENCE].toString(),
+							Long.parseLong(resultLine[NCBI_TAXONOMY_ID].toString()),
 							resultLine[NCBI_SCIENTIFIC_NAME].toString(),
 							Double.parseDouble(resultLine[ITG].toString()),
 							resultLine[READ_REFERENCE].toString(),

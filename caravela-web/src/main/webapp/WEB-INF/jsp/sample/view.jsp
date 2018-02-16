@@ -116,7 +116,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="${linkTo[TaxonomicReportController].report}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report reads no taxon classified by context" class="btn btn-primary" role="button">
+                                                            <a href="${linkTo[TaxonomicReportController].taxonomicReport}${sample.id}" data-toggle="popover" data-trigger="hover" data-content="Click to download report reads no taxon classified by context" class="btn btn-primary" role="button">
                                                                 <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
                                                                 <span class="glyphicon-class">Download reads classified by context</span>
                                                             </a>
