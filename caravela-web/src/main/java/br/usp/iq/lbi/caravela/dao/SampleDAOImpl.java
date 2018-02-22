@@ -33,6 +33,13 @@ public class SampleDAOImpl extends DAOImpl<Sample> implements SampleDAO {
 		query.setParameter("study", study);
 		return query.getResultList();
 	}
+
+	public List<Sample> listAllActiveSampleByStudy(Study study) {
+		Query query = entityManager.createQuery("from Sample s where s.study=:study AND s.sampleStatus!=:toBeDelete", Sample.class);
+		query.setParameter("study", study);
+		query.setParameter("toBeDelete", SampleStatus.TO_BE_DELETE);
+		return query.getResultList();
+	}
 	
 	public List<Sample> listAllByStatus(SampleStatus status) {
 		Query query = entityManager.createQuery("from Sample s where s.sampleStatus=:status", Sample.class);

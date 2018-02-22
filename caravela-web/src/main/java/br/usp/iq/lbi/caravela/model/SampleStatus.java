@@ -5,6 +5,7 @@ public enum SampleStatus {
 	UPLOADED,
 	PROCESSING,
 	PROCESSED,
-	ERRO_TO_PROCESS;
+	ERRO_TO_PROCESS,
+	TO_BE_DELETE
 
 }

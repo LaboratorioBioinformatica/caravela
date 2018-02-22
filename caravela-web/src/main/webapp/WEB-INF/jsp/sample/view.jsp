@@ -127,14 +127,14 @@
 											</c:when>
 											
 										</c:choose>
-										<!--div>
-											<form action="${linkTo[SampleController].deleteSample}" name="form-sample-delete" class="form-inline" role="form" method="post">
+										<div>
+											<form action="${linkTo[SampleController].delete}" name="form-sample-delete" class="form-inline" role="form" method="post">
 													<input type="hidden" name="sampleId" value="${sample.id}">
 													<button type="submit" class="btn btn-danger" aria-label="Left Align" data-toggle="popover" data-trigger="hover" data-content="Click to delete"> 
 														<span class="glyphicon glyphicon-trash"aria-hidden="true"></span>
 													</button>
 											</form>		
-										</div-->
+										</div>
 									</div>	
 										
 		

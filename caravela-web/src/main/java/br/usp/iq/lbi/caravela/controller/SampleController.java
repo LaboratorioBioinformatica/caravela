@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import br.usp.iq.lbi.caravela.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +19,6 @@ import br.com.caelum.vraptor.validator.Severity;
 import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
 import br.usp.iq.lbi.caravela.controller.auth.WebUser;
-import br.usp.iq.lbi.caravela.dao.ClassifiedReadByContextDAO;
-import br.usp.iq.lbi.caravela.dao.ContigDAO;
-import br.usp.iq.lbi.caravela.dao.SampleDAO;
-import br.usp.iq.lbi.caravela.dao.StudyDAO;
 import br.usp.iq.lbi.caravela.domain.SampleLoader;
 import br.usp.iq.lbi.caravela.domain.SampleReporter;
 import br.usp.iq.lbi.caravela.model.Contig;
@@ -45,14 +42,15 @@ public class SampleController {
 	private final Validator validator;
 	private final SampleLoader sampleLoader;
 	private final ClassifiedReadByContextDAO classifiedReadByContextDAO;
+	private final TaxonOnContigDAO taxonOnContigDAO;
 	
 	protected SampleController(){
-		this(null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null, null);
 	}
 	
 	@Inject
 	public SampleController(Result result, WebUser webUser, StudyDAO studyDAO, SampleDAO sampleDAO,
-							ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader, ClassifiedReadByContextDAO classifiedReadByContextDAO){
+							ContigDAO contigDAO, SampleReporter sampleReporter, Validator validator, SampleLoader sampleLoader, ClassifiedReadByContextDAO classifiedReadByContextDAO, TaxonOnContigDAO taxonOnContigDAO){
 		this.result = result;
 		this.webUser = webUser;
 		this.studyDAO = studyDAO;
@@ -62,6 +60,7 @@ public class SampleController {
 		this.validator = validator;
 		this.sampleLoader = sampleLoader;
 		this.classifiedReadByContextDAO = classifiedReadByContextDAO;
+		this.taxonOnContigDAO = taxonOnContigDAO;
 	}
 	
 	
@@ -104,21 +103,28 @@ public class SampleController {
 				
 		result.forwardTo(this).list(studyId);
 	}
-	
+
 	@Post
-	public void deleteSample(Long sampleId){
+	public void delete(Long sampleId){
 		Sample sample = sampleDAO.load(sampleId);
-		System.out.println("delete sample: " + sample.getName());
-		
-		sampleDAO.delete(sample);
-//		taxonOnContigDAO.removeBySample(sampleId);
-		System.out.println("delete classified reads by context from sample: " + sample.getName());
-		classifiedReadByContextDAO.removeBySample(sampleId);
-//		contigStatisticByTiiDAO.removeBySample(sampleId); 
+		sample.toBeDelete();
+		sampleDAO.update(sample);
 		result.forwardTo(this).list(sample.getStudy().getId());
-		
-		
 	}
+
+
+	//TODO move to assync process
+//	@Post
+//	public void deleteSample(Long sampleId){
+//		Sample sample = sampleDAO.load(sampleId);
+//		System.out.println("delete sample: " + sample.getName());
+//		sampleDAO.delete(sample);
+//		taxonOnContigDAO.removeBySample(sampleId);
+//		System.out.println("delete classified reads by context from sample: " + sample.getName());
+//		classifiedReadByContextDAO.removeBySample(sampleId);
+////		contigStatisticByTiiDAO.removeBySample(sampleId);
+//		result.forwardTo(this).list(sample.getStudy().getId());
+//	}
 	
 	@Get
 	@Path("/sample/list/by/study/{studyId}")
@@ -129,10 +135,11 @@ public class SampleController {
 	
 	@Post
 	public void list(Long studyId){
-		Study study = studyDAO.load(studyId);
-		List<Sample> sampleList = sampleDAO.listAllByStudy(study);
+		final Study study = studyDAO.load(studyId);
+		final List<Sample> sampleList = sampleDAO.listAllActiveSampleByStudy(study);
+
 		Boolean sampleLoaderRunning = sampleLoader.isRunningSampleLoader();
-		
+
 		if (sampleList.isEmpty()) {
 			validator.add(new SimpleMessage("study.list", "There is no sample to show", Severity.WARN));
 		}

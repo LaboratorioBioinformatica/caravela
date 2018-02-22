@@ -75,10 +75,13 @@ public class Sample {
 		return SampleStatus.UPLOADED.equals(this.sampleStatus);
 	}
 	
+	public boolean isToBeDelete(){
+		return SampleStatus.TO_BE_DELETE.equals(this.sampleStatus);
+	}
 	public boolean isProcessing(){
 		return SampleStatus.PROCESSING.equals(this.sampleStatus);
 	}
-	
+
 	public boolean isProcessed(){
 		return SampleStatus.PROCESSED.equals(this.sampleStatus);
 	}
@@ -99,6 +102,10 @@ public class Sample {
 		if(isProcessing()){
 			this.sampleStatus = SampleStatus.PROCESSED;
 		} 
+	}
+
+	public void toBeDelete(){
+		this.sampleStatus = SampleStatus.TO_BE_DELETE;
 	}
 	
 	public void toErrorToProcess(){
