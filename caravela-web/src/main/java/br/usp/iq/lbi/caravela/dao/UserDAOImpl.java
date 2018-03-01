@@ -19,6 +19,12 @@ public class UserDAOImpl extends DAOImpl<User> implements UserDAO {
 		 query.setParameter("password", password);
 		 return (User) query.getSingleResult();
 	}
+
+	public User searchUserByUserName(String userName){
+		Query query = entityManager.createQuery("from User u where u.userName=:userName", User.class);
+		query.setParameter("userName", userName);
+		return (User) query.getSingleResult();
+	}
 	
 
 	
