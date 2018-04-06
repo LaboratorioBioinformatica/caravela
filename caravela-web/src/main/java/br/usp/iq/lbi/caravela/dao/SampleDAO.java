@@ -12,6 +12,7 @@ public interface SampleDAO extends DAO<Sample> {
 	List<Sample> listAllByStudy(Study study);
 	List<Sample> listAllByStatus(SampleStatus status);
 	List<Sample> listAllActiveSampleByStudy(Study study);
+	List<Sample> findLastSamplesByStatus(SampleStatus status, Integer maxResult);
 	
 	
 }

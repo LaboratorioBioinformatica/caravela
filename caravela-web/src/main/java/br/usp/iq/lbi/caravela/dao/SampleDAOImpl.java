@@ -46,5 +46,11 @@ public class SampleDAOImpl extends DAOImpl<Sample> implements SampleDAO {
 		query.setParameter("status", status);
 		return query.getResultList();
 	}
+	public List<Sample> findLastSamplesByStatus(SampleStatus status, Integer maxResult) {
+		Query query = entityManager.createQuery("from Sample s where s.sampleStatus=:status ORDER BY s.id", Sample.class);
+		query.setParameter("status", status);
+		query.setMaxResults(maxResult);
+		return query.getResultList();
+	}
 
 }
