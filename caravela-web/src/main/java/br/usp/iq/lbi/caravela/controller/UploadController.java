@@ -76,43 +76,35 @@ public class UploadController {
 
 		final File fileTMP = new File(fullPathDirectoryUpload);
 
-		final File fileToSaveUniqueFileName = File.createTempFile("sampleTemporaryFile_", ".tmp", fileTMP);
-		file.writeTo(fileToSaveUniqueFileName);
-		final String absolutePathFile = fileToSaveUniqueFileName.getAbsolutePath();
+		final File temporaryFileToSave = File.createTempFile("sampleTemporaryFile_", ".tmp", fileTMP);
+		file.writeTo(temporaryFileToSave);
+		final String temporaryAbsoluteFilePath = temporaryFileToSave.getAbsolutePath();
 
-		logger.info("Temporary file was created - " + fileToSaveUniqueFileName.getName());
+		logger.info("Temporary file was created - " + temporaryFileToSave.getName());
 
 		final String contentType = file.getContentType();
 		logger.info("Application type: " + contentType);
 
+		final File ultimateFile = File.createTempFile("sampleFile_", ".json", fileTMP);
 		if(JSON.equals(contentType)){
-			final File sampleFileName = File.createTempFile("sampleFile_", ".json", fileTMP);
-			fileToSaveUniqueFileName.renameTo(sampleFileName);
-			logger.info("File uploaded renamed to: " + sampleFileName);
+			temporaryFileToSave.renameTo(ultimateFile);
+			logger.info("File uploaded renamed to: " + ultimateFile);
 
 		}
 
 		if(ZIP.equals(contentType)){
-			final String sampleFileName = File.createTempFile("sampleFile", ".json", fileTMP).getName();
-			new Zipper().unZipIt(absolutePathFile, fullPathDirectoryUpload, sampleFileName);
+			final String sampleFileName = ultimateFile.getName();
+
+			new Zipper().unZipIt(temporaryAbsoluteFilePath, fullPathDirectoryUpload, sampleFileName);
 			logger.info("Unzip file: " + sampleFileName);
 
-			fileToSaveUniqueFileName.delete();
-			logger.info("Temporary file: " + absolutePathFile + "deleted.");
+			temporaryFileToSave.delete();
+			logger.info("Temporary file: " + temporaryAbsoluteFilePath + " deleted.");
 
 		}
 
-//		else {
-//
-//			validator.addIf( ! JSON.equals(file.getContentType()),
-//					new SimpleMessage("application.type", "Invalid Application Type: " + file.getContentType(), Severity.WARN));
-//
-//			validator.onErrorForwardTo(this).view();
-//
-//		}
 
-
-		updateSampleToUploaded(sample, fileToSaveUniqueFileName);
+		updateSampleToUploaded(sample, ultimateFile);
 		result.use(Results.json()).from(sample).serialize();
 
 

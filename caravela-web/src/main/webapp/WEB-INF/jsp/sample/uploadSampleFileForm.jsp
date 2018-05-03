@@ -14,7 +14,7 @@
 	    <div class="page-header">
 	    	<div class="row">
   				<div class="col-md-6">
-  					<h1><span class="label label-success">Upload</span> Sample file</h1>	
+  					<h1><span class="label label-success">Upload</span> Sample file</h1> <h5>Accepted Types: .json and .zip</h5>
   				</div>
   				<div class="col-md-6">
   					<h1><span class="label label-default pull-right">${sample.name}</span></h1>	
