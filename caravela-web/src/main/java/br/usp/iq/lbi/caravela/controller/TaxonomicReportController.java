@@ -81,6 +81,10 @@ public class TaxonomicReportController {
 						.append(taxonomicReportTO.getBorders())
 						.append(TAB)
 						.append(taxonomicReportTO.getContigReference())
+						.append(TAB)
+						.append(taxonomicReportTO.getFlagAlignment())
+						.append(TAB)
+						.append(taxonomicReportTO.getCigar())
 						.append(LINE_SEPARATOR)
                         .toString();
 
@@ -123,6 +127,8 @@ public class TaxonomicReportController {
 				.append("CTV|GE").append(TAB)
 				.append("BORDERS|GE").append(TAB)
 				.append("CONTIG REFERENCE").append(TAB)
+				.append("READ FLAG ALIGNMENT").append(TAB)
+				.append("READ CIGAR").append(TAB)
 				.toString();				
 	}
 

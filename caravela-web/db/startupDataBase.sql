@@ -76,7 +76,7 @@ create table sequence (
 	lenth INT NOT null,
 	start_alignment INT NOT NULL,
 	end_alignment INT NOT NULL,
-	cigar VARCHAR(50) NOT NULL,
+	cigar VARCHAR(100) NOT NULL,
 	flag_alignment INT NOT NULL,
 	PRIMARY KEY(id),
 	INDEX (contig_id), INDEX (taxon_id)
@@ -207,6 +207,7 @@ insert into system_user values (id, @app_user, @app_user_name, @app_pwd);
 
 -- CREATE STORE PROCEDURE TO CREATE REPORT READS CLASSIFIED BY CONTEXT
 
+DROP PROCEDURE IF EXISTS reportTaxonClassifiedByContext;
 DELIMITER //
     CREATE PROCEDURE reportTaxonClassifiedByContext(IN sampleId INTEGER, IN rankValue VARCHAR(30))
         BEGIN
@@ -225,7 +226,9 @@ DELIMITER //
             rc.taxon_id as taxon_id,
             t.rank as ncbi_taxonomy_rank,
             t.taxonomy_id as ncbi_taxonomy_id,
-            t.scientific_name as ncbi_scientific_name
+            t.scientific_name as ncbi_scientific_name,
+            s.flag_alignment,
+            s.cigar
             from
             contig c,
             classified_read_by_context rc,

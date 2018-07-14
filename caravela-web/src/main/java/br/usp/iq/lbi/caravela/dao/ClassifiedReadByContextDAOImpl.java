@@ -32,6 +32,8 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 	private static final Integer NCBI_TAXONOMY_RANK = 13;
 	private static final Integer NCBI_TAXONOMY_ID = 14;
 	private static final Integer NCBI_SCIENTIFIC_NAME = 15;
+	private static final Integer FLAG_ALIGNMENT = 16;
+	private static final Integer CIGAR = 17;
 
     private static final String STORE_PROCEDURE_CLASSIFIED_BY_CONTEXT = "reportTaxonClassifiedByContext";
 
@@ -72,7 +74,9 @@ public class ClassifiedReadByContextDAOImpl extends DAOImpl<ClassifiedReadByCont
 							resultLine[READ_REFERENCE].toString(),
 							Double.parseDouble(resultLine[CT].toString()),
 							Double.parseDouble(resultLine[CTV].toString()),
-							Integer.parseInt(resultLine[BOUNDARY].toString())
+							Integer.parseInt(resultLine[BOUNDARY].toString()),
+							Integer.parseInt(resultLine[FLAG_ALIGNMENT].toString()),
+							resultLine[CIGAR].toString()
 							)
 					);
 				}

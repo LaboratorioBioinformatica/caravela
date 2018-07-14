@@ -25,6 +25,7 @@ rename table report_classified_read_by_context to classified_read_by_context;
 
 
 alter table sequence add column cigar VARCHAR(50) after end_alignment;
+ALTER TABLE sequence  modify column cigar VARCHAR(100) NOT NULL;
 alter table contig modify column sequence MEDIUMTEXT NOT NULL;
 
 

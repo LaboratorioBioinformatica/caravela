@@ -19,8 +19,12 @@ public class TaxonomicReportTO {
     private Long ncbiTaxonomyId;
     private String ncbiTaxonomyRank;
     private String ncbiScientificName;
+    private Integer flagAlignment;
+    private String cigar;
 
-    public TaxonomicReportTO(String contigReference, Long ncbiTaxonomyId, String ncbiScientificName, Double ITG, String readReference, Double CT, Double CTV, Integer borders){
+
+    public TaxonomicReportTO(String contigReference, Long ncbiTaxonomyId, String ncbiScientificName, Double ITG,
+                             String readReference, Double CT, Double CTV, Integer borders, Integer flagAlignment, String cigar){
         this.contigReference = contigReference;
         this.ncbiTaxonomyId = ncbiTaxonomyId;
         this.ncbiScientificName = ncbiScientificName;
@@ -29,6 +33,8 @@ public class TaxonomicReportTO {
         this.CT = CT;
         this.CTV = CTV;
         this.borders = borders;
+        this.flagAlignment = flagAlignment;
+        this.cigar = cigar;
         
     }
 
@@ -95,4 +101,13 @@ public class TaxonomicReportTO {
     public Integer getBorders() {
         return borders;
     }
+
+    public Integer getFlagAlignment() {
+        return flagAlignment;
+    }
+
+    public String getCigar() {
+        return cigar;
+    }
+
 }
