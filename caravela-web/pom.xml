@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>com.github.samtools</groupId>
 			<artifactId>htsjdk</artifactId>
-			<version>2.1.1</version>
+			<version>3.0.1</version>
 		</dependency>
 
 		<!-- VRAPTOR dependency START -->
